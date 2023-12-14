@@ -1,0 +1,32 @@
+// Prisma client generator configuration.
+generator client {
+  provider = "prisma-client-js" // The provider for the client generation.
+}
+
+// Database connection configuration.
+datasource db {
+  provider = "mysql" // The database provider.
+  url      = env("DATABASE_URL") // The URL of the database to connect to.
+}
+
+// Enum representing different statuses a claim can have.
+enum ClaimStatus {
+  UNPAID // The claim has not been paid yet.
+  PENDING_PAYMENT // Payment for the claim is pending.
+  INSCRIBING_TRANSFER // Inscribing the brc20 transfer.
+  TRANSFERRING // The transfer of the brc20 is ongoing.
+  COMPLETE // The claim has been completed.
+}
+
+// Model representing a Claim in the system.
+model Claim {
+  id             Int         @id @default(autoincrement()) // Unique identifier for each claim.
+  status         ClaimStatus @default(UNPAID) // Current status of the claim.
+  ordinalAddress String // The address associated with the claim.
+  eligibleAmount Int // The amount that is eligible to be claimed.
+  claimedAmount  Int // The amount that has been claimed.
+  createdAt      DateTime    @default(now()) // The date and time when the claim was created.
+  updatedAt      DateTime    @updatedAt // The date and time when the claim was last updated.
+  paymentTxId    String? // Transaction ID for the payment related to this claim, if any.
+  transferTxId   String? // Transaction ID for the transfer related to this claim, if any.
+}
