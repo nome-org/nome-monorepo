@@ -1,6 +1,7 @@
 import { Routing, defaultEndpointsFactory } from "express-zod-api"
 import { checkClaimEndpoint } from "./routes/check-claim.js"
 import z from "zod"
+import { getPriceEndpoint } from "./routes/get-price.js"
 
 export const routing: Routing = {
   "": defaultEndpointsFactory.build({
@@ -14,4 +15,5 @@ export const routing: Routing = {
     output: z.object({ message: z.string() }),
   }),
   "check-claim": checkClaimEndpoint,
+  price: getPriceEndpoint,
 }
