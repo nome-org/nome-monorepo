@@ -5,13 +5,13 @@
   "type": "module",
   "exports": "./index.js",
   "scripts": {
-    "dev": "npm run db:generate && npm run generate-docs && nodemon -q -e ts src/server.ts",
+    "dev": "npm run db:generate && npm run generate-docs && tsx watch --env-file=.env.local src/index.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "start": "npm run db:generate && npm run generate-docs && tsx src/server.ts",
     "test": "cross-env NODE_ENV=test vitest",
     "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
-    "generate-docs": "tsx src/scripts/generate-docs.ts && redocly build-docs ./docs/openapi.yaml -o ./docs/index.html"
+    "generate-docs": "tsx --env-file=.env.local src/scripts/generate-docs.ts && redocly build-docs ./docs/openapi.yaml -o ./docs/index.html"
   },
   "author": "Mohamed Huzayen <huzayen@pm.me>",
   "license": "ISC",
@@ -28,6 +28,7 @@
     "express-zod-api": "^15.1.0",
     "http-errors": "^2.0.0",
     "json-stringify-deterministic": "^1.0.12",
+    "toad-scheduler": "^3.0.0",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
   },
@@ -51,5 +52,8 @@
   },
   "engines": {
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "prisma": {
+    "schema": "./src/prisma/schema.prisma"
   }
 }

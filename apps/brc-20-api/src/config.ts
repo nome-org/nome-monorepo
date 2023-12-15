@@ -1,5 +1,5 @@
-import { createConfig } from "express-zod-api";
-import type { Logger } from "winston";
+import { createConfig } from "express-zod-api"
+import type { Logger } from "winston"
 
 export const config = createConfig({
   server: {
@@ -7,7 +7,8 @@ export const config = createConfig({
   },
   cors: true,
   logger: { level: "debug", color: true },
-});
+  startupLogo: process.env.NODE_ENV === "production",
+})
 
 // Setting the type of the logger used
 declare module "express-zod-api" {

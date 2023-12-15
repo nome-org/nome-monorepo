@@ -56,6 +56,9 @@ importers:
       json-stringify-deterministic:
         specifier: ^1.0.12
         version: 1.0.12
+      toad-scheduler:
+        specifier: ^3.0.0
+        version: 3.0.0
       winston:
         specifier: ^3.11.0
         version: 3.11.0
@@ -3825,6 +3828,10 @@ packages:
     dependencies:
       is-number: 7.0.0
     dev: true
+
+  /toad-scheduler@3.0.0:
+    resolution: {integrity: sha512-BYmrORvaGmjziir/ra8qD3qAKczJveqK5ZOO/wn7oS5qLI4iibOza3DBGgu+EwNp9zdlBTKSeZPmxZxzGy1dxw==}
+    dev: false
 
   /toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
