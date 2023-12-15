@@ -1,8 +1,6 @@
-import { createServer } from "express-zod-api";
+import { createServer } from "express-zod-api"
 
-import { routing } from "./router.js";
-import { config as serverConfig } from "./config.js";
-import { config as loadEnvVars } from "dotenv";
+import { routing } from "./router.js"
+import { config as serverConfig } from "./config.js"
 
-loadEnvVars();
-await createServer(serverConfig, routing);
+await createServer(serverConfig, routing)
