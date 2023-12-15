@@ -9,8 +9,6 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "start": "npm run db:generate && npm run generate-docs && tsx src/server.ts",
-    "test": "cross-env NODE_ENV=test vitest",
-    "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
     "generate-docs": "tsx --env-file=.env.local src/scripts/generate-docs.ts && redocly build-docs ./docs/openapi.yaml -o ./docs/index.html"
   },
   "author": "Mohamed Huzayen <huzayen@pm.me>",
