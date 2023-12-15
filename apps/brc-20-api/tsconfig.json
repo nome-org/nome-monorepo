@@ -10,9 +10,5 @@
   },
   "include": ["src/**/*.ts"],
 
-  "exclude": ["node_modules", "**/*.spec.ts"],
-  "ts-node": {
-    "transpileOnly": true,
-    "esm": true
-  }
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
