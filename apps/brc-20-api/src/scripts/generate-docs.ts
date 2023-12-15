@@ -1,12 +1,12 @@
 import { Documentation } from "express-zod-api"
 import { routing } from "../router.js"
-import { config } from "../config.js"
+import { serverConfig } from "../config.js"
 
 import fs from "node:fs/promises"
 
 const specString = new Documentation({
   routing, // the same routing and config that you use to start the server
-  config,
+  config: serverConfig,
   version: "0.0.1",
   title: "NōMe BRC-20 API",
   serverUrl: process.env.BASE_URL!,

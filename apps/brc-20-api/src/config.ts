@@ -1,7 +1,7 @@
 import { createConfig } from "express-zod-api"
 import type { Logger } from "winston"
 
-export const config = createConfig({
+export const serverConfig = createConfig({
   server: {
     listen: process.env.PORT || 8090, // port, UNIX socket or options
   },
