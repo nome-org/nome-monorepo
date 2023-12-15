@@ -1,6 +1,7 @@
 import { Buff } from "@cmdcode/buff"
 import { keys } from "@cmdcode/crypto-tools"
 import { Address, ScriptData, Signer, Tap, Tx } from "@cmdcode/tapscript"
+import { INSCRIPTION_WEIGHT, PRICE } from "../../constants.js"
 
 export const buildCommitData = async ({
   file,
@@ -60,6 +61,7 @@ export const buildInscriptionTx = ({
   seckey,
   script,
   recipientAddress,
+  feeRate,
 }: {
   cblock: string
   tpubkey: string
@@ -71,10 +73,12 @@ export const buildInscriptionTx = ({
     vout: number
     amount: number
   }
+  feeRate: number
 }) => {
   const pubkey = keys.get_pubkey(seckey, true)
 
   const tapleaf = Tap.encodeScript(script)
+  const minerFee = INSCRIPTION_WEIGHT * feeRate
 
   const txdata = Tx.create({
     vin: [
@@ -95,9 +99,13 @@ export const buildInscriptionTx = ({
     vout: [
       {
         // TODO: this should be variable based on the size of the output * the fee rate.
-        value: utxo.amount - 1000,
+        value: utxo.amount - PRICE - minerFee,
         // This is the new script that we are locking our funds to.
         scriptPubKey: Address.toScriptPubKey(recipientAddress),
+      },
+      {
+        value: PRICE,
+        scriptPubKey: Address.toScriptPubKey(process.env.TREASURY_ADDRESS!),
       },
     ],
   })
@@ -115,5 +123,7 @@ export const buildInscriptionTx = ({
   // transaction is also valid (the merkle proof will be validated as well).
   Signer.taproot.verify(txdata, 0, { pubkey, throws: true })
 
-  return { txdata, txHash: Tx.encode(txdata) }
+  const { vsize: sizeInVBytes } = Tx.util.getTxSize(txdata)
+
+  return { txdata, txHash: Tx.encode(txdata), sizeInVBytes }
 }
