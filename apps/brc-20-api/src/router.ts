@@ -6,6 +6,8 @@ import { getPriceEndpoint } from "./routes/get-price.js"
 export const routing: Routing = {
   "": defaultEndpointsFactory.build({
     method: "get",
+    shortDescription: "Server Status",
+    description: "Check if the server is alive",
     handler: async () => {
       return {
         message: "I am alive! or am I?",

@@ -4,6 +4,8 @@ import { INSCRIPTION_WEIGHT, PRICE, TRANSFER_WEIGHT } from "../constants.js"
 
 export const getPriceEndpoint = defaultEndpointsFactory.build({
   method: "get",
+  shortDescription: "Price",
+  description: "Gets the price of BRC20 tokens based on the fee rate",
   input: z.object({
     amount: z.number().min(1),
     feeRate: z.number().min(1),
@@ -13,9 +15,7 @@ export const getPriceEndpoint = defaultEndpointsFactory.build({
     minerFees: z.number(),
   }),
   handler: async ({ input: { amount, feeRate } }) => {
-    const inscriptionFee = INSCRIPTION_WEIGHT * feeRate
-    const transferFee = TRANSFER_WEIGHT * feeRate
-    const minerFees = inscriptionFee + transferFee
+    const minerFees = feeRate * (TRANSFER_WEIGHT + INSCRIPTION_WEIGHT)
     const brc20Price = (PRICE / 1000) * amount
 
     return { brc20Price, minerFees }
