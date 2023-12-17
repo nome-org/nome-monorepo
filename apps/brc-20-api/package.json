@@ -5,11 +5,11 @@
   "type": "module",
   "exports": "./index.js",
   "scripts": {
-    "dev": "npm run db:generate && npm run generate-docs && tsx watch --env-file=.env.local src/index.ts",
+    "dev": "npm run db:generate && npm run generate-docs && tsx watch --env-file=.env src/index.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "start": "npm run db:generate && npm run generate-docs && tsx src/server.ts",
-    "generate-docs": "tsx --env-file=.env.local src/scripts/generate-docs.ts && redocly build-docs ./docs/openapi.yaml -o ./docs/index.html"
+    "generate-docs": "tsx --env-file=.env src/scripts/generate-docs.ts && redocly build-docs ./docs/openapi.yaml -o ./docs/index.html"
   },
   "author": "Mohamed Huzayen <huzayen@pm.me>",
   "license": "ISC",
