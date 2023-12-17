@@ -9,12 +9,12 @@ vi.stubEnv(
 )
 describe("get inscribe weight", () => {
   test("get inscribe weight", async () => {
-    expect(await getInscribeWeight()).toBeGreaterThan(160)
+    expect(await getInscribeWeight({})).toBeGreaterThan(160)
   })
 })
 
 describe("get transfer weight", () => {
   test("get transfer weight", async () => {
-    expect(await getTransferWeight()).toBeGreaterThan(100)
+    expect(await getTransferWeight({})).toBeGreaterThan(100)
   })
 })

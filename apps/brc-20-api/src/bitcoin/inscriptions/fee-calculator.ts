@@ -6,8 +6,23 @@ import { Address, Tx } from "@cmdcode/tapscript"
 import { HDKey } from "@scure/bip32"
 import { generateMnemonic, mnemonicToSeed } from "@scure/bip39"
 import { wordlist } from "@scure/bip39/wordlists/english"
+const defaultUTXO = {
+  amount: 100_000,
+  txid: "0000000000000000000000000000000000000000000000000000000000000000",
+  vout: 0,
+}
 
-export const getInscribeWeight = async () => {
+const mnemonic = generateMnemonic(wordlist)
+const seed = await mnemonicToSeed(mnemonic)
+const key = HDKey.fromMasterSeed(seed)
+const randomAddress = Address.p2tr.fromPubKey(get_pubkey(key.privateKey!))
+
+type UTXO = typeof defaultUTXO
+export const getInscribeWeight = async ({
+  utxo = defaultUTXO,
+}: {
+  utxo?: UTXO
+}) => {
   const transferInscription = buildTransferJSON(250_000_000)
   const { cblock, inscribingAddress, script, seckey, tpubkey } =
     await buildCommitData({
@@ -21,27 +36,22 @@ export const getInscribeWeight = async () => {
     script,
     seckey,
     tpubkey,
-    utxo: {
-      amount: 100_000,
-      txid: "0000000000000000000000000000000000000000000000000000000000000000",
-      vout: 0,
-    },
+    utxo,
   })
   return sizeInVBytes
 }
 
-export const getTransferWeight = async () => {
-  const mnemonic = generateMnemonic(wordlist)
-  const seed = await mnemonicToSeed(mnemonic)
-  const key = HDKey.fromMasterSeed(seed)
+export const getTransferWeight = async ({
+  utxo = defaultUTXO,
+  recipientAddress = randomAddress,
+}: {
+  utxo?: UTXO
+  recipientAddress?: string
+}) => {
   const tx = await transferInscription({
     key,
-    recipientAddress: Address.p2tr.fromPubKey(get_pubkey(key.privateKey!)),
-    utxo: {
-      amount: 100_000,
-      txid: "0000000000000000000000000000000000000000000000000000000000000000",
-      vout: 0,
-    },
+    recipientAddress,
+    utxo,
   })
   return Tx.util.getTxSize(tx).vsize
 }
