@@ -29,8 +29,9 @@ type GetCheckClaimResponse = {
 }
 
 type GetPriceInput = {
-    amount: number;
-    feeRate: number;
+    amount: string;
+    feeRate: string;
+    address: string;
 }
 
 type GetPriceResponse = {

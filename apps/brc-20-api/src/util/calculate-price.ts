@@ -17,7 +17,7 @@ export const calculatePrice = ({
   freeAmount?: number
 }) => {
   const minerFees = feeRate * (TRANSFER_WEIGHT + INSCRIPTION_WEIGHT)
-  let brc20Price = (PRICE / 1000) * Math.min(amount - freeAmount, 0)
+  let brc20Price = Math.ceil((PRICE * Math.max(amount - freeAmount, 0)) / 1000)
   if (discount > 0) {
     brc20Price = brc20Price * (1 - discount)
   }

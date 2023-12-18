@@ -1,10 +1,6 @@
 import { defaultEndpointsFactory } from "express-zod-api"
 import { z } from "zod"
-import {
-  validBTCAddress,
-  validBuyAmount,
-  validFeeRate,
-} from "../util/zod-extras.js"
+import { validBTCAddress } from "../util/zod-extras.js"
 import { calculatePrice } from "../util/calculate-price.js"
 import { prisma } from "../prisma/client.js"
 import { getWLBenefits } from "../util/get-wl-benefits.js"
@@ -15,8 +11,8 @@ export const getPriceEndpoint = defaultEndpointsFactory.build({
   description:
     "Gets the price of BRC20 tokens in sats based on the fee rate and amount",
   input: z.object({
-    amount: validBuyAmount,
-    feeRate: validFeeRate,
+    amount: z.string().transform((value) => Number(value)),
+    feeRate: z.string().transform((value) => Number(value)),
     address: validBTCAddress,
   }),
   output: z.object({

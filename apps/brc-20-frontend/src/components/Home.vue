@@ -16,8 +16,8 @@ type IFee = {
 const address = ref("");
 const quantity = ref(0);
 const selectedFee = ref<IFee | null>(null);
-const customFee = ref();
-const { data: feesData, isSuccess } = useQuery<{
+const customFee = ref<number>();
+const feesQ = useQuery<{
   fastestFee: number,
   halfHourFee: number,
   hourFee: number,
@@ -32,7 +32,7 @@ const { data: feesData, isSuccess } = useQuery<{
 })
 
 const fees = ref<IFee[]>([])
-watch(feesData, (feesResponse) => {
+watch(feesQ.data, (feesResponse) => {
   if (feesResponse && !customFee.value) {
     customFee.value = feesResponse.fastestFee
     fees.value = [
@@ -52,6 +52,7 @@ watch(feesData, (feesResponse) => {
         time: "Choose fee"
       }
     ]
+    selectedFee.value = fees.value[1];
   }
 })
 
@@ -86,6 +87,36 @@ const isWhiteList = computed(() => {
   })
   return !wlCheckDone.value || claimStatus.value;
 })
+
+const priceQ = useQuery({
+  queryKey: ['price', selectedFee, quantity, customFee],
+  queryFn: () => {
+    if (!selectedFee.value || !quantity.value || !address.value) {
+      return
+    }
+    const feeRate = String(selectedFee.value.name === 'Custom' ? customFee.value : selectedFee.value.value)
+    return client.provide('get', '/price', {
+      feeRate,
+      amount: String(quantity.value),
+      address: address.value,
+    })
+  },
+  enabled: () => quantity.value >= 1000,
+})
+
+const priceData = computed(() => {
+  return priceQ.data.value?.status !== 'success' ? null : priceQ.data.value.data
+})
+
+const checkWL = async () => {
+  const claimData = await checkClaim()
+  if (claimData.data?.status === 'success') {
+    quantity.value = 1000
+    if (claimData.data.data.status === 'GiveawayWinner') {
+      quantity.value = 2000
+    }
+  }
+}
 
 </script>
 <template>
@@ -138,7 +169,7 @@ const isWhiteList = computed(() => {
           <p class="mt-4">If you are a Holder, please, provide the wallet address that holds 1/1 art.</p>
           <p>If you place someone else address, your tokens will be sent to another person.</p>
           <div class="flex items-center gap-6 mt-6 w-full md:w-[75%]">
-            <button class="bg-white text-black w-[30%] p-1.5 rounded-md whitespace-nowrap" @click="checkClaim()">WL
+            <button class="bg-white text-black w-[30%] p-1.5 rounded-md whitespace-nowrap" @click="checkWL()">WL
               Access</button>
             <input type="text" placeholder="Wallet address" v-model="address"
               class="border-white border-2 border-solid border-opacity-40 p-1.5 w-[70%] rounded-[10px] bg-transparent outline-none" />
@@ -173,13 +204,12 @@ const isWhiteList = computed(() => {
                   class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
               </div>
 
-              <div class="grid grid-cols-3 gap-5 mt-8">
-                <div v-if="isSuccess"
-                  class="bg-[#1D1D1D] flex flex-col items-center justify-center rounded-md p-4 cursor-pointer"
+              <div class="grid grid-cols-3 gap-5 mt-8" v-if="feesQ.isSuccess">
+                <div class="bg-[#1D1D1D] flex flex-col items-center justify-center rounded-md p-4 cursor-pointer"
                   :class="f?.value === selectedFee?.value ? 'border-2 border-white bg-[#2C2C2C]' : ''"
                   v-for="(f, i) in fees" :key="i" @click="selectedFee = f">
                   <b>{{ f.name }}</b>
-                  <span class="text-[#5a5a5a] text-center text-sm">{{ f.value }}</span>
+                  <span class="text-[#5a5a5a] text-center text-sm">{{ f.value }} sats/vByte</span>
                   <p class="mt-4 text-[#5a5a5a] text-center text-sm">{{ f.time }}</p>
                 </div>
               </div>
@@ -188,13 +218,14 @@ const isWhiteList = computed(() => {
                 <label class="mb-2">You can add a custom fee below</label>
                 <div class="w-full bg-white text-black p-2 flex items-center gap-5 rounded-md">
                   <input v-model="customFee" type="number" class="outline-none w-full" />
-                  <span>sat/vB</span>
+                  <span>sats/vByte</span>
                 </div>
               </div>
 
-              <div class="mt-8 flex flex-col gap-2 text-[#5a5a5a] text-xl">
-                <span>Network Fee: $4</span>
-                <span>Total BTC: $5.4</span>
+              <div :class="priceQ.isSuccess ? 'visible' : 'invisible'"
+                class="mt-8 flex flex-col gap-2 text-[#5a5a5a] text-xl">
+                <span>Network Fee: {{ (priceData?.minerFees || 0) / 1e8 }}</span>
+                <span>Total BTC: {{ (priceData?.total || 0) / 1e8 }}</span>
                 <span>Total USD: 0.000001</span>
               </div>
               <button class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6">MINT $NOME</button>
