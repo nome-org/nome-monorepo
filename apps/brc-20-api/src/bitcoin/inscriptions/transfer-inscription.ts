@@ -1,6 +1,7 @@
 import { Address, Signer, Tap, Tx } from "@cmdcode/tapscript"
 import { HDKey } from "@scure/bip32"
-import { TRANSFER_WEIGHT } from "../../constants.js"
+import { BASE_POSTAGE } from "../../constants.js"
+
 export const transferInscription = async ({
   key,
   utxo,
@@ -27,7 +28,8 @@ export const transferInscription = async ({
     ],
     vout: [
       {
-        value: utxo.amount - TRANSFER_WEIGHT * 2,
+        // any extra goes to the miner
+        value: BASE_POSTAGE,
         scriptPubKey: Address.toScriptPubKey(recipientAddress),
       },
     ],

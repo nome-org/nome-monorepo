@@ -31,11 +31,14 @@ export const validBuyAmount = z
   .number()
   .min(1000)
   .max(250_000)
+  .refine((value) => {
+    return value % 1000 === 0
+  })
   .describe("Valid buy amount")
 
 export const validFeeRate = z
   .number()
   .min(1)
   // crazy high fee rate, but it's a good boundary
-  .max(1000_000)
+  .max(50_000)
   .describe("Valid fee rate")

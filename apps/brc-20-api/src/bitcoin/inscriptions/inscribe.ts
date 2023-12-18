@@ -1,7 +1,7 @@
 import { Buff } from "@cmdcode/buff"
 import { keys } from "@cmdcode/crypto-tools"
 import { Address, ScriptData, Signer, Tap, Tx } from "@cmdcode/tapscript"
-import { INSCRIPTION_WEIGHT, PRICE } from "../../constants.js"
+import { PRICE } from "../../constants.js"
 
 export const buildCommitData = async ({
   file,
@@ -61,7 +61,7 @@ export const buildInscriptionTx = ({
   seckey,
   script,
   recipientAddress,
-  feeRate,
+  minerFee,
 }: {
   cblock: string
   tpubkey: string
@@ -73,12 +73,11 @@ export const buildInscriptionTx = ({
     vout: number
     amount: number
   }
-  feeRate: number
+  minerFee: number
 }) => {
   const pubkey = keys.get_pubkey(seckey, true)
 
   const tapleaf = Tap.encodeScript(script)
-  const minerFee = INSCRIPTION_WEIGHT * feeRate
 
   const txdata = Tx.create({
     vin: [
@@ -98,7 +97,8 @@ export const buildInscriptionTx = ({
     ],
     vout: [
       {
-        // TODO: this should be variable based on the size of the output * the fee rate.
+        // Postage to be used when transferring
+        // should equal BASE_POSTAGE + (TRANSFER_FEE * FEE_RATE)
         value: utxo.amount - PRICE - minerFee,
         // This is the new script that we are locking our funds to.
         scriptPubKey: Address.toScriptPubKey(recipientAddress),
