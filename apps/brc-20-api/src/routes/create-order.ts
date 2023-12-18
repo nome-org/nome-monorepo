@@ -40,6 +40,7 @@ export const createOrderEndpoint = defaultEndpointsFactory
       receiveAddress: validTaprootAddress,
       createdAt: ez.dateOut(),
       updatedAt: ez.dateOut(),
+      totalPrice: z.number().describe("Total order price in sats"),
     }),
     handler: async ({ input: { amount, receiveAddress, feeRate } }) => {
       const existingClaim = await prisma.claim.findFirst({
