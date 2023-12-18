@@ -63,6 +63,7 @@ type PostOrdersResponse = {
         receiveAddress: string;
         createdAt: string;
         updatedAt: string;
+        totalPrice: number;
     };
 } | {
     status: "error";
