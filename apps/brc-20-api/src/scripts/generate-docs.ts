@@ -20,3 +20,5 @@ await fs.writeFile(
   new URL("../../docs/openapi.yaml", import.meta.url),
   specString,
 )
+
+process.exit(0)
