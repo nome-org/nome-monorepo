@@ -4,6 +4,7 @@ import { prisma } from "../prisma/client.js"
 
 import { ClaimType } from "@prisma/client"
 import { validBTCAddress } from "../util/zod-extras.js"
+import createHttpError from "http-errors"
 export const checkClaimEndpoint = defaultEndpointsFactory.build({
   shortDescription: "Check a claim",
   description: "Checks if a claim is valid and returns the type",
@@ -22,7 +23,7 @@ export const checkClaimEndpoint = defaultEndpointsFactory.build({
       },
     })
     if (!claim) {
-      throw new Error("Claim not found")
+      throw createHttpError(404, "Claim not found")
     }
     return {
       status: claim.claimType,

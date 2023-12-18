@@ -12,6 +12,7 @@ import { prisma } from "../prisma/client.js"
 import { calculatePrice } from "../util/calculate-price.js"
 import { getPaymentAddress } from "../bitcoin/inscriptions/get-payment-address.js"
 import { getKeyForIndex } from "../bitcoin/keys/server-keys.js"
+import { ClaimType } from "@prisma/client"
 
 export const createOrderEndpoint = defaultEndpointsFactory
   .addExpressMiddleware(
@@ -50,8 +51,17 @@ export const createOrderEndpoint = defaultEndpointsFactory
         },
       })
       let claimId: number | null = null
+      let discount = 0
+      let freeAmount = 0
       if (existingClaim) {
         claimId = existingClaim.id
+        if (existingClaim.claimType === ClaimType.GiveawayWinner) {
+          freeAmount = 2000
+        }
+        if (existingClaim.claimType === ClaimType.Holder) {
+          freeAmount = 1000
+        }
+        discount = 0.2
       }
 
       const order = await prisma.order.create({
@@ -62,7 +72,12 @@ export const createOrderEndpoint = defaultEndpointsFactory
           feeRate,
         },
       })
-      const { total: totalPrice } = calculatePrice({ feeRate, amount })
+      const { total: totalPrice } = calculatePrice({
+        feeRate,
+        amount,
+        discount,
+        freeAmount,
+      })
       const key = await getKeyForIndex(order.id)
       const { inscribingAddress } = await getPaymentAddress(key, amount)
       return {

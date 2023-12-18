@@ -1,7 +1,13 @@
 import { defaultEndpointsFactory } from "express-zod-api"
 import { z } from "zod"
-import { validBuyAmount, validFeeRate } from "../util/zod-extras.js"
+import {
+  validBTCAddress,
+  validBuyAmount,
+  validFeeRate,
+} from "../util/zod-extras.js"
 import { calculatePrice } from "../util/calculate-price.js"
+import { prisma } from "../prisma/client.js"
+import { getWLBenefits } from "../util/get-wl-benefits.js"
 
 export const getPriceEndpoint = defaultEndpointsFactory.build({
   method: "get",
@@ -11,6 +17,7 @@ export const getPriceEndpoint = defaultEndpointsFactory.build({
   input: z.object({
     amount: validBuyAmount,
     feeRate: validFeeRate,
+    address: validBTCAddress,
   }),
   output: z.object({
     brc20Price: z.number(),
@@ -18,5 +25,20 @@ export const getPriceEndpoint = defaultEndpointsFactory.build({
     basePostage: z.number(),
     total: z.number(),
   }),
-  handler: async ({ input }) => calculatePrice(input),
+  handler: async ({ input: { amount, feeRate, address } }) => {
+    const claim = await prisma.claim.findFirst({
+      where: {
+        ordinalAddress: address,
+      },
+    })
+
+    const { discount, freeAmount } = getWLBenefits(claim)
+
+    return calculatePrice({
+      amount,
+      feeRate,
+      discount,
+      freeAmount,
+    })
+  },
 })

@@ -1,37 +1,92 @@
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch, computed } from "vue";
 
 import Footer from "./shared/Footer.vue";
 import Header from "./shared/Header.vue";
+import { useQuery } from '@tanstack/vue-query'
+import { client } from "../api/client";
 
 type IFee = {
   name: string,
-  value: string,
+  value: number,
   time: string
 };
 
 const address = ref("");
 const quantity = ref(0);
 const selectedFee = ref<IFee | null>(null);
-const customFee = ref(120);
-const fees: IFee[] = [
-  {
-    name: "Economy",
-    value: "78 sats/vB",
-    time: "Multiple days"
+const customFee = ref();
+const { data: feesData, isSuccess } = useQuery<{
+  fastestFee: number,
+  halfHourFee: number,
+  hourFee: number,
+  economyFee: number,
+  minimumFee: number
+}>({
+  queryKey: ['fees'],
+  queryFn: async () => {
+    return fetch(`${import.meta.env.VITE_APP_MEMPOOL_URL}/api/v1/fees/recommended`)
+      .then(res => res.json())
   },
-  {
-    name: "Normal",
-    value: "643 sats/vB",
-    time: "1 hour"
-  },
-  {
-    name: "Custom",
-    value: "120 sats/vB",
-    time: "Choose fee"
+})
+
+const fees = ref<IFee[]>([])
+watch(feesData, (feesResponse) => {
+  if (feesResponse && !customFee.value) {
+    customFee.value = feesResponse.fastestFee
+    fees.value = [
+      {
+        name: "Economy",
+        value: feesResponse.economyFee,
+        time: "Multiple days"
+      },
+      {
+        name: "Normal",
+        value: feesResponse.hourFee,
+        time: "1 hour"
+      },
+      {
+        name: "Custom",
+        value: feesResponse.fastestFee,
+        time: "Choose fee"
+      }
+    ]
   }
-]
+})
+
+const { data: wlData, refetch: checkClaim, isSuccess: wlCheckDone } = useQuery({
+  queryKey: ['wl check', address],
+  queryFn: () => client.provide('get', '/check-claim', {
+    address: address.value,
+  }),
+  enabled: false
+})
+
+const claimStatus = computed(() => {
+  return wlData.value?.status === 'success' ? wlData.value.data.status : null
+})
+
+const eligibleFreeAmount = computed(() => {
+  switch (claimStatus.value) {
+    case 'GiveawayWinner':
+      return 2000
+    case 'Holder':
+      return 1000
+    default:
+      return 0
+  }
+})
+
+const isWhiteList = computed(() => {
+  console.log({
+    wlData: wlData.value,
+    wlCheckDone: wlCheckDone.value,
+    claimStatus: claimStatus.value
+  })
+  return !wlCheckDone.value || claimStatus.value;
+})
+
 </script>
 <template>
   <div class="">
@@ -83,20 +138,24 @@ const fees: IFee[] = [
           <p class="mt-4">If you are a Holder, please, provide the wallet address that holds 1/1 art.</p>
           <p>If you place someone else address, your tokens will be sent to another person.</p>
           <div class="flex items-center gap-6 mt-6 w-full md:w-[75%]">
-            <button class="bg-white text-black w-[30%] p-1.5 rounded-md whitespace-nowrap">WL Access</button>
+            <button class="bg-white text-black w-[30%] p-1.5 rounded-md whitespace-nowrap" @click="checkClaim()">WL
+              Access</button>
             <input type="text" placeholder="Wallet address" v-model="address"
               class="border-white border-2 border-solid border-opacity-40 p-1.5 w-[70%] rounded-[10px] bg-transparent outline-none" />
           </div>
-          <p class="mt-4 text-[#5A5A5A] text-sm">Sorry your wallet is not registered for Whitelist, public mint would be
+          <p class="mt-4 text-[#5A5A5A] text-sm" :class="!isWhiteList ? 'visible' : 'invisible'">Sorry your wallet is not
+            registered for Whitelist, public mint would be
             open soon</p>
         </div>
 
         <div class="border-t border-solid border-opacity-20 border-white pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6">
             <div class="mt-10">
-              <span class="text-[#51F55C] text-xl">Congratulations!</span>
-              <p class="text-xl">You claimed 1,000 free NOME tokens</p>
-              <p class="mt-4 text-[#5A5A5A]">To receive them, please, proceed with the Network fees payment below.</p>
+              <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
+                <span class="text-[#51F55C] text-xl">Congratulations!</span>
+                <p class="text-xl">You claimed {{ eligibleFreeAmount }} free NOME tokens</p>
+                <p class="mt-4 text-[#5A5A5A]">To receive them, please, proceed with the Network fees payment below.</p>
+              </div>
               <img class="my-8 w-full object-fill" src="/chart.png" alt="Chart" />
               <div class="flex items-center justify-center">
                 <button class="text-black bg-white w-[60%] text-xl rounded-lg p-1">Post on Twitter</button>
@@ -115,7 +174,8 @@ const fees: IFee[] = [
               </div>
 
               <div class="grid grid-cols-3 gap-5 mt-8">
-                <div class="bg-[#1D1D1D] flex flex-col items-center justify-center rounded-md p-4 cursor-pointer"
+                <div v-if="isSuccess"
+                  class="bg-[#1D1D1D] flex flex-col items-center justify-center rounded-md p-4 cursor-pointer"
                   :class="f?.value === selectedFee?.value ? 'border-2 border-white bg-[#2C2C2C]' : ''"
                   v-for="(f, i) in fees" :key="i" @click="selectedFee = f">
                   <b>{{ f.name }}</b>
@@ -151,7 +211,6 @@ const fees: IFee[] = [
       </main>
     </div>
     <Footer />
-    <!--    <Footer />-->
   </div>
 </template>
 

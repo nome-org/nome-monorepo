@@ -8,13 +8,19 @@ import {
 export const calculatePrice = ({
   feeRate,
   amount,
+  discount = 0,
+  freeAmount = 0,
 }: {
   feeRate: number
   amount: number
+  discount?: number
+  freeAmount?: number
 }) => {
   const minerFees = feeRate * (TRANSFER_WEIGHT + INSCRIPTION_WEIGHT)
-  const brc20Price = (PRICE / 1000) * amount
-
+  let brc20Price = (PRICE / 1000) * Math.min(amount - freeAmount, 0)
+  if (discount > 0) {
+    brc20Price = brc20Price * (1 - discount)
+  }
   return {
     brc20Price,
     minerFees,
