@@ -4,8 +4,9 @@ import { ref, watch, computed } from "vue";
 
 import Footer from "./shared/Footer.vue";
 import Header from "./shared/Header.vue";
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useMutation } from '@tanstack/vue-query'
 import { client } from "../api/client";
+import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
 
 type IFee = {
   name: string,
@@ -88,15 +89,21 @@ const isWhiteList = computed(() => {
   return !wlCheckDone.value || claimStatus.value;
 })
 
+const feeRate = computed(() => {
+  return (
+    selectedFee.value?.name === 'Custom'
+      ? customFee.value
+      : selectedFee.value?.value)
+})
+
 const priceQ = useQuery({
   queryKey: ['price', selectedFee, quantity, customFee],
   queryFn: () => {
     if (!selectedFee.value || !quantity.value || !address.value) {
       return
     }
-    const feeRate = String(selectedFee.value.name === 'Custom' ? customFee.value : selectedFee.value.value)
     return client.provide('get', '/price', {
-      feeRate,
+      feeRate: String(feeRate.value),
       amount: String(quantity.value),
       address: address.value,
     })
@@ -117,6 +124,65 @@ const checkWL = async () => {
     }
   }
 }
+
+const paymentTx = ref('')
+
+const createOrderM = useMutation({
+  mutationKey: ['createOrder', quantity, address, feeRate],
+  mutationFn: async () => {
+    if (!address.value || !quantity.value || !feeRate.value) {
+      return
+    }
+    const data = await client.provide('post', '/orders', {
+      receiveAddress: address.value,
+      amount: quantity.value,
+      feeRate: feeRate.value,
+    })
+
+    if (data.status === 'success') {
+      const {
+        paymentAddress,
+        totalPrice
+      } = data.data
+
+      const networkType = import.meta.env.VITE_APP_BITCOIN_NETWORK === 'testnet'
+        ? BitcoinNetworkType.Testnet
+        : BitcoinNetworkType.Mainnet;
+      getAddress({
+        payload: {
+          message: `We'll need this address to pay for your order.`,
+          network: {
+            type: networkType,
+          },
+          purposes: [AddressPurpose.Payment]
+        },
+        onFinish(address) {
+          sendBtcTransaction({
+            payload: {
+              network: {
+                type: networkType
+              },
+              recipients: [
+                {
+                  address: paymentAddress,
+                  amountSats: BigInt(totalPrice)
+                }
+              ],
+              senderAddress: address.addresses[0].address
+            },
+            onCancel: () => {
+              console.log('cancelled')
+            },
+            onFinish: (tx) => {
+              paymentTx.value = `${import.meta.env.VITE_APP_MEMPOOL_URL}/tx/${tx}`
+            }
+          })
+        },
+        onCancel() { }
+      })
+    }
+  }
+})
 
 </script>
 <template>
@@ -228,17 +294,15 @@ const checkWL = async () => {
                 <span>Total BTC: {{ (priceData?.total || 0) / 1e8 }}</span>
                 <span>Total USD: 0.000001</span>
               </div>
-              <button class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6">MINT $NOME</button>
-              <p class="text-center text-xl text-[#5a5a5a] mt-4">
-                Link to the <a href="" target="_blank" rel="noreferrer noopener"
+              <button class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6" @click="createOrderM.mutate()">MINT
+                $NOME</button>
+              <p class="text-center text-xl text-[#5a5a5a] mt-4" v-if="paymentTx">
+                Link to the <a :href="paymentTx" target="_blank" rel="noreferrer noopener"
                   class="underline underline-offset-8 hover:underline">mempool</a>
               </p>
             </div>
           </div>
         </div>
-
-
-
       </main>
     </div>
     <Footer />
