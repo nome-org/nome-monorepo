@@ -1,7 +1,13 @@
-import { Routing, defaultEndpointsFactory } from "express-zod-api"
+import {
+  DependsOnMethod,
+  Routing,
+  defaultEndpointsFactory,
+} from "express-zod-api"
 import { checkClaimEndpoint } from "./routes/check-claim.js"
 import z from "zod"
 import { getPriceEndpoint } from "./routes/get-price.js"
+import { createOrderEndpoint } from "./routes/create-order.js"
+import { getOrderEndpoint } from "./routes/get-order.js"
 
 export const routing: Routing = {
   "": defaultEndpointsFactory.build({
@@ -18,4 +24,10 @@ export const routing: Routing = {
   }),
   "check-claim": checkClaimEndpoint,
   price: getPriceEndpoint,
+  orders: {
+    "": new DependsOnMethod({
+      post: createOrderEndpoint,
+    }),
+    ":id": getOrderEndpoint,
+  },
 }

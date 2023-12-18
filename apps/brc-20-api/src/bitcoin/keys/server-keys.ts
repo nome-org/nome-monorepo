@@ -37,3 +37,9 @@ export const getKeyByIndex = async (
   const derivationPath = await getDerivationPath(keyIndex, taproot)
   return hdKey.derive(derivationPath).deriveChild(0).deriveChild(keyIndex)
 }
+
+export const getKeyForIndex = async (index: number) => {
+  const hdKey = await getHDKey(process.env.SEED_PHRASE!)
+
+  return await getKeyByIndex(hdKey, index)
+}
