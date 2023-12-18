@@ -10,23 +10,53 @@ datasource db {
 }
 
 // Enum representing different statuses a claim can have.
-enum ClaimStatus {
+enum OrderStatus {
   UNPAID // The claim has not been paid yet.
+  EXPIRED // The claim has expired.
   PENDING_PAYMENT // Payment for the claim is pending.
   INSCRIBING_TRANSFER // Inscribing the brc20 transfer.
   TRANSFERRING // The transfer of the brc20 is ongoing.
   COMPLETE // The claim has been completed.
 }
 
-// Model representing a Claim in the system.
+// claim type 
+// WL: 20% discount
+// claim type 
+// WL: 20% discount ⬇️
+//  giveaway winners: 2000 free,
+//  holder WL: 1000 free,
+//  non-holder WL: 0 free,
+// public: full price
+// public holder: 1000 free and after full price
+
+enum ClaimType {
+  Holder // The claim is for a white list holder.
+  GiveawayWinner // The claim is for a giveaway winner.
+  WhiteList // The claim is for a non-holder white list.
+}
+
+model Order {
+  id             Int         @id @default(autoincrement())
+  status         OrderStatus @default(UNPAID)
+  receiveAddress String // The address associated with the claim.
+  // The claim associated with the order, if whitelist.
+  claimId        Int?
+  claim          Claim?      @relation(fields: [claimId], references: [id])
+  amount         Int
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  paymentTxId    String?
+  transferTxId   String?
+  feeRate        Int         @default(0)
+}
+
 model Claim {
-  id             Int         @id @default(autoincrement()) // Unique identifier for each claim.
-  status         ClaimStatus @default(UNPAID) // Current status of the claim.
+  id             Int       @id @default(autoincrement())
   ordinalAddress String // The address associated with the claim.
-  eligibleAmount Int // The amount that is eligible to be claimed.
+  freeAmount     Int // The amount of free tokens that can be claimed.
   claimedAmount  Int // The amount that has been claimed.
-  createdAt      DateTime    @default(now()) // The date and time when the claim was created.
-  updatedAt      DateTime    @updatedAt // The date and time when the claim was last updated.
-  paymentTxId    String? // Transaction ID for the payment related to this claim, if any.
-  transferTxId   String? // Transaction ID for the transfer related to this claim, if any.
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  claimType      ClaimType
+  orders         Order[]
 }
