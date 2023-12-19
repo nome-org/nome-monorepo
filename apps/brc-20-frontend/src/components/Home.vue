@@ -203,7 +203,7 @@ const createOrderM = useMutation({
           </div>
         </div>
         <div class="w-full lg:w-[90%] xl:w-[80%] 2xl:w-[57%] text-base">
-          <span class="block mb-6">
+          <span class="block mb-12">
             BRC-20 is an experimental standard for fungible tokens on the Bitcoin blockchain. BRC-20 tokens unlock new
             capabilities for the Bitcoin network, such as their use in DeFi protocols and blockchain applications.
           </span>
@@ -216,7 +216,7 @@ const createOrderM = useMutation({
           <li>Whitelist: 2k spots</li>
           <li>Price: $0.005</li>
 
-          <span class="block mt-6">
+          <span class="block mt-12">
             <a href="" target="_blank" rel="noreferrer noopener" class="font-bold text-[#A50EA5]">Whitelist form.</a>
             There are limited tokens available in a first-come, first-serve mint. However, a whitelist guarantees
             eligibility and offers a 20% discount.
@@ -234,8 +234,8 @@ const createOrderM = useMutation({
         <div class="border-t border-solid border-opacity-20 border-white pt-2 md:mt-8 mt-12 w-full relative">
           <p class="mt-4">If you are a Holder, please, provide the wallet address that holds 1/1 art.</p>
           <p>If you place someone else address, your tokens will be sent to another person.</p>
-          <div class="flex items-center gap-6 mt-6 w-full md:w-[75%]">
-            <button class="bg-white text-black w-[30%] p-1.5 rounded-md whitespace-nowrap" @click="checkWL()">WL
+          <div class="flex items-center gap-6 mt-6 w-full lg:w-[60%]">
+            <button class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap" @click="checkWL()">WL
               Access</button>
             <input type="text" placeholder="Wallet address" v-model="address"
               class="border-white border-2 border-solid border-opacity-40 p-1.5 w-[70%] rounded-[10px] bg-transparent outline-none" />
@@ -246,7 +246,7 @@ const createOrderM = useMutation({
         </div>
 
         <div class="border-t border-solid border-opacity-20 border-white pt-2 md:mt-8 mt-12 mb-12 w-full relative">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
             <div class="mt-10">
               <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
                 <span class="text-[#51F55C] text-xl">Congratulations!</span>
@@ -259,7 +259,7 @@ const createOrderM = useMutation({
               </div>
             </div>
 
-            <div class="mx-auto w-[90%]">
+            <div class="w-full">
               <div class="flex items-center justify-center">
                 <img src="/stats.png" class="" alt="Stats" />
               </div>

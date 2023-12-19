@@ -7,6 +7,7 @@
         <div class="absolute -top-[3.25rem] right-0 md:left-auto text-2xl md:right-56 text-center">
           <div class="transition-all duration-75 hover:italic underline-offset-4 sm:underline-offset-8 hover:underline">
             <a class="mx-0 mt-6 mb-20 text-white underline text-[1.4rem]" target="_blank"
+              rel="noreferrer noopener"
               href="https://twitter.com/nome_nft">
               Twitter
             </a>
@@ -15,6 +16,7 @@
           <div
             class="transition-all duration-75 hover:italic underline-offset-4 sm:underline-offset-8 hover:underline mt-3">
             <a class="mx-0 mt-6 mb-20 text-white underline text-[1.4rem]" target="_blank"
+              rel="noreferrer noopener"
               href="https://discord.gg/ffZKc2TfN4">Discord</a>
           </div>
         </div>
@@ -26,6 +28,8 @@
         <img src="../../assets/images/xverse_logo_white.png" class="max-h-[1.1rem]" alt="">
       </div>
       <a href="nome.wtf"
+      target="_blank"
+      rel="noreferrer noopener"
         class="text-white underline text-[20px] leading-[16px] pb-[25px] transition-all duration-75 hover:italic underline-offset-4 sm:underline-offset-8 hover:underline absolute bottom-[25px] right-0">
         nome.wtf
       </a>
