@@ -1,7 +1,7 @@
 import { AsyncTask, SimpleIntervalJob } from "toad-scheduler"
 import { logger } from "../server.js"
 import { prisma } from "../prisma/client.js"
-import { OrderStatus } from "@prisma/client"
+import { Claim, Order, OrderStatus } from "@prisma/client"
 import { mempoolClient, postTx } from "../bitcoin/mempool-client.js"
 
 import {
@@ -21,25 +21,75 @@ import {
 import { INSCRIPTION_WEIGHT } from "../constants.js"
 import { calculatePrice } from "../util/calculate-price.js"
 import { getWLBenefits } from "../util/get-wl-benefits.js"
+import { HDKey } from "@scure/bip32"
+import { AddressTxsUtxo } from "@mempool/mempool.js/lib/interfaces/bitcoin/addresses.js"
+
+async function fetchPendingOrders() {
+  return prisma.order.findMany({
+    where: {
+      status: OrderStatus.UNPAID,
+    },
+    include: {
+      claim: true,
+    },
+  })
+}
+
+async function inscribeTransfer({
+  firstKey,
+  order,
+  orderKey,
+  paymentUTXO,
+}: {
+  order: Order & { claim: Claim | null }
+  firstKey: HDKey
+  orderKey: HDKey
+  paymentUTXO: AddressTxsUtxo
+}) {
+  const jsonFile = buildTransferJSON(order.amount)
+  const { cblock, script, seckey, tpubkey } = await buildCommitData({
+    file: jsonFile,
+    secret: orderKey.privateKey!,
+  })
+  const taprootAddress = await getTaprootAddress(firstKey)
+
+  const { discount, freeAmount } = getWLBenefits(order.claim)
+
+  const priceInfo = calculatePrice({
+    amount: order.amount,
+    feeRate: order.feeRate,
+    discount,
+    freeAmount,
+  })
+
+  const { txHash: inscribeTxHash, txdata: inscribeTxData } = buildInscriptionTx(
+    {
+      utxo: paymentUTXO,
+      cblock,
+      recipientAddress: taprootAddress!,
+      minerFee: order.feeRate * INSCRIPTION_WEIGHT,
+      script,
+      seckey,
+      tpubkey,
+      price: priceInfo.brc20Price,
+    },
+  )
+  await postTx(inscribeTxHash.hex)
+  return inscribeTxData
+}
 
 const watchBuyTxsTask = new AsyncTask(
   "watchBuyTxsTask",
   async () => {
-    const pendingOrders = await prisma.order.findMany({
-      where: {
-        status: {
-          in: [OrderStatus.UNPAID],
-        },
-      },
-      include: {
-        claim: true,
-      },
-    })
-
+    const pendingOrders = await fetchPendingOrders()
     for (const order of pendingOrders) {
       logger.info(`Processing order ${order.id}`)
-      const key = await getKeyForIndex(order.id)
-      const { inscribingAddress } = await getPaymentAddress(key, order.amount)
+      const orderKey = await getKeyForIndex(order.id)
+      const firstKey = await getKeyForIndex(0)
+      const { inscribingAddress } = await getPaymentAddress(
+        orderKey,
+        order.amount,
+      )
       const utxos = await mempoolClient.bitcoin.addresses.getAddressTxsUtxo({
         address: inscribingAddress,
       })
@@ -47,39 +97,19 @@ const watchBuyTxsTask = new AsyncTask(
       if (utxos.length) {
         logger.info(`Found ${utxos.length} utxos for order ${order.id}`)
         const [utxo] = utxos
-        const jsonFile = buildTransferJSON(order.amount)
-        const { cblock, script, seckey, tpubkey } = await buildCommitData({
-          file: jsonFile,
-          secret: key.privateKey!,
-        })
-        const taprootAddress = await getTaprootAddress(key)
-
-        const { discount, freeAmount } = getWLBenefits(order.claim)
-
-        const priceInfo = calculatePrice({
-          amount: order.amount,
-          feeRate: order.feeRate,
-          discount,
-          freeAmount,
+        const inscribeTxData = await inscribeTransfer({
+          firstKey,
+          order,
+          orderKey,
+          paymentUTXO: utxo,
         })
 
-        const { txHash: inscribeTxHash, txdata: inscribeTxData } =
-          buildInscriptionTx({
-            utxo,
-            cblock,
-            recipientAddress: taprootAddress!,
-            minerFee: order.feeRate * INSCRIPTION_WEIGHT,
-            script,
-            seckey,
-            tpubkey,
-            price: priceInfo.brc20Price,
-          })
-        let txid = await postTx(inscribeTxHash.hex)
+        let txid = Tx.util.getTxid(inscribeTxData)
 
         logger.info(`Inscription txid: ${txid}`)
 
         const transferTx = await transferInscription({
-          key,
+          key: firstKey,
           recipientAddress: order.receiveAddress,
           utxo: {
             txid: Tx.util.getTxid(inscribeTxData),
