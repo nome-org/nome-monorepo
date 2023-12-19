@@ -11,7 +11,7 @@ export const transferInscription = async ({
   utxo: {
     txid: string
     vout: number
-    amount: number
+    value: number
   }
   recipientAddress: string
 }) => {
@@ -21,7 +21,7 @@ export const transferInscription = async ({
         txid: utxo.txid,
         vout: utxo.vout,
         prevout: {
-          value: utxo.amount,
+          value: utxo.value,
           scriptPubKey: ["OP_1", Tap.getPubKey(key.publicKey!)[0]],
         },
       },

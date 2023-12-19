@@ -1,7 +1,6 @@
 import { Buff } from "@cmdcode/buff"
 import { keys } from "@cmdcode/crypto-tools"
 import { Address, ScriptData, Signer, Tap, Tx } from "@cmdcode/tapscript"
-import { PRICE } from "../../constants.js"
 
 export const buildCommitData = async ({
   file,
@@ -62,6 +61,7 @@ export const buildInscriptionTx = ({
   script,
   recipientAddress,
   minerFee,
+  price,
 }: {
   cblock: string
   tpubkey: string
@@ -71,9 +71,10 @@ export const buildInscriptionTx = ({
   utxo: {
     txid: string
     vout: number
-    amount: number
+    value: number
   }
   minerFee: number
+  price: number
 }) => {
   const pubkey = keys.get_pubkey(seckey, true)
 
@@ -89,7 +90,7 @@ export const buildInscriptionTx = ({
         // Also include the value and script of that output.
         prevout: {
           // Feel free to change this if you sent a different amount.
-          value: utxo.amount,
+          value: utxo.value,
           // This is what our address looks like in script form.
           scriptPubKey: ["OP_1", tpubkey],
         },
@@ -99,16 +100,19 @@ export const buildInscriptionTx = ({
       {
         // Postage to be used when transferring
         // should equal BASE_POSTAGE + (TRANSFER_FEE * FEE_RATE)
-        value: utxo.amount - PRICE - minerFee,
+        value: utxo.value - price - minerFee,
         // This is the new script that we are locking our funds to.
         scriptPubKey: Address.toScriptPubKey(recipientAddress),
       },
-      {
-        value: PRICE,
-        scriptPubKey: Address.toScriptPubKey(process.env.TREASURY_ADDRESS!),
-      },
     ],
   })
+
+  if (price) {
+    txdata.vout.push({
+      value: price,
+      scriptPubKey: Address.toScriptPubKey(process.env.TREASURY_ADDRESS!),
+    })
+  }
 
   // For this example, we are signing for input 0 of our transaction,
   // using the untweaked secret key. We are also extending the signature

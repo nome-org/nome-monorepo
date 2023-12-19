@@ -272,7 +272,7 @@ const createOrderM = useMutation({
 
               <div class="grid grid-cols-3 gap-5 mt-8" v-if="feesQ.isSuccess">
                 <div class="bg-[#1D1D1D] flex flex-col items-center justify-center rounded-md p-4 cursor-pointer"
-                  :class="f?.value === selectedFee?.value ? 'border-2 border-white bg-[#2C2C2C]' : ''"
+                  :class="f?.name === selectedFee?.name ? 'border-2 border-white bg-[#2C2C2C]' : ''"
                   v-for="(f, i) in fees" :key="i" @click="selectedFee = f">
                   <b>{{ f.name }}</b>
                   <span class="text-[#5a5a5a] text-center text-sm">{{ f.value }} sats/vByte</span>
