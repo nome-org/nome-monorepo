@@ -114,6 +114,6 @@ const watchBuyTxsTask = new AsyncTask(
 )
 
 export const watchBuyTxsJob = new SimpleIntervalJob(
-  { minutes: 1 },
+  { minutes: 3 },
   watchBuyTxsTask,
 )
