@@ -53,7 +53,9 @@ async function inscribeTransfer({
   })
   const taprootAddress = await getTaprootAddress(firstKey)
 
-  const { discount, freeAmount } = getWLBenefits(order.claim)
+  const { discount, freeAmount } = await getWLBenefits(
+    order.claim && { ...order.claim, orders: [order] },
+  )
 
   const priceInfo = calculatePrice({
     amount: order.amount,
@@ -130,7 +132,7 @@ const watchBuyTxsTask = new AsyncTask(
             data: {
               paymentTxId: utxos[0].txid,
               transferTxId: txid,
-              status: OrderStatus.TRANSFERRING,
+              status: OrderStatus.COMPLETE,
             },
           })
           logger.info(`Completed processing order ${order.id}`)

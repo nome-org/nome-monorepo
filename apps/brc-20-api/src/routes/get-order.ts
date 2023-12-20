@@ -2,6 +2,7 @@ import { defaultEndpointsFactory, ez } from "express-zod-api"
 import { z } from "zod"
 import {
   idSchema,
+  validBTCAddress,
   validBuyAmount,
   validFeeRate,
   validTaprootAddress,
@@ -29,7 +30,7 @@ export const getOrderEndpoint = defaultEndpointsFactory.build({
     paymentAddress: validTaprootAddress,
     paymentTxId: z.nullable(z.string()),
     transferTxId: z.nullable(z.string()),
-    receiveAddress: validTaprootAddress,
+    receiveAddress: validBTCAddress,
   }),
   async handler({ input: { id } }) {
     const order = await prisma.order.findFirst({

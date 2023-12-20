@@ -58,7 +58,7 @@ watch(feesQ.data, (feesResponse) => {
   }
 })
 
-const { data: wlData, refetch: checkClaim, isSuccess: wlCheckDone } = useQuery({
+const { data: wlData, refetch: checkClaim } = useQuery({
   queryKey: ['wl check', address],
   queryFn: () => client.provide('get', '/check-claim', {
     address: address.value,
@@ -66,28 +66,10 @@ const { data: wlData, refetch: checkClaim, isSuccess: wlCheckDone } = useQuery({
   enabled: false
 })
 
-const claimStatus = computed(() => {
-  return wlData.value?.status === 'success' ? wlData.value.data.status : null
-})
-
-const eligibleFreeAmount = computed(() => {
-  switch (claimStatus.value) {
-    case 'GiveawayWinner':
-      return 2000
-    case 'Holder':
-      return 1000
-    default:
-      return 0
-  }
-})
+const eligibleFreeAmount = ref(0)
 
 const isWhiteList = computed(() => {
-  console.log({
-    wlData: wlData.value,
-    wlCheckDone: wlCheckDone.value,
-    claimStatus: claimStatus.value
-  })
-  return !wlCheckDone.value || claimStatus.value;
+  return wlData.value?.status === "success" && wlData.value.data.isWhitelistOpen
 })
 
 const feeRate = computed(() => {
@@ -119,10 +101,9 @@ const priceData = computed(() => {
 const checkWL = async () => {
   const claimData = await checkClaim()
   if (claimData.data?.status === 'success') {
-    quantity.value = 1000
-    if (claimData.data.data.status === 'GiveawayWinner') {
-      quantity.value = 2000
-    }
+    const { freeAmount } = claimData.data.data
+    quantity.value = freeAmount
+    eligibleFreeAmount.value = freeAmount
   }
 }
 

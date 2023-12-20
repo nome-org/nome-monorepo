@@ -13,9 +13,6 @@ datasource db {
 enum OrderStatus {
   UNPAID // The claim has not been paid yet.
   EXPIRED // The claim has expired.
-  PENDING_PAYMENT // Payment for the claim is pending.
-  INSCRIBING_TRANSFER // Inscribing the brc20 transfer.
-  TRANSFERRING // The transfer of the brc20 is ongoing.
   COMPLETE // The claim has been completed.
 }
 
@@ -28,12 +25,6 @@ enum OrderStatus {
 //  non-holder WL: 0 free,
 // public: full price
 // public holder: 1000 free and after full price
-
-enum ClaimType {
-  Holder // The claim is for a white list holder.
-  GiveawayWinner // The claim is for a giveaway winner.
-  WhiteList // The claim is for a non-holder white list.
-}
 
 model Order {
   id             Int         @id @default(autoincrement())
@@ -51,12 +42,11 @@ model Order {
 }
 
 model Claim {
-  id             Int       @id @default(autoincrement())
-  ordinalAddress String // The address associated with the claim.
-  freeAmount     Int // The amount of free tokens that can be claimed.
-  claimedAmount  Int // The amount that has been claimed.
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  claimType      ClaimType
+  id             Int      @id @default(autoincrement())
+  ordinalAddress String
+  freeAmount     Int      @default(0)
+  claimedAmount  Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
   orders         Order[]
 }

@@ -19,7 +19,8 @@ type GetCheckClaimInput = {
 type GetCheckClaimResponse = {
     status: "success";
     data: {
-        status: "Holder" | "GiveawayWinner" | "WhiteList";
+        freeAmount: number;
+        isWhitelistOpen: boolean;
     };
 } | {
     status: "error";
@@ -80,7 +81,7 @@ type GetOrdersIdResponse = {
     status: "success";
     data: {
         id: number;
-        status: "UNPAID" | "EXPIRED" | "PENDING_PAYMENT" | "INSCRIBING_TRANSFER" | "TRANSFERRING" | "COMPLETE";
+        status: "UNPAID" | "EXPIRED" | "COMPLETE";
         amount: number;
         feeRate: number;
         createdAt: string;

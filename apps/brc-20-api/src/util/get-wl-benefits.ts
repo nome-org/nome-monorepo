@@ -1,21 +1,17 @@
-import { Claim, ClaimType } from "@prisma/client"
+import { Claim, Order } from "@prisma/client"
+import { isWhitelistOpen } from "./isWhiteListOpen.js"
 
-export const getWLBenefits = (claim: Claim | null) => {
+export const getWLBenefits = async (
+  claim: (Claim & { orders: Order[] }) | null,
+) => {
   let discount = 0
   let freeAmount = 0
-  if (!claim) {
-    return {
-      discount,
-      freeAmount,
-    }
+  const wlOpen = await isWhitelistOpen()
+  if (claim && wlOpen) {
+    freeAmount = claim.freeAmount - claim.claimedAmount
+
+    discount = 0.2
   }
-  if (claim.claimType === ClaimType.GiveawayWinner) {
-    freeAmount = 2000
-  }
-  if (claim.claimType === ClaimType.Holder) {
-    freeAmount = 1000
-  }
-  discount = 0.2
 
   return {
     discount,

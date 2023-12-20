@@ -26,9 +26,12 @@ export const getPriceEndpoint = defaultEndpointsFactory.build({
       where: {
         ordinalAddress: address,
       },
+      include: {
+        orders: true,
+      },
     })
 
-    const { discount, freeAmount } = getWLBenefits(claim)
+    const { discount, freeAmount } = await getWLBenefits(claim)
 
     return calculatePrice({
       amount,
