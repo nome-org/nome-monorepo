@@ -7,6 +7,7 @@ import Header from "./shared/Header.vue";
 import { useQuery, useMutation } from '@tanstack/vue-query'
 import { client } from "../api/client";
 import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
+import FeeRate from "./FeeRate.vue";
 
 type IFee = {
   name: string,
@@ -235,7 +236,8 @@ const createOrderM = useMutation({
           <p class="mt-4">If you are a Holder, please, provide the wallet address that holds 1/1 art.</p>
           <p>If you place someone else address, your tokens will be sent to another person.</p>
           <div class="flex items-center gap-6 mt-6 w-full lg:w-[60%]">
-            <button class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap" @click="checkWL()">WL
+            <button class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap"
+              @click="checkWL()">WL
               Access</button>
             <input type="text" placeholder="Wallet address" v-model="address"
               class="border-white border-2 border-solid border-opacity-40 p-1.5 w-[70%] rounded-[10px] bg-transparent outline-none" />
@@ -270,14 +272,13 @@ const createOrderM = useMutation({
                   class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
               </div>
 
-              <div class="grid grid-cols-3 gap-5 mt-8" v-if="feesQ.isSuccess">
-                <div class="bg-[#1D1D1D] flex flex-col items-center justify-center rounded-md p-4 cursor-pointer"
-                  :class="f?.name === selectedFee?.name ? 'border-2 border-white bg-[#2C2C2C]' : ''"
-                  v-for="(f, i) in fees" :key="i" @click="selectedFee = f">
-                  <b>{{ f.name }}</b>
-                  <span class="text-[#5a5a5a] text-center text-sm">{{ f.value }} sats/vByte</span>
-                  <p class="mt-4 text-[#5a5a5a] text-center text-sm">{{ f.time }}</p>
-                </div>
+              <div class="grid grid-cols-3 gap-5 mt-8">
+                <FeeRate label="Economy" time="Multiple Days" :is-selected="selectedFee?.name === 'Economy'"
+                  @selected-fee="selectedFee = fees[0]" v-if="feesQ.isSuccess" :value="fees[0].value" />
+                <FeeRate label="Normal" time="1 hour" :is-selected="selectedFee?.name === 'Normal'"
+                  @selected-fee="selectedFee = fees[1]" v-if="feesQ.isSuccess" :value="fees[1].value" />
+                <FeeRate label="Custom" time="Custom" :is-selected="selectedFee?.name === 'Custom'"
+                  @selected-fee="selectedFee = fees[2]" :value="fees[2].value" />
               </div>
 
               <div class="mt-8 flex flex-col" v-if="selectedFee?.name === 'Custom'">
