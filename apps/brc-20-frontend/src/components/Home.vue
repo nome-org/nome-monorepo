@@ -273,12 +273,10 @@ const createOrderM = useMutation({
               </div>
 
               <div class="grid grid-cols-3 gap-5 mt-8">
-                <FeeRate label="Economy" time="Multiple Days" :is-selected="selectedFee?.name === 'Economy'"
-                  @selected-fee="selectedFee = fees[0]" v-if="feesQ.isSuccess" :value="fees[0].value" />
-                <FeeRate label="Normal" time="1 hour" :is-selected="selectedFee?.name === 'Normal'"
-                  @selected-fee="selectedFee = fees[1]" v-if="feesQ.isSuccess" :value="fees[1].value" />
-                <FeeRate label="Custom" time="Custom" :is-selected="selectedFee?.name === 'Custom'"
-                  @selected-fee="selectedFee = fees[2]" :value="fees[2].value" />
+                <FeeRate v-for="feeRate in fees" label="Economy" time="Multiple Days"
+                  :is-selected="selectedFee?.name === feeRate.name" @selected-fee="selectedFee = feeRate"
+                  v-if="feesQ.isSuccess" :value="feeRate.value" />
+
               </div>
 
               <div class="mt-8 flex flex-col" v-if="selectedFee?.name === 'Custom'">
