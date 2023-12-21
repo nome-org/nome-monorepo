@@ -7,6 +7,7 @@ import { useQuery, useMutation } from '@tanstack/vue-query'
 import { client } from "../api/client";
 import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
 import FeeRate from "./FeeRate.vue";
+import { validate as validateBTCAddress } from 'bitcoin-address-validation'
 
 type IFee = {
   name: string,
@@ -165,6 +166,9 @@ const createOrderM = useMutation({
   }
 })
 
+const disclaimersCheck = ref([false, false])
+const consented = computed(() => disclaimersCheck.value.every(item => item))
+const isAddressValid = computed(() => validateBTCAddress(address.value))
 </script>
 <template>
   <div class="">
@@ -222,7 +226,8 @@ const createOrderM = useMutation({
         <div class="border-b border-solid border-opacity-20 border-white pb-12 pt-2 md:mt-8 mt-12 w-full relative">
           <h3 class="my-8 text-xl">Welcome</h3>
           <div class="flex items-start gap-6 mt-6 w-full">
-            <button class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap" @click="checkWL()">
+            <button class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap"
+              :disabled="consented && isAddressValid" @click="checkWL()">
               WL Access
             </button>
             <div>
@@ -230,11 +235,11 @@ const createOrderM = useMutation({
                 class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
               <div class="mt-8 relative -left-10 gap-y-4 text-lg">
                 <label class="flex gap-x-6">
-                  <input class="w-5" type="checkbox">
+                  <input v-model="disclaimersCheck[0]" class="w-5" type="checkbox">
                   If you are a holder, please, provide the wallet address that holds the 1/1 art.
                 </label>
                 <label class="flex gap-x-6">
-                  <input class="w-5" type="checkbox">
+                  <input v-model="disclaimersCheck[1]" class="w-5" type="checkbox">
                   If you place someone else's address, your tokens will be sent to another person.
                 </label>
               </div>
