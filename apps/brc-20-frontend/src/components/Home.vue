@@ -102,7 +102,7 @@ const checkWL = async () => {
   const claimData = await checkClaim()
   if (claimData.data?.status === 'success') {
     const { freeAmount } = claimData.data.data
-    quantity.value = freeAmount
+    quantity.value = freeAmount || 1000
     eligibleFreeAmount.value = freeAmount
   }
 }
@@ -225,7 +225,7 @@ function makeTwitterPost() { }
         </div>
 
 
-        <div class="border-b border-solid border-opacity-20 border-white pb-12 pt-2 md:mt-8 mt-12 w-full relative">
+        <div class="pb-12 pt-2 md:mt-8 mt-12 w-full relative">
           <h3 class="my-8 text-xl">Welcome</h3>
           <div class="flex items-start gap-6 mt-6 w-full">
             <button
@@ -249,25 +249,26 @@ function makeTwitterPost() { }
             </div>
           </div>
         </div>
-        <div class="mt-4 " v-show="isClaimChecked">
-          <p v-if="eligibleFreeAmount > 0 && isWhiteList">
-            <span class="text-[#51F55C]">Congratulations!</span> You got
-            {{ eligibleFreeAmount.toLocaleString() }}
-            FREE $N0ME tokens as a Holder, Team, or GA Winner. <br />
-            Please, pay the Network fees below. You have <span class="text-[#51F55C]">10 minutes</span> to purchase
-            more tokens.
-          </p>
-          <p v-else-if="isWhiteList">
-            Welcome to the Whitelist mint! You have <span class="text-[#51F55C]">10 minutes</span> to purchase the
-            $N0ME tokens.
-          </p>
-          <p class="mt-4" v-else>
-            Sorry, your wallet is not registered for Whitelist,
-            <span class="text-[#51F55C]">public $N0ME mint</span> starts in 2 hours after the WL.
-          </p>
-        </div>
 
-        <div class=" pt-2 md:mt-8 mt-12 mb-12 w-full relative">
+        <div v-if="isClaimChecked"
+          class="border-t border-solid border-opacity-20 border-white pt-2 md:mt-8 mt-12 mb-12 w-full relative">
+          <div class="my-8" v-show="isClaimChecked">
+            <p v-if="eligibleFreeAmount > 0 && isWhiteList">
+              <span class="text-[#51F55C]">Congratulations!</span> You got
+              {{ eligibleFreeAmount.toLocaleString() }}
+              FREE $N0ME tokens as a Holder, Team, or GA Winner. <br />
+              Please, pay the Network fees below. You have <span class="text-[#51F55C]">10 minutes</span> to purchase
+              more tokens.
+            </p>
+            <p v-else-if="isWhiteList">
+              Welcome to the Whitelist mint! You have <span class="text-[#51F55C]">10 minutes</span> to purchase the
+              $N0ME tokens.
+            </p>
+            <p class="mt-4" v-else>
+              Sorry, your wallet is not registered for Whitelist,
+              <span class="text-[#51F55C]">public $N0ME mint</span> starts in 2 hours after the WL.
+            </p>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
             <div class="mt-10">
               <!-- <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
