@@ -226,8 +226,9 @@ const isAddressValid = computed(() => validateBTCAddress(address.value))
         <div class="border-b border-solid border-opacity-20 border-white pb-12 pt-2 md:mt-8 mt-12 w-full relative">
           <h3 class="my-8 text-xl">Welcome</h3>
           <div class="flex items-start gap-6 mt-6 w-full">
-            <button class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap"
-              :disabled="consented && isAddressValid" @click="checkWL()">
+            <button
+              class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed"
+              :disabled="!consented || !isAddressValid" @click="checkWL()">
               WL Access
             </button>
             <div>
