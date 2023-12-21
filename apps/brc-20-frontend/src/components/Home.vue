@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
 
@@ -58,7 +57,7 @@ watch(feesQ.data, (feesResponse) => {
   }
 })
 
-const { data: wlData, refetch: checkClaim } = useQuery({
+const { data: wlData, refetch: checkClaim, isSuccess: isClaimChecked, } = useQuery({
   queryKey: ['wl check', address],
   queryFn: () => client.provide('get', '/check-claim', {
     address: address.value,
@@ -174,8 +173,7 @@ const createOrderM = useMutation({
       <main>
         <div class="mt-6">
           <h1 class="text-2xl pb-2">• $N0ME BRC-20 •</h1>
-          <div
-            class="border-b border-solid border-opacity-20 border-white md:mt-0 mb-44 sm:mb-16 xl:mb-12 w-full relative">
+          <div class="md:mt-0 mb-44 sm:mb-16 xl:mb-12 w-full relative">
             <div
               class="absolute left-0 top-8 sm:-top-12 sm:left-auto sm:right-4 lg:right-52 italic text-2xl sm:text-center">
               BTC token <br />
@@ -186,49 +184,82 @@ const createOrderM = useMutation({
         </div>
         <div class="w-full lg:w-[90%] xl:w-[80%] 2xl:w-[57%] text-base">
           <span class="block mb-12">
-            BRC-20 is an experimental standard for fungible tokens on the Bitcoin blockchain. BRC-20 tokens unlock new
-            capabilities for the Bitcoin network, such as their use in DeFi protocols and blockchain applications.
+            NōME is a brand that changes the world by bringing art back to people. The brand name translates as no one or
+            no ID. We prioritize privacy and create solutions to empower people to own their data.
           </span>
 
-          <a href="" target="_blank" rel="noreferrer noopener" class="font-bold text-[#A50EA5]">$N0ME BRC-20</a>
-          <span class="block mb-6">
-            Written with zero "0" instead of "o".
-          </span>
-          <li>Supply: 100million</li>
-          <li>Whitelist: 2k spots</li>
-          <li>Price: $0.005</li>
+          <a href="" target="_blank" rel="noreferrer noopener"
+            class="uppercase underline underline-offset-4 mb-6 text-xl block">
+            "NOME ART"
+          </a>
+          <p class="mb-8">
+            We established an independent
+            <a href="" class="font-bold text-[#A50EA5]">
+              nonprofit organization 501(c)(3)
+            </a>
+            to move the global Digital Art movement
+            forward. NOME ART's mission is to be the best place to learn about crypto art, and tech, and have fun. We
+            believe in a future where systems are self-sovereign and decentralized.
+          </p>
+          <p class="mb-8">
+            Today, we are excited to launch the first
+            <a href="" class="font-bold text-[#A50EA5]">
+              crowdfunding
+            </a>
+            mint,
+            leveraging the modern
+            <a href="" class="font-bold text-[#A50EA5]">
+              Bitcoin BRC-20
+            </a>
+            technology.
+            BRC-20 is an experimental standard for fungible tokens on the L1 Bitcoin blockchain. Raised funds will be
+            invested back into the ecosystem, improving the Web3 space with our Ordinals tech tools and education.
+          </p>
 
-          <span class="block mt-12">
-            <a href="" target="_blank" rel="noreferrer noopener" class="font-bold text-[#A50EA5]">Whitelist form.</a>
-            There are limited tokens available in a first-come, first-serve mint. However, a whitelist guarantees
-            eligibility and offers a 20% discount.
-            Note that the whitelist allocation
-            will be closing by Dec 15, so act fast if you want to take advantage of this limited-time offer.
-          </span>
-
-          <span class="block mt-4">
-            Read about utility and distribution in <a href="" target="_blank" rel="noreferrer noopener"
-              class="font-bold text-[#A50EA5]">DOCS.</a>
-          </span>
         </div>
 
 
-        <div class="border-t border-solid border-opacity-20 border-white pt-2 md:mt-8 mt-12 w-full relative">
-          <p class="mt-4">If you are a Holder, please, provide the wallet address that holds 1/1 art.</p>
-          <p>If you place someone else address, your tokens will be sent to another person.</p>
-          <div class="flex items-center gap-6 mt-6 w-full lg:w-[60%]">
-            <button class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap"
-              @click="checkWL()">WL
-              Access</button>
-            <input type="text" placeholder="Wallet address" v-model="address"
-              class="border-white border-2 border-solid border-opacity-40 p-1.5 w-[70%] rounded-[10px] bg-transparent outline-none" />
+        <div class="border-b border-solid border-opacity-20 border-white pb-12 pt-2 md:mt-8 mt-12 w-full relative">
+          <h3 class="my-8 text-xl">Welcome</h3>
+          <div class="flex items-start gap-6 mt-6 w-full">
+            <button class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap" @click="checkWL()">
+              WL Access
+            </button>
+            <div>
+              <input type="text" placeholder="Wallet address" v-model="address"
+                class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
+              <div class="mt-8 relative -left-10 gap-y-4 text-lg">
+                <label class="flex gap-x-6">
+                  <input class="w-5" type="checkbox">
+                  If you are a holder, please, provide the wallet address that holds the 1/1 art.
+                </label>
+                <label class="flex gap-x-6">
+                  <input class="w-5" type="checkbox">
+                  If you place someone else's address, your tokens will be sent to another person.
+                </label>
+              </div>
+            </div>
           </div>
-          <p class="mt-4 text-[#5A5A5A] text-sm" :class="!isWhiteList ? 'visible' : 'invisible'">Sorry your wallet is not
-            registered for Whitelist, public mint would be
-            open soon</p>
+        </div>
+        <div class="mt-4 " v-show="isClaimChecked">
+          <p v-if="eligibleFreeAmount > 0 && isWhiteList">
+            <span class="text-[#51F55C]">Congratulations!</span> You got
+            {{ eligibleFreeAmount.toLocaleString() }}
+            FREE $N0ME tokens as a Holder, Team, or GA Winner. <br />
+            Please, pay the Network fees below. You have <span class="text-[#51F55C]">10 minutes</span> to purchase
+            more tokens.
+          </p>
+          <p v-else-if="isWhiteList">
+            Welcome to the Whitelist mint! You have <span class="text-[#51F55C]">10 minutes</span> to purchase the
+            $N0ME tokens.
+          </p>
+          <p class="mt-4" v-else>
+            Sorry, your wallet is not registered for Whitelist,
+            <span class="text-[#51F55C]">public $N0ME mint</span> starts in 2 hours after the WL.
+          </p>
         </div>
 
-        <div class="border-t border-solid border-opacity-20 border-white pt-2 md:mt-8 mt-12 mb-12 w-full relative">
+        <div class=" pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
             <div class="mt-10">
               <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
