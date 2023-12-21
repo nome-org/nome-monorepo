@@ -16,7 +16,7 @@ type IFee = {
 };
 
 const address = ref("");
-const quantity = ref(0);
+const quantity = ref(1000);
 const selectedFee = ref<IFee | null>(null);
 const customFee = ref<number>();
 const feesQ = useQuery<{
@@ -169,6 +169,8 @@ const createOrderM = useMutation({
 const disclaimersCheck = ref([false, false])
 const consented = computed(() => disclaimersCheck.value.every(item => item))
 const isAddressValid = computed(() => validateBTCAddress(address.value))
+
+function makeTwitterPost() { }
 </script>
 <template>
   <div class="">
@@ -234,13 +236,13 @@ const isAddressValid = computed(() => validateBTCAddress(address.value))
             <div>
               <input type="text" placeholder="Wallet address" v-model="address"
                 class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
-              <div class="mt-8 relative -left-10 gap-y-4 text-lg">
+              <div class="mt-8 relative -left-10 gap-y-4 flex flex-col">
                 <label class="flex gap-x-6">
-                  <input v-model="disclaimersCheck[0]" class="w-5" type="checkbox">
+                  <input v-model="disclaimersCheck[0]" class="w-6" type="checkbox">
                   If you are a holder, please, provide the wallet address that holds the 1/1 art.
                 </label>
                 <label class="flex gap-x-6">
-                  <input v-model="disclaimersCheck[1]" class="w-5" type="checkbox">
+                  <input v-model="disclaimersCheck[1]" class="w-6" type="checkbox">
                   If you place someone else's address, your tokens will be sent to another person.
                 </label>
               </div>
@@ -268,14 +270,15 @@ const isAddressValid = computed(() => validateBTCAddress(address.value))
         <div class=" pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
             <div class="mt-10">
-              <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
+              <!-- <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
                 <span class="text-[#51F55C] text-xl">Congratulations!</span>
                 <p class="text-xl">You claimed {{ eligibleFreeAmount }} free NOME tokens</p>
                 <p class="mt-4 text-[#5A5A5A]">To receive them, please, proceed with the Network fees payment below.</p>
-              </div>
+              </div> -->
               <img class="my-8 w-full object-fill" src="/chart.png" alt="Chart" />
               <div class="flex items-center justify-center">
-                <button class="text-black bg-white w-[60%] text-xl rounded-lg p-1">Post on Twitter</button>
+                <button class="text-black bg-white w-[60%] text-xl rounded-lg p-1" @click="makeTwitterPost()">Post on
+                  Twitter</button>
               </div>
             </div>
 
@@ -286,7 +289,8 @@ const isAddressValid = computed(() => validateBTCAddress(address.value))
 
               <div class="mt-8 flex flex-col">
                 <label class="mb-2">Mint quantity</label>
-                <input type="number" placeholder="min 1,000 / max 250,000" v-model="quantity"
+                <input type="number" placeholder="min 1,000 / max 250,000" v-model="quantity" min="1000" max="250000"
+                  step="1000"
                   class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
               </div>
 
@@ -294,7 +298,6 @@ const isAddressValid = computed(() => validateBTCAddress(address.value))
                 <FeeRate v-for="feeRate in fees" label="Economy" time="Multiple Days"
                   :is-selected="selectedFee?.name === feeRate.name" @selected-fee="selectedFee = feeRate"
                   v-if="feesQ.isSuccess" :value="feeRate.value" />
-
               </div>
 
               <div class="mt-8 flex flex-col" v-if="selectedFee?.name === 'Custom'">
