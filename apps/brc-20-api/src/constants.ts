@@ -1,4 +1,5 @@
-export const PRICE = 12500
+export const PRICE = 13000
+export const WL_PRICE = 10000
 // sizes in vBytes
 export const INSCRIPTION_WEIGHT = 202 + 20
 export const TRANSFER_WEIGHT = 131 + 20

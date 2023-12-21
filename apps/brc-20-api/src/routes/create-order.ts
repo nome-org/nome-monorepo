@@ -54,7 +54,7 @@ export const createOrderEndpoint = defaultEndpointsFactory
       })
       let claimId: number | null = null
 
-      const { discount, freeAmount } = await getWLBenefits(existingClaim)
+      const { price, freeAmount } = await getWLBenefits(existingClaim)
       if (freeAmount && existingClaim) {
         claimId = existingClaim.id
         await prisma.claim.update({
@@ -83,7 +83,7 @@ export const createOrderEndpoint = defaultEndpointsFactory
       const { total: totalPrice } = calculatePrice({
         feeRate,
         amount,
-        discount,
+        price,
         freeAmount,
       })
       const key = await getKeyForIndex(order.id)

@@ -31,12 +31,12 @@ export const getPriceEndpoint = defaultEndpointsFactory.build({
       },
     })
 
-    const { discount, freeAmount } = await getWLBenefits(claim)
+    const { price, freeAmount } = await getWLBenefits(claim)
 
     return calculatePrice({
       amount,
       feeRate,
-      discount,
+      price,
       freeAmount,
     })
   },
