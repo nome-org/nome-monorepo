@@ -14,6 +14,21 @@ import { calculatePrice } from "../util/calculate-price.js"
 import { getPaymentAddress } from "../bitcoin/inscriptions/get-payment-address.js"
 import { getKeyForIndex } from "../bitcoin/keys/server-keys.js"
 import { getWLBenefits } from "../util/get-wl-benefits.js"
+import { ORDER_EXPIRATION_TIME } from "../constants.js"
+import { isWhitelistOpen } from "../util/isWhiteListOpen.js"
+import { Claim, Order } from "@prisma/client"
+import { checkOrderDuplicate } from "../util/orders/isOrderDuplicate.js"
+
+function renewOrderExpiryDate(id: number) {
+  return prisma.order.update({
+    where: {
+      id,
+    },
+    data: {
+      expiresAt: new Date(Date.now() + ORDER_EXPIRATION_TIME),
+    },
+  })
+}
 
 export const createOrderEndpoint = defaultEndpointsFactory
   .addExpressMiddleware(
@@ -44,47 +59,48 @@ export const createOrderEndpoint = defaultEndpointsFactory
       totalPrice: z.number().describe("Total order price in sats"),
     }),
     handler: async ({ input: { amount, receiveAddress, feeRate } }) => {
-      const existingClaim = await prisma.claim.findFirst({
-        where: {
-          ordinalAddress: receiveAddress,
-        },
-        include: {
-          orders: true,
-        },
+      const wlOpen = await isWhitelistOpen()
+
+      let existingClaim: (Claim & { orders: Order[] }) | null = null
+      let order: Order | null = null
+      if (wlOpen) {
+        existingClaim = await prisma.claim.findFirst({
+          where: {
+            ordinalAddress: receiveAddress,
+          },
+          include: {
+            orders: true,
+          },
+        })
+      }
+
+      const { price, freeAmount } = await getWLBenefits(existingClaim)
+
+      const duplicate = await checkOrderDuplicate({
+        amount,
+        claimId: existingClaim?.id || null,
+        receiveAddress,
       })
-      let claimId: number | null = null
 
-      const { price, freeAmount, wlOpen } = await getWLBenefits(existingClaim)
-
-      if (wlOpen && existingClaim) {
-        claimId = existingClaim.id
-
-        // mark all the free amount claimed once and for all
-        if (freeAmount && existingClaim.claimedAmount === 0) {
-          await prisma.claim.update({
-            where: {
-              id: claimId,
-            },
-            data: {
-              claimedAmount: freeAmount,
-            },
-          })
-        }
+      if (duplicate) {
+        order = await renewOrderExpiryDate(duplicate.id)
       }
 
       // ensure that the user receives at least the free amount
       if (amount < freeAmount) {
         amount = freeAmount
       }
-
-      const order = await prisma.order.create({
-        data: {
-          amount,
-          receiveAddress,
-          claimId,
-          feeRate,
-        },
-      })
+      if (!order) {
+        order = await prisma.order.create({
+          data: {
+            amount,
+            receiveAddress,
+            claimId: existingClaim?.id || null,
+            feeRate,
+            expiresAt: new Date(Date.now() + ORDER_EXPIRATION_TIME),
+          },
+        })
+      }
       const { total: totalPrice } = calculatePrice({
         feeRate,
         amount,

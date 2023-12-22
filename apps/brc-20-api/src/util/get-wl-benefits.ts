@@ -1,14 +1,10 @@
-import { Claim, Order } from "@prisma/client"
-import { isWhitelistOpen } from "./isWhiteListOpen.js"
+import { Claim } from "@prisma/client"
 import { PRICE, WL_PRICE } from "../constants.js"
 
-export const getWLBenefits = async (
-  claim: (Claim & { orders: Order[] }) | null,
-) => {
+export const getWLBenefits = async (claim: Claim | null) => {
   let price = PRICE
   let freeAmount = 0
-  const wlOpen = await isWhitelistOpen()
-  if (claim && wlOpen) {
+  if (claim) {
     freeAmount = claim.freeAmount - claim.claimedAmount
 
     price = WL_PRICE
@@ -17,6 +13,5 @@ export const getWLBenefits = async (
   return {
     price,
     freeAmount,
-    wlOpen,
   }
 }
