@@ -217,7 +217,7 @@ function makeTwitterPost() { }
           </a>
           <p class="mb-8">
             We established an independent
-            <a href="" class="font-bold text-[#A50EA5]">
+            <a href="" class="font-bold text-pink">
               nonprofit organization 501(c)(3)
             </a>
             to move the global Digital Art movement
@@ -226,12 +226,12 @@ function makeTwitterPost() { }
           </p>
           <p class="mb-8">
             Today, we are excited to launch the first
-            <a href="" class="font-bold text-[#A50EA5]">
+            <a href="" class="font-bold text-pink">
               crowdfunding
             </a>
             mint,
             leveraging the modern
-            <a href="" class="font-bold text-[#A50EA5]">
+            <a href="" class="font-bold text-pink">
               Bitcoin BRC-20
             </a>
             technology.
@@ -269,26 +269,26 @@ function makeTwitterPost() { }
 
         <div class="border-t border-solid border-opacity-20 border-white py-8" v-show="isClaimChecked">
           <p v-if="eligibleFreeAmount > 0 && isWhiteListOpen">
-            <span class="text-[#51F55C]">Congratulations!</span> You got
+            <span class="text-green">Congratulations!</span> You got
             {{ eligibleFreeAmount.toLocaleString() }}
             FREE $N0ME tokens as a Holder, Team, or GA Winner. <br />
-            Please, pay the Network fees below. You have <span class="text-[#51F55C]">10 minutes</span> to purchase
+            Please, pay the Network fees below. You have <span class="text-green">10 minutes</span> to purchase
             more tokens.
           </p>
           <p v-else-if="isWhiteListOpen && isWhiteListed">
-            Welcome to the Whitelist mint! You have <span class="text-[#51F55C]">10 minutes</span> to purchase the
+            Welcome to the Whitelist mint! You have <span class="text-green">10 minutes</span> to purchase the
             $N0ME tokens.
           </p>
           <p class="mt-4" v-else>
             Sorry, your wallet is not registered for Whitelist,
-            <span class="text-[#51F55C]">public $N0ME mint</span> starts in 2 hours after the WL.
+            <span class="text-green">public $N0ME mint</span> starts in 2 hours after the WL.
           </p>
         </div>
         <div v-if="isEligibleToMint" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
             <div class="mt-10">
               <!-- <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
-                <span class="text-[#51F55C] text-xl">Congratulations!</span>
+                <span class="text-green text-xl">Congratulations!</span>
                 <p class="text-xl">You claimed {{ eligibleFreeAmount }} free NOME tokens</p>
                 <p class="mt-4 text-[#5A5A5A]">To receive them, please, proceed with the Network fees payment below.</p>
               </div> -->
