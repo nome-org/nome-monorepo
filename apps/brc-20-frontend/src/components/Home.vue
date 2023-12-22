@@ -8,6 +8,7 @@ import { client } from "../api/client";
 import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
 import FeeRate from "./FeeRate.vue";
 import { validate as validateBTCAddress } from 'bitcoin-address-validation'
+import DisclaimerCheckbox from "./DisclaimerCheckbox.vue";
 
 type IFee = {
   name: string,
@@ -254,14 +255,10 @@ function makeTwitterPost() { }
               <input type="text" placeholder="Wallet address" v-model="address"
                 class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
               <div class="mt-8 relative -left-12 gap-y-4 flex flex-col">
-                <label class="flex gap-x-6">
-                  <input v-model="disclaimersCheck[0]" class="w-6" type="checkbox">
-                  If you are a holder, please, provide the wallet address that holds the 1/1 art.
-                </label>
-                <label class="flex gap-x-6">
-                  <input v-model="disclaimersCheck[1]" class="w-6" type="checkbox">
-                  If you place someone else's address, your tokens will be sent to another person.
-                </label>
+                <DisclaimerCheckbox v-model="disclaimersCheck[0]"
+                  text="If you are a holder, please, provide the wallet address that holds the 1/1 art." />
+                <DisclaimerCheckbox v-model="disclaimersCheck[1]"
+                  text="If you place someone else's address, your tokens will be sent to another person." />
               </div>
             </div>
           </div>
