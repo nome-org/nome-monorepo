@@ -251,7 +251,7 @@ function makeTwitterPost() { }
             <div>
               <input type="text" placeholder="Wallet address" v-model="address"
                 class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
-              <div class="mt-8 relative -left-10 gap-y-4 flex flex-col">
+              <div class="mt-8 relative -left-12 gap-y-4 flex flex-col">
                 <label class="flex gap-x-6">
                   <input v-model="disclaimersCheck[0]" class="w-6" type="checkbox">
                   If you are a holder, please, provide the wallet address that holds the 1/1 art.
