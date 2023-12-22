@@ -39,6 +39,7 @@ model Order {
   paymentTxId    String?
   transferTxId   String?
   feeRate        Int         @default(0)
+  expiresAt      DateTime
 }
 
 model Claim {
