@@ -54,17 +54,22 @@ export const createOrderEndpoint = defaultEndpointsFactory
       })
       let claimId: number | null = null
 
-      const { price, freeAmount } = await getWLBenefits(existingClaim)
-      if (freeAmount && existingClaim) {
+      const { price, freeAmount, wlOpen } = await getWLBenefits(existingClaim)
+
+      if (wlOpen && existingClaim) {
         claimId = existingClaim.id
-        await prisma.claim.update({
-          where: {
-            id: claimId,
-          },
-          data: {
-            claimedAmount: freeAmount,
-          },
-        })
+
+        // mark all the free amount claimed once and for all
+        if (freeAmount && existingClaim.claimedAmount === 0) {
+          await prisma.claim.update({
+            where: {
+              id: claimId,
+            },
+            data: {
+              claimedAmount: freeAmount,
+            },
+          })
+        }
       }
 
       // ensure that the user receives at least the free amount
@@ -86,7 +91,7 @@ export const createOrderEndpoint = defaultEndpointsFactory
         price,
         freeAmount,
       })
-      const key = await getKeyForIndex(order.id)
+      const key = await getKeyForIndex(order.id, true)
       const { inscribingAddress } = await getPaymentAddress(key, amount)
       return {
         createdAt: order.createdAt,

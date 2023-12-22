@@ -86,8 +86,8 @@ const watchBuyTxsTask = new AsyncTask(
     const pendingOrders = await fetchPendingOrders()
     for (const order of pendingOrders) {
       logger.info(`Processing order ${order.id}`)
-      const orderKey = await getKeyForIndex(order.id)
-      const firstKey = await getKeyForIndex(0)
+      const orderKey = await getKeyForIndex(order.id, true)
+      const firstKey = await getKeyForIndex(0, true)
       const { inscribingAddress } = await getPaymentAddress(
         orderKey,
         order.amount,
@@ -146,6 +146,8 @@ const watchBuyTxsTask = new AsyncTask(
 )
 
 export const watchBuyTxsJob = new SimpleIntervalJob(
-  { minutes: 3 },
+  {
+    minutes: 3,
+  },
   watchBuyTxsTask,
 )

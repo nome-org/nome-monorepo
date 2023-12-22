@@ -17,5 +17,6 @@ export const getWLBenefits = async (
   return {
     price,
     freeAmount,
+    wlOpen,
   }
 }

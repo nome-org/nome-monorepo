@@ -39,7 +39,7 @@ export const getOrderEndpoint = defaultEndpointsFactory.build({
     if (!order) {
       throw createHttpError(404, "Order not found")
     }
-    const key = await getKeyForIndex(order.id)
+    const key = await getKeyForIndex(order.id, true)
     const { inscribingAddress } = await getPaymentAddress(key, order.amount)
     return {
       ...order,
