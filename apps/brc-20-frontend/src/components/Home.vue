@@ -58,11 +58,12 @@ watch(feesQ.data, (feesResponse) => {
   }
 })
 
-const { refetch: checkClaim, isSuccess: isClaimChecked, } = useQuery({
+const { refetch: checkClaim, isSuccess: isClaimChecked, data: claimData } = useQuery({
   queryKey: ['wl check', address],
   queryFn: () => client.provide('get', '/check-claim', {
     address: address.value,
   }),
+
   enabled: false
 })
 
@@ -104,16 +105,16 @@ const priceData = computed(() => {
   return priceQ.data.value?.status !== 'success' ? null : priceQ.data.value.data
 })
 
-const checkWL = async () => {
-  const claimData = await checkClaim()
-  if (claimData.data?.status === 'success') {
-    const { data: claimInfo } = claimData.data
+watch(claimData, () => {
+  if (claimData.value?.status === 'success') {
+    const { data: claimInfo } = claimData.value
     quantity.value = claimInfo.freeAmount || 1000
     eligibleFreeAmount.value = claimInfo.freeAmount
     isWhiteListOpen.value = claimInfo.isWhitelistOpen
     isWhiteListed.value = claimInfo.isWhitelisted
   }
-}
+
+})
 
 const paymentTx = ref('')
 
@@ -130,6 +131,7 @@ const createOrderM = useMutation({
     })
 
     if (data.status === 'success') {
+      await checkClaim()
       const {
         paymentAddress,
         totalPrice
@@ -245,7 +247,7 @@ function makeTwitterPost() { }
           <div class="flex items-start gap-6 mt-6 w-full">
             <button
               class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed"
-              :disabled="!consented || !isAddressValid" @click="checkWL()">
+              :disabled="!consented || !isAddressValid" @click="checkClaim()">
               WL Access
             </button>
             <div>
@@ -265,7 +267,7 @@ function makeTwitterPost() { }
           </div>
         </div>
 
-        <div class="border-t border-solid border-opacity-20 border-white my-8" v-show="isClaimChecked">
+        <div class="border-t border-solid border-opacity-20 border-white py-8" v-show="isClaimChecked">
           <p v-if="eligibleFreeAmount > 0 && isWhiteListOpen">
             <span class="text-[#51F55C]">Congratulations!</span> You got
             {{ eligibleFreeAmount.toLocaleString() }}
@@ -310,7 +312,7 @@ function makeTwitterPost() { }
               </div>
 
               <div class="grid grid-cols-3 gap-5 mt-8">
-                <FeeRate v-for="feeRate in fees" label="Economy" time="Multiple Days"
+                <FeeRate v-for="feeRate in fees" :label="feeRate.name" :time="feeRate.time" :key="feeRate.name"
                   :is-selected="selectedFee?.name === feeRate.name" @selected-fee="selectedFee = feeRate"
                   v-if="feesQ.isSuccess" :value="feeRate.value" />
               </div>
