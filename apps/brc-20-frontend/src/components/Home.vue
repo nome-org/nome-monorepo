@@ -142,7 +142,7 @@ const createOrderM = useMutation({
         : BitcoinNetworkType.Mainnet;
       getAddress({
         payload: {
-          message: `We'll need this address to pay for your order.`,
+          message: `We will need this address to pay for your order.`,
           network: {
             type: networkType,
           },

@@ -8,6 +8,7 @@ type claimData = {
 async function insert(items: claimData[]) {
   await prisma.claim.createMany({
     data: items,
+    skipDuplicates: true,
   })
 }
 
