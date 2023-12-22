@@ -193,7 +193,7 @@ function makeTwitterPost() { }
       <Header />
       <main>
         <div class="mt-6">
-          <h1 class="text-2xl pb-2">• $N0ME BRC-20 •</h1>
+          <h1 class="text-2xl pb-2 border-b border-solid border-opacity-20 border-white">• $N0ME BRC-20 •</h1>
           <div class="md:mt-0 mb-44 sm:mb-16 xl:mb-12 w-full relative">
             <div
               class="absolute left-0 top-8 sm:-top-12 sm:left-auto sm:right-4 lg:right-52 italic text-2xl sm:text-center">
