@@ -58,7 +58,7 @@ watch(feesQ.data, (feesResponse) => {
   }
 })
 
-const { data: wlData, refetch: checkClaim, isSuccess: isClaimChecked, } = useQuery({
+const { refetch: checkClaim, isSuccess: isClaimChecked, } = useQuery({
   queryKey: ['wl check', address],
   queryFn: () => client.provide('get', '/check-claim', {
     address: address.value,
@@ -68,9 +68,9 @@ const { data: wlData, refetch: checkClaim, isSuccess: isClaimChecked, } = useQue
 
 const eligibleFreeAmount = ref(0)
 
-const isWhiteList = computed(() => {
-  return wlData.value?.status === "success" && wlData.value.data.isWhitelistOpen
-})
+const isWhiteListOpen = ref(false)
+
+const isWhiteListed = ref(false)
 
 const feeRate = computed(() => {
   return (
@@ -91,7 +91,13 @@ const priceQ = useQuery({
       address: address.value,
     })
   },
-  enabled: () => quantity.value >= 1000,
+  enabled: () => {
+    return quantity.value >= 1000
+      && !!selectedFee.value
+      && !!quantity.value
+      && !!address.value
+      && isAddressValid.value
+  },
 })
 
 const priceData = computed(() => {
@@ -101,9 +107,11 @@ const priceData = computed(() => {
 const checkWL = async () => {
   const claimData = await checkClaim()
   if (claimData.data?.status === 'success') {
-    const { freeAmount } = claimData.data.data
-    quantity.value = freeAmount || 1000
-    eligibleFreeAmount.value = freeAmount
+    const { data: claimInfo } = claimData.data
+    quantity.value = claimInfo.freeAmount || 1000
+    eligibleFreeAmount.value = claimInfo.freeAmount
+    isWhiteListOpen.value = claimInfo.isWhitelistOpen
+    isWhiteListed.value = claimInfo.isWhitelisted
   }
 }
 
@@ -169,6 +177,13 @@ const createOrderM = useMutation({
 const disclaimersCheck = ref([false, false])
 const consented = computed(() => disclaimersCheck.value.every(item => item))
 const isAddressValid = computed(() => validateBTCAddress(address.value))
+const isEligibleToMint = computed(() => {
+  const wl = isWhiteListOpen.value && isWhiteListed.value
+  const publicSale = !isWhiteListOpen.value
+  const shouldMint = wl || publicSale
+
+  return isClaimChecked.value && shouldMint
+})
 
 function makeTwitterPost() { }
 </script>
@@ -250,25 +265,24 @@ function makeTwitterPost() { }
           </div>
         </div>
 
-        <div v-if="isClaimChecked"
-          class="border-t border-solid border-opacity-20 border-white pt-2 md:mt-8 mt-12 mb-12 w-full relative">
-          <div class="my-8" v-show="isClaimChecked">
-            <p v-if="eligibleFreeAmount > 0 && isWhiteList">
-              <span class="text-[#51F55C]">Congratulations!</span> You got
-              {{ eligibleFreeAmount.toLocaleString() }}
-              FREE $N0ME tokens as a Holder, Team, or GA Winner. <br />
-              Please, pay the Network fees below. You have <span class="text-[#51F55C]">10 minutes</span> to purchase
-              more tokens.
-            </p>
-            <p v-else-if="isWhiteList">
-              Welcome to the Whitelist mint! You have <span class="text-[#51F55C]">10 minutes</span> to purchase the
-              $N0ME tokens.
-            </p>
-            <p class="mt-4" v-else>
-              Sorry, your wallet is not registered for Whitelist,
-              <span class="text-[#51F55C]">public $N0ME mint</span> starts in 2 hours after the WL.
-            </p>
-          </div>
+        <div class="border-t border-solid border-opacity-20 border-white my-8" v-show="isClaimChecked">
+          <p v-if="eligibleFreeAmount > 0 && isWhiteListOpen">
+            <span class="text-[#51F55C]">Congratulations!</span> You got
+            {{ eligibleFreeAmount.toLocaleString() }}
+            FREE $N0ME tokens as a Holder, Team, or GA Winner. <br />
+            Please, pay the Network fees below. You have <span class="text-[#51F55C]">10 minutes</span> to purchase
+            more tokens.
+          </p>
+          <p v-else-if="isWhiteListOpen && isWhiteListed">
+            Welcome to the Whitelist mint! You have <span class="text-[#51F55C]">10 minutes</span> to purchase the
+            $N0ME tokens.
+          </p>
+          <p class="mt-4" v-else>
+            Sorry, your wallet is not registered for Whitelist,
+            <span class="text-[#51F55C]">public $N0ME mint</span> starts in 2 hours after the WL.
+          </p>
+        </div>
+        <div v-if="isEligibleToMint" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
             <div class="mt-10">
               <!-- <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">

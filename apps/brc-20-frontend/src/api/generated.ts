@@ -21,6 +21,8 @@ type GetCheckClaimResponse = {
     data: {
         freeAmount: number;
         isWhitelistOpen: boolean;
+        price: number;
+        isWhitelisted: boolean;
     };
 } | {
     status: "error";

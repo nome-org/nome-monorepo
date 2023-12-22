@@ -3,8 +3,9 @@ import { z } from "zod"
 import { prisma } from "../prisma/client.js"
 
 import { validBTCAddress } from "../util/zod-extras.js"
-import createHttpError from "http-errors"
+
 import { isWhitelistOpen } from "../util/isWhiteListOpen.js"
+import { PRICE, WL_PRICE } from "../constants.js"
 export const checkClaimEndpoint = defaultEndpointsFactory.build({
   shortDescription: "Check a claim",
   description: "Checks if a claim is valid and returns the type",
@@ -15,6 +16,8 @@ export const checkClaimEndpoint = defaultEndpointsFactory.build({
   output: z.object({
     freeAmount: z.number(),
     isWhitelistOpen: z.boolean(),
+    price: z.number(),
+    isWhitelisted: z.boolean(),
   }),
   handler: async ({ input }) => {
     const { address } = input
@@ -25,14 +28,19 @@ export const checkClaimEndpoint = defaultEndpointsFactory.build({
     })
 
     const wlOpen = await isWhitelistOpen()
+    let freeAmount = 0
+    let price = PRICE
 
-    if (!claim || !wlOpen) {
-      throw createHttpError(404, "Claim not found")
+    if (claim && wlOpen) {
+      freeAmount = claim.freeAmount - claim.claimedAmount
+      price = WL_PRICE
     }
 
     return {
-      freeAmount: claim.freeAmount - claim.claimedAmount,
+      freeAmount,
       isWhitelistOpen: wlOpen,
+      price,
+      isWhitelisted: !!claim,
     }
   },
 })
