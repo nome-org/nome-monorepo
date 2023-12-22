@@ -1,18 +1,18 @@
-import { Order, OrderStatus } from "@prisma/client"
+import { Claim, Order, OrderStatus } from "@prisma/client"
 import { prisma } from "../../prisma/client.js"
 
 export async function markOrderComplete({
-  order,
+  order: { id: orderId, claim },
   transferTxId,
   paymentTxId,
 }: {
-  order: Order
+  order: Order & { claim: Claim | null }
   transferTxId: string
   paymentTxId: string
 }) {
   await prisma.order.update({
     where: {
-      id: order.id,
+      id: orderId,
     },
     data: {
       paymentTxId,
@@ -20,4 +20,20 @@ export async function markOrderComplete({
       status: OrderStatus.COMPLETE,
     },
   })
+
+  if (!claim) {
+    return
+  }
+
+  const { claimedAmount, freeAmount } = claim
+  if (freeAmount && claimedAmount === 0) {
+    await prisma.claim.update({
+      where: {
+        id: claim.id,
+      },
+      data: {
+        claimedAmount: freeAmount,
+      },
+    })
+  }
 }
