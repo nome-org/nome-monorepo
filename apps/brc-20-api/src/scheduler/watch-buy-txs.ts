@@ -23,6 +23,7 @@ import { calculatePrice } from "../util/calculate-price.js"
 import { getWLBenefits } from "../util/get-wl-benefits.js"
 import { HDKey } from "@scure/bip32"
 import { AddressTxsUtxo } from "@mempool/mempool.js/lib/interfaces/bitcoin/addresses.js"
+import { isOrderExpired } from "../util/orders/isOrderExpired.js"
 
 async function fetchPendingOrders() {
   return prisma.order.findMany({
@@ -86,6 +87,10 @@ const watchBuyTxsTask = new AsyncTask(
     const pendingOrders = await fetchPendingOrders()
     for (const order of pendingOrders) {
       logger.info(`Processing order ${order.id}`)
+      if (isOrderExpired(order)) {
+        logger.info(`Order ${order.id} is expired`)
+        continue
+      }
       const orderKey = await getKeyForIndex(order.id, true)
       const firstKey = await getKeyForIndex(0, true)
       const { inscribingAddress } = await getPaymentAddress(
