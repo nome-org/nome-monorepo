@@ -9,7 +9,7 @@
     "test": "vitest",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "start": "npm run db:generate && npm run generate:all && tsx src/index.ts",
+    "start": "npm run db:generate && npm run generate:all && tsx --env-file=.env.prod.local src/index.ts",
     "generate:docs": "tsx --env-file=.env src/scripts/generate-docs.ts && redocly build-docs ./docs/openapi.yaml -o ./docs/index.html",
     "generate:client": "tsx --env-file=.env src/scripts/generate-client.ts",
     "generate:all": "npm run generate:docs && npm run generate:client"
