@@ -35,7 +35,10 @@ export const buildCommitData = async ({
   // (cblock) that targets our leaf and proves its inclusion in the tapkey.
   const [tpubkey, cblock] = Tap.getPubKey(pubkey, { target: tapleaf })
   // A taproot address is simply the tweaked public key, encoded in bech32 format.
-  const inscribingAddress = Address.p2tr.fromPubKey(tpubkey, "testnet")
+  const inscribingAddress = Address.p2tr.fromPubKey(
+    tpubkey,
+    process.env.NETWORK_MODE === "testnet" ? "testnet" : "main",
+  )
 
   /* NOTE: To continue with this example, send 100_000 sats to the above address.
    * You will also need to make a note of the txid and vout of that transaction,
