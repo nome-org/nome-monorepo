@@ -11,8 +11,10 @@
   "dependencies": {
     "@tanstack/vue-query": "^5.14.1",
     "bitcoin-address-validation": "^2.2.3",
+    "oh-vue-icons": "1.0.0-rc3",
     "sats-connect": "^1.1.2",
-    "vue": "^3.3.11"
+    "vue": "^3.3.11",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",
