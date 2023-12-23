@@ -8,6 +8,7 @@ import z from "zod"
 import { getPriceEndpoint } from "./routes/get-price.js"
 import { createOrderEndpoint } from "./routes/create-order.js"
 import { getOrderEndpoint } from "./routes/get-order.js"
+import { checkProgressEndpoint } from "./routes/check-progress.js"
 
 export const routing: Routing = {
   "": defaultEndpointsFactory.build({
@@ -30,4 +31,5 @@ export const routing: Routing = {
     }),
     ":id": getOrderEndpoint,
   },
+  progress: checkProgressEndpoint,
 }
