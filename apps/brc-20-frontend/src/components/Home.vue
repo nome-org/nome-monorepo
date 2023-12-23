@@ -212,10 +212,9 @@ function makeTwitterPost() { }
             no ID. We prioritize privacy and create solutions to empower people to own their data.
           </span>
 
-          <a href="" target="_blank" rel="noreferrer noopener"
-            class="uppercase underline underline-offset-4 mb-6 text-xl block">
+          <h1 class="uppercase underline underline-offset-4 mb-6 text-xl block">
             "NOME ART"
-          </a>
+          </h1>
           <p class="mb-8">
             We established an independent
             <a href="" class="font-bold text-pink">
@@ -339,7 +338,9 @@ function makeTwitterPost() { }
         </div>
       </main>
     </div>
-    <Footer />
+    <div class="pt-48">
+      <Footer />
+    </div>
   </div>
 </template>
 
