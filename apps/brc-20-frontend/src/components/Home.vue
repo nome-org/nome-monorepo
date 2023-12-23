@@ -333,7 +333,7 @@ https://brc20.nome.wtf/`)
 
               <div :class="priceQ.isSuccess ? 'visible' : 'invisible'"
                 class="mt-8 flex flex-col gap-2 text-[#5a5a5a] text-xl">
-                <span>Network Fee: {{ (priceData?.minerFees || 0) / 1e8 }}</span>
+                <span>Network Fee: {{ ((priceData?.minerFees || 0) + (priceData?.basePostage || 0)) / 1e8 }}</span>
                 <span>Total BTC: {{ (priceData?.total || 0) / 1e8 }}</span>
                 <span>Total USD: 0.000001</span>
               </div>
