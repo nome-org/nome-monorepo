@@ -74,6 +74,8 @@ const isWhiteListOpen = ref(false)
 
 const isWhiteListed = ref(false)
 
+const userPaid = ref(true)
+
 const feeRate = computed(() => {
   return (
     selectedFee.value?.name === 'Custom'
@@ -167,6 +169,7 @@ const createOrderM = useMutation({
               console.log('cancelled')
             },
             onFinish: (tx) => {
+              userPaid.value = true
               paymentTx.value = `${import.meta.env.VITE_APP_MEMPOOL_URL}/tx/${tx}`
             }
           })
@@ -188,7 +191,18 @@ const isEligibleToMint = computed(() => {
   return isClaimChecked.value && shouldMint
 })
 
-function makeTwitterPost() { }
+function makeTwitterPost() {
+  const tweetText = encodeURIComponent(`🪙  NōME 🪙
+Just minted $NOME BRC-20 that has a utility:
+
+• Access to the NōME platform 
+• Rewarding Ordinals community
+• Discount for upcoming collections
+
+More info:
+https://brc20.nome.wtf/`)
+  window.open(`https://twitter.com/intent/tweet?text=${tweetText}`)
+}
 </script>
 <template>
   <div class="">
@@ -282,18 +296,14 @@ function makeTwitterPost() { }
         </div>
         <div v-if="isEligibleToMint" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
-            <div class="mt-10">
-              <!-- <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
+            <!-- <div class="mt-10"> -->
+            <!-- <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
                 <span class="text-green text-xl">Congratulations!</span>
                 <p class="text-xl">You claimed {{ eligibleFreeAmount }} free NOME tokens</p>
                 <p class="mt-4 text-[#5A5A5A]">To receive them, please, proceed with the Network fees payment below.</p>
               </div> -->
-              <img class="my-8 w-full object-fill" src="/chart.png" alt="Chart" />
-              <div class="flex items-center justify-center">
-                <button class="text-black bg-white w-[60%] text-xl rounded-lg p-1" @click="makeTwitterPost()">Post on
-                  Twitter</button>
-              </div>
-            </div>
+            <!-- <img class="my-8 w-full object-fill" src="/chart.png" alt="Chart" /> -->
+            <!-- </div> -->
 
             <div class="w-full">
               <div class="flex items-center justify-center">
@@ -327,8 +337,13 @@ function makeTwitterPost() { }
                 <span>Total BTC: {{ (priceData?.total || 0) / 1e8 }}</span>
                 <span>Total USD: 0.000001</span>
               </div>
-              <button class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6" @click="createOrderM.mutate()">MINT
-                $NOME</button>
+              <button class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6" @click="createOrderM.mutate()">
+                MINT $NOME
+              </button>
+              <button v-if="userPaid" class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6"
+                @click="makeTwitterPost()">
+                Post on Twitter
+              </button>
               <p class="text-center text-xl text-[#5a5a5a] mt-4" v-if="paymentTx">
                 Link to the <a :href="paymentTx" target="_blank" rel="noreferrer noopener"
                   class="underline underline-offset-8 hover:underline">mempool</a>
