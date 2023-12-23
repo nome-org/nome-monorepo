@@ -9,6 +9,7 @@ import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } fr
 import FeeRate from "./FeeRate.vue";
 import { validate as validateBTCAddress } from 'bitcoin-address-validation'
 import DisclaimerCheckbox from "./DisclaimerCheckbox.vue";
+import PriceItem from "./ui/PriceItem.vue";
 
 type IFee = {
   name: string,
@@ -203,6 +204,31 @@ More info:
 https://brc20.nome.wtf/`)
   window.open(`https://twitter.com/intent/tweet?text=${tweetText}`)
 }
+
+const { data: usdPrice } = useQuery({
+  queryKey: ["coinCap"],
+  enabled: () => Boolean(address.value && priceData.value && priceQ.dataUpdatedAt.value),
+  refetchInterval: () => {
+    const now = new Date().getTime();
+    const shouldRefresh = Boolean(
+      priceQ.dataUpdatedAt.value &&
+      now - priceQ.dataUpdatedAt.value < 60_000
+    );
+
+    return shouldRefresh ? 20_000 : false;
+  },
+  queryFn: async () => {
+    const response = await fetch(
+      "https://api.coincap.io/v2/rates/bitcoin",
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ).then(res => res.json());
+    return response.data.rateUsd;
+  },
+});
 </script>
 <template>
   <div class="">
@@ -333,9 +359,14 @@ https://brc20.nome.wtf/`)
 
               <div :class="priceQ.isSuccess ? 'visible' : 'invisible'"
                 class="mt-8 flex flex-col gap-2 text-[#5a5a5a] text-xl">
-                <span>Network Fee: {{ ((priceData?.minerFees || 0) + (priceData?.basePostage || 0)) / 1e8 }}</span>
-                <span>Total BTC: {{ (priceData?.total || 0) / 1e8 }}</span>
-                <span>Total USD: 0.000001</span>
+                <PriceItem label="Tokens price BTC:" :value="((priceData?.brc20Price || 0) / 1e8).toFixed(8)" />
+                <PriceItem label="Network Fee:" :value="((
+                  (priceData?.minerFees || 0) +
+                  (priceData?.basePostage || 0)
+                ) / 1e8).toFixed(8)" />
+                <PriceItem label="Total BTC:" :value="((priceData?.total || 0) / 1e8).toFixed(8)" />
+                <PriceItem label="Total USD:" :value="`$${(usdPrice * (priceData?.total || 0) / 1e8).toFixed(2)}`" />
+
               </div>
               <button class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6" @click="createOrderM.mutate()">
                 MINT $NOME
