@@ -257,7 +257,7 @@ const { data: usdPrice } = useQuery({
           </h1>
           <p class="mb-8">
             We established an independent
-            <span href="" class="font-bold text-pink">
+            <span class="font-bold text-pink">
               nonprofit organization 501(c)(3)
             </span>
             to move the global Digital Art movement
@@ -266,12 +266,12 @@ const { data: usdPrice } = useQuery({
           </p>
           <p class="mb-8">
             Today, we are excited to launch the first
-            <span href="" class="font-bold text-pink">
+            <span class="font-bold text-pink">
               crowdfunding
             </span>
             mint,
             leveraging the modern
-            <span href="" class="font-bold text-pink">
+            <span class="font-bold text-pink">
               Bitcoin BRC-20
             </span>
             technology.
