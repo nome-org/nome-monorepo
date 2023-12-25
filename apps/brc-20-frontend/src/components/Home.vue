@@ -257,23 +257,23 @@ const { data: usdPrice } = useQuery({
           </h1>
           <p class="mb-8">
             We established an independent
-            <a href="" class="font-bold text-pink">
+            <span href="" class="font-bold text-pink">
               nonprofit organization 501(c)(3)
-            </a>
+            </span>
             to move the global Digital Art movement
             forward. NOME ART's mission is to be the best place to learn about crypto art, and tech, and have fun. We
             believe in a future where systems are self-sovereign and decentralized.
           </p>
           <p class="mb-8">
             Today, we are excited to launch the first
-            <a href="" class="font-bold text-pink">
+            <span href="" class="font-bold text-pink">
               crowdfunding
-            </a>
+            </span>
             mint,
             leveraging the modern
-            <a href="" class="font-bold text-pink">
+            <span href="" class="font-bold text-pink">
               Bitcoin BRC-20
-            </a>
+            </span>
             technology.
             BRC-20 is an experimental standard for fungible tokens on the L1 Bitcoin blockchain. Raised funds will be
             invested back into the ecosystem, improving the Web3 space with our Ordinals tech tools and education.
