@@ -302,8 +302,9 @@ const { data: usdPrice } = useQuery({
             </div>
           </div>
         </div>
+        <!-- TODO: REMOVE THIS -->
 
-        <div class="border-t border-solid border-opacity-20 border-white py-8" v-show="isClaimChecked">
+        <div class="border-t border-solid border-opacity-20 border-white py-8" v-show="true || isClaimChecked">
           <p v-if="eligibleFreeAmount > 0 && isWhiteListOpen">
             <span class="text-green">Congratulations!</span> You got
             {{ eligibleFreeAmount.toLocaleString() }}
@@ -320,7 +321,8 @@ const { data: usdPrice } = useQuery({
             <span class="text-green">public $N0ME mint</span> starts in 2 hours after the WL.
           </p>
         </div>
-        <div v-if="isEligibleToMint" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
+        <!-- TODO: REMOVE THIS -->
+        <div v-if="true || isEligibleToMint" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
             <!-- <div class="mt-10"> -->
             <!-- <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
@@ -331,13 +333,13 @@ const { data: usdPrice } = useQuery({
             <!-- <img class="my-8 w-full object-fill" src="/chart.png" alt="Chart" /> -->
             <!-- </div> -->
 
-            <div class="w-full">
+            <div class="w-full ml-12">
               <div class="flex items-center justify-center">
                 <img src="/stats.png" class="" alt="Stats" />
               </div>
 
               <div class="mt-8 flex flex-col">
-                <label class="mb-2">Mint quantity</label>
+                <label class="mb-4 text-xl">Total quantity</label>
                 <input type="number" placeholder="min 1,000 / max 250,000" v-model="quantity" min="1000" max="250000"
                   step="1000"
                   class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
@@ -371,14 +373,14 @@ const { data: usdPrice } = useQuery({
               <button class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6" @click="createOrderM.mutate()">
                 MINT $NOME
               </button>
-              <button v-if="userPaid" class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6"
-                @click="makeTwitterPost()">
-                Post on Twitter
-              </button>
               <p class="text-center text-xl text-[#5a5a5a] mt-4" v-if="paymentTx">
                 Link to the <a :href="paymentTx" target="_blank" rel="noreferrer noopener"
                   class="underline underline-offset-8 hover:underline">mempool</a>
               </p>
+              <button v-if="userPaid" class="text-black bg-white w-full rounded-lg p-1 text-xl mt-16"
+                @click="makeTwitterPost()">
+                Post on Twitter
+              </button>
             </div>
           </div>
         </div>

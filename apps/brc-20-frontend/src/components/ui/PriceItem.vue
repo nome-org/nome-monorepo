@@ -6,7 +6,7 @@ const { label, value } = defineProps({
 </script>
 <template>
     <div class="flex gap-x-4">
-        <span class="w-56 text-right">
+        <span class="w-56">
             {{ label }}
         </span>
         <span>

@@ -18,6 +18,7 @@ import { ORDER_EXPIRATION_TIME } from "../constants.js"
 import { isWhitelistOpen } from "../util/isWhiteListOpen.js"
 import { Claim, Order } from "@prisma/client"
 import { checkOrderDuplicate } from "../util/orders/isOrderDuplicate.js"
+import createHttpError from "http-errors"
 
 function renewOrderExpiryDate(id: number) {
   return prisma.order.update({
@@ -72,6 +73,10 @@ export const createOrderEndpoint = defaultEndpointsFactory
             orders: true,
           },
         })
+
+        if (!existingClaim) {
+          throw createHttpError(400, "Invalid claim address")
+        }
       }
 
       const { price, freeAmount } = await getWLBenefits(existingClaim)
