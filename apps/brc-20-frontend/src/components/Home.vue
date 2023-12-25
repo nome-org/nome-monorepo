@@ -302,9 +302,8 @@ const { data: usdPrice } = useQuery({
             </div>
           </div>
         </div>
-        <!-- TODO: REMOVE THIS -->
 
-        <div class="border-t border-solid border-opacity-20 border-white py-8" v-show="true || isClaimChecked">
+        <div class="border-t border-solid border-opacity-20 border-white py-8" v-show="isClaimChecked">
           <p v-if="eligibleFreeAmount > 0 && isWhiteListOpen">
             <span class="text-green">Congratulations!</span> You got
             {{ eligibleFreeAmount.toLocaleString() }}
@@ -322,7 +321,7 @@ const { data: usdPrice } = useQuery({
           </p>
         </div>
         <!-- TODO: REMOVE THIS -->
-        <div v-if="true || isEligibleToMint" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
+        <div v-if="isEligibleToMint" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
             <!-- <div class="mt-10"> -->
             <!-- <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
