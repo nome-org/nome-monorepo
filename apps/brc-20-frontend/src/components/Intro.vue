@@ -26,7 +26,7 @@ function handleVolumeChange(e: Event) {
         <span @click="toggleVideoSound" class="cursor-pointer">
           <v-icon scale="1.4" :name="isMuted ? 'fa-volume-mute' : 'fa-volume-up'" />
         </span>
-        <input type="range" :value="volume" @change="handleVolumeChange" min="1" max="100" class="" />
+        <input type="range" :value="volume" @input="handleVolumeChange" min="1" max="100" class="" />
       </div>
 
       <div class="flex flex-col gap-y-8 items-center absolute bottom-16 sm:static">
