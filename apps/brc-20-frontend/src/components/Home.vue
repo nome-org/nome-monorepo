@@ -63,7 +63,7 @@ watch(feesQ.data, (feesResponse) => {
   }
 })
 
-const { refetch: checkClaim, isSuccess: isClaimChecked, data: claimData } = useQuery({
+const { refetch: checkWLClaim, isSuccess: isClaimChecked } = useQuery({
   queryKey: ['wl check', address],
   queryFn: () => client.provide('get', '/check-claim', {
     address: address.value,
@@ -71,6 +71,20 @@ const { refetch: checkClaim, isSuccess: isClaimChecked, data: claimData } = useQ
 
   enabled: false
 })
+const isAddressChecked = ref(false)
+const checkClaim = async () => {
+  isAddressChecked.value = true
+  if (isWhiteListOpen.value) {
+    const { data } = await checkWLClaim()
+    if (data && data.status === 'success') {
+      const claimInfo = data.data
+      quantity.value = claimInfo.freeAmount || 1000
+      eligibleFreeAmount.value = claimInfo.freeAmount
+      isWhiteListed.value = claimInfo.isWhitelisted
+    }
+  }
+
+}
 
 const eligibleFreeAmount = ref(0)
 
@@ -134,15 +148,6 @@ const priceData = computed(() => {
   return priceQ.data.value?.status !== 'success' ? null : priceQ.data.value.data
 })
 
-watch(claimData, () => {
-  if (claimData.value?.status === 'success') {
-    const { data: claimInfo } = claimData.value
-    quantity.value = claimInfo.freeAmount || 1000
-    eligibleFreeAmount.value = claimInfo.freeAmount
-    isWhiteListed.value = claimInfo.isWhitelisted
-  }
-
-})
 
 const paymentTx = ref('')
 
@@ -206,14 +211,19 @@ const createOrderM = useMutation({
 })
 
 const disclaimersCheck = ref([false, false])
-const consented = computed(() => disclaimersCheck.value.every(item => item))
+const consented = computed(() => {
+  if (isWhiteListOpen.value) {
+    return disclaimersCheck.value.every(item => item)
+  }
+  return disclaimersCheck.value[1]
+})
 const isAddressValid = computed(() => validateBTCAddress(address.value))
 const isEligibleToMint = computed(() => {
-  const wl = isWhiteListOpen.value && isWhiteListed.value
-  const publicSale = !isWhiteListOpen.value
+  const wl = isClaimChecked.value && isWhiteListOpen.value && isWhiteListed.value
+  const publicSale = isAddressChecked.value && !isWhiteListOpen.value
   const shouldMint = wl || publicSale
   // return import.meta.env.DEV;
-  return isClaimChecked.value && shouldMint
+  return shouldMint
 })
 
 function makeTwitterPost() {
@@ -329,8 +339,8 @@ const progress = useMintProgress()
             </div>
           </div>
         </div>
-
-        <div class="border-t border-solid border-opacity-20 border-white py-8" v-show="isClaimChecked">
+        <div class="border-t border-solid border-opacity-20 border-white"></div>
+        <div class="py-8" v-show="isWhiteListOpen && isClaimChecked">
           <p v-if="eligibleFreeAmount > 0 && isWhiteListOpen">
             <span class="text-green">Congratulations!</span> You got
             {{ eligibleFreeAmount.toLocaleString() }}
