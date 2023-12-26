@@ -4,10 +4,10 @@
       href="/" style="background-image: url(/logo-with-slant.svg);">
       <img src="../../assets/images/logo-blank.png" alt="" class="block w-full" />
     </a>
+    <a class="right-1/3 md:right-1/4 top-0 absolute text-[20px] leading-[15px] mx-0 mt-6 mb-20 text-white underline transition-all duration-75 hover:italic underline-offset-8 hover:underline"
+      target="_blank" rel="noreferrer noopener" href="https://nomenft.gitbook.io/doc/b-r-c-20">docs</a>
     <a class="right-0 top-0 absolute text-[20px] leading-[15px] mx-0 mt-6 mb-20 text-white underline transition-all duration-75 hover:italic underline-offset-8 hover:underline"
-      target="_blank"
-      rel="noreferrer noopener"
-      href="https://nome.wtf">
+      target="_blank" rel="noreferrer noopener" href="https://nome.wtf">
       nome.wtf
     </a>
   </div>
