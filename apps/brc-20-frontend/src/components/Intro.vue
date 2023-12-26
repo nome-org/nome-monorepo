@@ -18,10 +18,10 @@ function handleVolumeChange(e: Event) {
 <template>
   <div class="relative h-screen w-screen">
     <video src="/brc-20-intro.mp4" playsinline loop id="video" autoplay preload="auto" :muted="isMuted"
-      :volume="volume / 100" class="min-w-full min-h-full object-cover fixed z-0"></video>
+      :volume="volume / 100" class="min-w-full h-1/3 sm:min-h-full object-cover fixed z-0"></video>
 
     <div
-      class="fixed bg-black items-center bottom-0 w-full flex justify-between p-3 text-white text-xl px-3 sm:px-12 flex-wrap">
+      class="h-2/3 sm:h-20 fixed bg-black items-center bottom-0 w-full flex justify-between p-3 text-white text-xl px-3 sm:px-12 flex-wrap flex-col sm:flex-row">
       <div class="flex items-center gap-3">
         <span @click="toggleVideoSound" class="cursor-pointer">
           <v-icon scale="1.4" :name="isMuted ? 'fa-volume-mute' : 'fa-volume-up'" />
@@ -29,13 +29,13 @@ function handleVolumeChange(e: Event) {
         <input type="range" :value="volume" @change="handleVolumeChange" min="1" max="100" class="" />
       </div>
 
-      <div class="flex items-center ">
+      <div class="flex flex-col gap-y-8 items-center absolute bottom-16 sm:static">
+        <div class="sm:hidden">$N0ME BRC-20 mint</div>
         <router-link to="/mint" class="text-black bg-white rounded-lg p-1 text-xl w-28 text-center">
           ENTER
         </router-link>
-
       </div>
-      <div>$N0ME BRC-20 mint</div>
+      <div class="hidden sm:block">$N0ME BRC-20 mint</div>
     </div>
   </div>
 </template>
