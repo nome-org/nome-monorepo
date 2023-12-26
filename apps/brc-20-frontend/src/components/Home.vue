@@ -12,6 +12,7 @@ import DisclaimerCheckbox from "./ui/DisclaimerCheckbox.vue";
 import PriceItem from "./ui/PriceItem.vue";
 import NumberInput from "./ui/NumberInput.vue";
 import SaleProgress from "./SaleProgress.vue";
+import { useMintProgress } from "../api/queries/mint-progress";
 
 type IFee = {
   name: string,
@@ -243,6 +244,8 @@ const { data: usdPrice } = useQuery({
   },
 });
 
+const progress = useMintProgress()
+
 </script>
 <template>
   <div class="">
@@ -390,7 +393,7 @@ const { data: usdPrice } = useQuery({
                 <PriceItem label="Total USD:" :value="`$${(usdPrice * (priceData?.total || 0) / 1e8).toFixed(2)}`" />
 
               </div>
-              <button :disabled="!isFormValid"
+              <button :disabled="!isFormValid && progress < 50_000_000"
                 class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 @click="createOrderM.mutate()">
                 MINT $NOME

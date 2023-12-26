@@ -2,10 +2,10 @@ import { rateLimit } from "express-rate-limit"
 import { RedisStore } from "rate-limit-redis"
 import { Redis } from "ioredis"
 
-const client = new Redis()
+export const redisClient = new Redis()
 export const rateLimitStore = new RedisStore({
   // @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-  sendCommand: (...args: string[]) => client.call(...args),
+  sendCommand: (...args: string[]) => redisClient.call(...args),
 })
 
 export const rateLimitMiddleware = rateLimit({

@@ -1,30 +1,14 @@
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query';
 import ProgressBar from './ui/ProgressBar.vue';
-import { client } from '../api/client';
 import { computed } from 'vue';
 import { formatNumber } from '../util/formatNumber';
+import { useMintProgress } from '../api/queries/mint-progress';
 
-const { data: progressData } = useQuery({
-    queryKey: ['mint progress'],
-    queryFn: async () => {
-        return client.provide('get', '/progress', {})
-    }
-})
+const progress = useMintProgress()
 
-const progressFormatted = computed(() => {
-    if (progressData.value?.status === 'success' && progressData.value?.data?.progress) {
-        return formatNumber(progressData.value.data.progress)
-    }
-    return '0'
-})
+const progressFormatted = computed(() => formatNumber(progress.value))
 
-const percentage = computed(() => {
-    if (progressData.value?.status === 'success' && progressData.value?.data?.progress) {
-        return progressData.value.data.progress / 50_000_000 * 100
-    }
-    return 0
-})
+const percentage = computed(() => progress.value / 50_000_000 * 100)
 </script>
 
 <template>
