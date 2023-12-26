@@ -349,7 +349,7 @@ const progress = useMintProgress()
             <!-- <img class="my-8 w-full object-fill" src="/chart.png" alt="Chart" /> -->
             <!-- </div> -->
 
-            <div class="w-full ml-12">
+            <div class="w-full sm:ml-12">
               <div class="flex items-center justify-center">
                 <!-- <img src="/stats.png" class="" alt="Stats" /> -->
                 <SaleProgress />
