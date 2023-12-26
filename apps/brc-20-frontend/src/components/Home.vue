@@ -334,7 +334,7 @@ const { data: usdPrice } = useQuery({
             <span class="text-green">public $N0ME mint</span> starts in 2 hours after the WL.
           </p>
         </div>
-        <!-- TODO: REMOVE THIS -->
+
         <div v-if="isEligibleToMint" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
             <!-- <div class="mt-10"> -->
@@ -356,7 +356,7 @@ const { data: usdPrice } = useQuery({
                   <div class="mb-4 text-xl">
                     Total quantity
                   </div>
-                  <NumberInput placeholder="min 1,000 / max 250,000" v-model="quantity" :min="1000" :max="250_000"
+                  <NumberInput placeholder="min 1,000 / max 250,000" v-model="quantity"
                     class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
                   <p class="mt-2 text-pink text-sm" v-if="!isAmountValid">
                     Please, make sure to place integer numbers with no hundreds (e.g. 1,000 | 18,000 | 111,001,000) within
