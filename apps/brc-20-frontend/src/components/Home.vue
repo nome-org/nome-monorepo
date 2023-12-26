@@ -78,6 +78,19 @@ const isWhiteListed = ref(false)
 
 const userPaid = ref(true)
 
+
+const isAmountValid = computed(() => {
+  const amount = quantity.value
+  return amount > 0
+    && amount % 1000 === 0
+    && amount >= 1000
+    && amount <= 250_000
+})
+
+const isFormValid = computed(() => {
+  return isAmountValid.value
+})
+
 const feeRate = computed(() => {
   return (
     selectedFee.value?.name === 'Custom'
@@ -98,10 +111,8 @@ const priceQ = useQuery({
     })
   },
   enabled: () => {
-    return quantity.value >= 1000
+    return isFormValid.value
       && !!selectedFee.value
-      && !!quantity.value
-      && !!address.value
       && isAddressValid.value
   },
 })
@@ -230,6 +241,7 @@ const { data: usdPrice } = useQuery({
     return response.data.rateUsd;
   },
 });
+
 </script>
 <template>
   <div class="">
@@ -339,9 +351,17 @@ const { data: usdPrice } = useQuery({
               </div>
 
               <div class="mt-8 flex flex-col">
-                <label class="mb-4 text-xl">Total quantity</label>
-                <NumberInput placeholder="min 1,000 / max 250,000" v-model="quantity"
-                  class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
+                <label>
+                  <div class="mb-4 text-xl">
+                    Total quantity
+                  </div>
+                  <NumberInput placeholder="min 1,000 / max 250,000" v-model="quantity" :min="1000" :max="250_000"
+                    class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
+                  <p class="mt-2 text-pink text-sm" v-if="!isAmountValid">
+                    Please, make sure to place integer numbers with no hundreds (e.g. 1,000 | 18,000 | 111,001,000) within
+                    the min & max range
+                  </p>
+                </label>
               </div>
 
               <div class="grid grid-cols-3 gap-5 mt-8">
@@ -369,7 +389,9 @@ const { data: usdPrice } = useQuery({
                 <PriceItem label="Total USD:" :value="`$${(usdPrice * (priceData?.total || 0) / 1e8).toFixed(2)}`" />
 
               </div>
-              <button class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6" @click="createOrderM.mutate()">
+              <button :disabled="!isFormValid"
+                class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                @click="createOrderM.mutate()">
                 MINT $NOME
               </button>
               <p class="text-center text-xl text-[#5a5a5a] mt-4" v-if="paymentTx">
