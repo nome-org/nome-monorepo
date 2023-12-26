@@ -301,16 +301,16 @@ const progress = useMintProgress()
 
         <div class="pb-12 pt-2 md:mt-8 mt-12 w-full relative">
           <h3 class="my-8 text-xl">Welcome</h3>
-          <div class="flex items-start gap-6 mt-6 w-full">
+          <div class="flex flex-col-reverse sm:flex-row items-start gap-6 mt-6 w-full">
             <button
-              class="bg-white text-black md:w-[20%] w-[30%] p-1.5 rounded-md whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed"
+              class="bg-white text-black md:w-[20%] w-full p-1.5 rounded-md whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed"
               :disabled="!consented || !isAddressValid" @click="checkClaim()">
-              WL Access
+              {{ isWhiteListOpen ? 'WL Access' : 'Public Access' }}
             </button>
             <div>
               <input type="text" placeholder="Wallet address" v-model="address"
                 class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
-              <div class="mt-8 relative -left-12 gap-y-4 flex flex-col">
+              <div class="mt-8 relative sm:-left-12 gap-y-4 flex flex-col">
                 <DisclaimerCheckbox v-model="disclaimersCheck[0]"
                   text="If you are a holder, please, provide the wallet address that holds the 1/1 art." />
                 <DisclaimerCheckbox v-model="disclaimersCheck[1]"
