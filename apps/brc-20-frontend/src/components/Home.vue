@@ -10,6 +10,7 @@ import FeeRate from "./FeeRate.vue";
 import { validate as validateBTCAddress } from 'bitcoin-address-validation'
 import DisclaimerCheckbox from "./DisclaimerCheckbox.vue";
 import PriceItem from "./ui/PriceItem.vue";
+import NumberInput from "./ui/NumberInput.vue";
 
 type IFee = {
   name: string,
@@ -164,7 +165,7 @@ const createOrderM = useMutation({
                   amountSats: BigInt(totalPrice)
                 }
               ],
-              senderAddress: address.addresses[0].address
+              senderAddress: address.addresses[0].address,
             },
             onCancel: () => {
               console.log('cancelled')
@@ -339,8 +340,7 @@ const { data: usdPrice } = useQuery({
 
               <div class="mt-8 flex flex-col">
                 <label class="mb-4 text-xl">Total quantity</label>
-                <input type="number" placeholder="min 1,000 / max 250,000" v-model="quantity" min="1000" max="250000"
-                  step="1000"
+                <NumberInput placeholder="min 1,000 / max 250,000" v-model="quantity"
                   class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
               </div>
 
@@ -353,7 +353,7 @@ const { data: usdPrice } = useQuery({
               <div class="mt-8 flex flex-col" v-if="selectedFee?.name === 'Custom'">
                 <label class="mb-2">You can add a custom fee below</label>
                 <div class="w-full bg-white text-black p-2 flex items-center gap-5 rounded-md">
-                  <input v-model="customFee" type="number" class="outline-none w-full" />
+                  <NumberInput v-model="customFee" className="outline-none w-full" />
                   <span>sats/vByte</span>
                 </div>
               </div>
