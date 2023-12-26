@@ -74,7 +74,18 @@ const { refetch: checkClaim, isSuccess: isClaimChecked, data: claimData } = useQ
 
 const eligibleFreeAmount = ref(0)
 
-const isWhiteListOpen = ref(false)
+const {
+  data: isWhiteListOpen
+} = useQuery({
+  queryKey: ['whitelist status'],
+  queryFn: async () => {
+    const response = await client.provide('get', '/whitelist/status', {})
+    if (response.status === 'success') {
+      return response.data.open
+    }
+    return false
+  }
+})
 
 const isWhiteListed = ref(false)
 
@@ -128,7 +139,6 @@ watch(claimData, () => {
     const { data: claimInfo } = claimData.value
     quantity.value = claimInfo.freeAmount || 1000
     eligibleFreeAmount.value = claimInfo.freeAmount
-    isWhiteListOpen.value = claimInfo.isWhitelistOpen
     isWhiteListed.value = claimInfo.isWhitelisted
   }
 
@@ -311,7 +321,7 @@ const progress = useMintProgress()
               <input type="text" placeholder="Wallet address" v-model="address"
                 class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
               <div class="mt-8 relative sm:-left-12 gap-y-4 flex flex-col">
-                <DisclaimerCheckbox v-model="disclaimersCheck[0]"
+                <DisclaimerCheckbox v-if="isWhiteListOpen" v-model="disclaimersCheck[0]"
                   text="If you are a holder, please, provide the wallet address that holds the 1/1 art." />
                 <DisclaimerCheckbox v-model="disclaimersCheck[1]"
                   text="If you place someone else's address, your tokens will be sent to another person." />

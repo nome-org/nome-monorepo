@@ -114,7 +114,21 @@ type GetProgressResponse = {
     };
 }
 
-export type Path = "" | "/check-claim" | "/price" | "/orders" | "/orders/:id" | "/progress"
+type GetWhitelistStatusInput = {}
+
+type GetWhitelistStatusResponse = {
+    status: "success";
+    data: {
+        open: boolean;
+    };
+} | {
+    status: "error";
+    error: {
+        message: string;
+    };
+}
+
+export type Path = "" | "/check-claim" | "/price" | "/orders" | "/orders/:id" | "/progress" | "/whitelist/status"
 
 export type Method = "get" | "post" | "put" | "delete" | "patch"
 
@@ -127,6 +141,7 @@ export interface Input extends Record<MethodPath, any> {
     "post /orders": PostOrdersInput;
     "get /orders/:id": GetOrdersIdInput;
     "get /progress": GetProgressInput;
+    "get /whitelist/status": GetWhitelistStatusInput;
 }
 
 export interface Response extends Record<MethodPath, any> {
@@ -136,11 +151,12 @@ export interface Response extends Record<MethodPath, any> {
     "post /orders": PostOrdersResponse;
     "get /orders/:id": GetOrdersIdResponse;
     "get /progress": GetProgressResponse;
+    "get /whitelist/status": GetWhitelistStatusResponse;
 }
 
-export const jsonEndpoints = { "get ": true, "get /check-claim": true, "get /price": true, "post /orders": true, "get /orders/:id": true, "get /progress": true }
+export const jsonEndpoints = { "get ": true, "get /check-claim": true, "get /price": true, "post /orders": true, "get /orders/:id": true, "get /progress": true, "get /whitelist/status": true }
 
-export const endpointTags = { "get ": [], "get /check-claim": [], "get /price": [], "post /orders": [], "get /orders/:id": [], "get /progress": [] }
+export const endpointTags = { "get ": [], "get /check-claim": [], "get /price": [], "post /orders": [], "get /orders/:id": [], "get /progress": [], "get /whitelist/status": [] }
 
 export type Provider = <M extends Method, P extends Path>(method: M, path: P, params: Input[`${M} ${P}`]) => Promise<Response[`${M} ${P}`]>
 
