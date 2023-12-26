@@ -6,11 +6,12 @@ import Header from "./shared/Header.vue";
 import { useQuery, useMutation } from '@tanstack/vue-query'
 import { client } from "../api/client";
 import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
-import FeeRate from "./FeeRate.vue";
+import FeeRate from "./ui/FeeRate.vue";
 import { validate as validateBTCAddress } from 'bitcoin-address-validation'
-import DisclaimerCheckbox from "./DisclaimerCheckbox.vue";
+import DisclaimerCheckbox from "./ui/DisclaimerCheckbox.vue";
 import PriceItem from "./ui/PriceItem.vue";
 import NumberInput from "./ui/NumberInput.vue";
+import SaleProgress from "./SaleProgress.vue";
 
 type IFee = {
   name: string,
@@ -200,7 +201,7 @@ const isEligibleToMint = computed(() => {
   const wl = isWhiteListOpen.value && isWhiteListed.value
   const publicSale = !isWhiteListOpen.value
   const shouldMint = wl || publicSale
-
+  // return import.meta.env.DEV;
   return isClaimChecked.value && shouldMint
 })
 
@@ -347,9 +348,9 @@ const { data: usdPrice } = useQuery({
 
             <div class="w-full ml-12">
               <div class="flex items-center justify-center">
-                <img src="/stats.png" class="" alt="Stats" />
+                <!-- <img src="/stats.png" class="" alt="Stats" /> -->
+                <SaleProgress />
               </div>
-
               <div class="mt-8 flex flex-col">
                 <label>
                   <div class="mb-4 text-xl">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { formatNumber } from '../../util/formatNumber';
 
 const {
     className,
@@ -31,7 +32,7 @@ const handleChange = (e: Event) => {
         && isInValidRange(value)
     ) {
         emit('update:modelValue', value)
-        formattedNumber.value = String(value).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+        formattedNumber.value = formatNumber(value)
     }
 }
 </script>
