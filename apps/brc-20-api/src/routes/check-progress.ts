@@ -1,7 +1,6 @@
 import { defaultEndpointsFactory } from "express-zod-api"
 import { z } from "zod"
-import { prisma } from "../prisma/client.js"
-import { OrderStatus } from "@prisma/client"
+import { getProgress } from "../scheduler/watch-buys/updateProgress.js"
 
 export const checkProgressEndpoint = defaultEndpointsFactory.build({
   method: "get",
@@ -12,16 +11,7 @@ export const checkProgressEndpoint = defaultEndpointsFactory.build({
     progress: z.number(),
   }),
   handler: async () => {
-    const {
-      _sum: { amount: progress },
-    } = await prisma.order.aggregate({
-      _sum: {
-        amount: true,
-      },
-      where: {
-        status: OrderStatus.COMPLETE,
-      },
-    })
-    return { progress: progress || 0 }
+    const progress = await getProgress()
+    return { progress }
   },
 })
