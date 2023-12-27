@@ -342,7 +342,7 @@ const changePreviewStatus = (status: boolean) => {
             <button
               class="bg-white text-black md:w-[20%] w-full p-1.5 rounded-md whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed"
               :disabled="!consented || !isAddressValid" @click="checkClaim()">
-              {{ isWhiteListOpen ? 'WL Access' : 'Public Access' }}
+              {{ isWhiteListOpen ? 'WL Access' : 'ENTER' }}
             </button>
             <div>
               <input type="text" placeholder="Wallet address" v-model="address"
@@ -433,12 +433,12 @@ const changePreviewStatus = (status: boolean) => {
               <button :disabled="!isFormValid && progress < 50_000_000"
                 class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 @click="createOrderM.mutate({ xverse: true })">
-                MINT WITH XVERSE
+                Buy with Xverse
               </button>
               <button :disabled="!isFormValid && progress < 50_000_000"
                 class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 @click="createOrderM.mutate({ xverse: false })">
-                MINT WITH OTHER WALLET
+                Buy with other wallet
               </button>
               <p class="text-center text-xl text-[#5a5a5a] mt-4" v-if="paymentTx">
                 Link to the <a :href="paymentTx" target="_blank" rel="noreferrer noopener"
