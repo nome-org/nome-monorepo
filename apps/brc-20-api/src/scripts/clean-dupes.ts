@@ -12,7 +12,14 @@ async function main() {
         freeAmount: "desc",
       },
     })
-    console.log(dupes.map((d) => [d.ordinalAddress, d.freeAmount]))
+    const [_keeper, ...rest] = dupes
+    for (const dupe of rest) {
+      await prisma.claim.delete({
+        where: {
+          id: dupe.id,
+        },
+      })
+    }
   }
 }
 
