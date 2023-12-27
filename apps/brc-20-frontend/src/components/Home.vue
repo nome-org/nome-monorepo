@@ -13,6 +13,7 @@ import PriceItem from "./ui/PriceItem.vue";
 import NumberInput from "./ui/NumberInput.vue";
 import SaleProgress from "./SaleProgress.vue";
 import { useMintProgress } from "../api/queries/mint-progress";
+import { makeTwitterPost } from "../util/makeTwitterPost";
 
 type IFee = {
   name: string,
@@ -225,19 +226,6 @@ const isEligibleToMint = computed(() => {
   // return import.meta.env.DEV;
   return shouldMint
 })
-
-function makeTwitterPost() {
-  const tweetText = encodeURIComponent(`🪙  NōME 🪙
-Just minted $NOME BRC-20 that has a utility:
-
-• Access to the NōME platform 
-• Rewarding Ordinals community
-• Discount for upcoming collections
-
-More info:
-https://brc20.nome.wtf/`)
-  window.open(`https://twitter.com/intent/tweet?text=${tweetText}`)
-}
 
 const { data: usdPrice } = useQuery({
   queryKey: ["coinCap"],
