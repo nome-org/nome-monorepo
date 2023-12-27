@@ -35,7 +35,7 @@ export const createOrderEndpoint = defaultEndpointsFactory
   .addExpressMiddleware(
     rateLimit({
       windowMs: 60 * 60 * 1000,
-      limit: 10,
+      limit: 100,
       standardHeaders: "draft-7",
       legacyHeaders: false,
       store: rateLimitStore,
