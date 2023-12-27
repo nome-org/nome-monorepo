@@ -39,6 +39,14 @@ export const createOrderEndpoint = defaultEndpointsFactory
       standardHeaders: "draft-7",
       legacyHeaders: false,
       store: rateLimitStore,
+      keyGenerator(request): string {
+        if (!request.ip) {
+          console.error("Warning: request.ip is missing!")
+          return request.socket.remoteAddress!
+        }
+
+        return request.ip.replace(/:\d+[^:]*$/, "")
+      },
     }),
   )
   .build({
