@@ -12,7 +12,7 @@ const percentage = computed(() => progress.value / 50_000_000 * 100)
 </script>
 
 <template>
-    <div class="p-4 bg-[#252525] w-full rounded-lg text-sm">
+    <div class="p-4 bg-[#252525] w-full rounded-lg text-sm sm:text-base">
         <div class="pb-4 border-b border-[#6b6b6b] border-solid">
             <div class="flex justify-between">
                 <div class="flex flex-col gap-2">
