@@ -5,7 +5,7 @@ import Footer from "./shared/Footer.vue";
 import Header from "./shared/Header.vue";
 import { useQuery, useMutation } from '@tanstack/vue-query'
 import { client } from "../api/client";
-import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose, getProviderOrThrow } from 'sats-connect'
+import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
 import FeeRate from "./ui/FeeRate.vue";
 import { validate as validateBTCAddress } from 'bitcoin-address-validation'
 import DisclaimerCheckbox from "./ui/DisclaimerCheckbox.vue";
@@ -159,7 +159,7 @@ const orderDetails = ref({
 })
 const createOrderM = useMutation({
   mutationKey: ['createOrder', quantity, address, feeRate],
-  mutationFn: async () => {
+  mutationFn: async ({ xverse }: { xverse: boolean }) => {
     if (!address.value || !quantity.value || !feeRate.value) {
       return
     }
@@ -181,9 +181,7 @@ const createOrderM = useMutation({
         ? BitcoinNetworkType.Testnet
         : BitcoinNetworkType.Mainnet;
 
-      try {
-
-        await getProviderOrThrow()
+      if (xverse) {
         getAddress({
           payload: {
             message: `We will need this address to pay for your order.`,
@@ -217,7 +215,7 @@ const createOrderM = useMutation({
           },
           onCancel() { }
         })
-      } catch (e) {
+      } else {
         isPreviewOpen.value = true
         orderDetails.value = {
           address: paymentAddress,
@@ -434,8 +432,13 @@ const changePreviewStatus = (status: boolean) => {
               </div>
               <button :disabled="!isFormValid && progress < 50_000_000"
                 class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                @click="createOrderM.mutate()">
-                MINT $NOME
+                @click="createOrderM.mutate({ xverse: true })">
+                MINT WITH XVERSE
+              </button>
+              <button :disabled="!isFormValid && progress < 50_000_000"
+                class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                @click="createOrderM.mutate({ xverse: false })">
+                MINT WITH OTHER WALLET
               </button>
               <p class="text-center text-xl text-[#5a5a5a] mt-4" v-if="paymentTx">
                 Link to the <a :href="paymentTx" target="_blank" rel="noreferrer noopener"
