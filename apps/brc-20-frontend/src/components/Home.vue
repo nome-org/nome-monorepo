@@ -5,7 +5,7 @@ import Footer from "./shared/Footer.vue";
 import Header from "./shared/Header.vue";
 import { useQuery, useMutation } from '@tanstack/vue-query'
 import { client } from "../api/client";
-import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
+import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose, getProviderOrThrow } from 'sats-connect'
 import FeeRate from "./ui/FeeRate.vue";
 import { validate as validateBTCAddress } from 'bitcoin-address-validation'
 import DisclaimerCheckbox from "./ui/DisclaimerCheckbox.vue";
@@ -14,12 +14,14 @@ import NumberInput from "./ui/NumberInput.vue";
 import SaleProgress from "./SaleProgress.vue";
 import { useMintProgress } from "../api/queries/mint-progress";
 import { makeTwitterPost } from "../util/makeTwitterPost";
+import Modal from "./ui/Modal.vue";
 
 type IFee = {
   name: string,
   value: number,
   time: string
 };
+
 
 const address = ref("");
 const quantity = ref(1000);
@@ -151,7 +153,10 @@ const priceData = computed(() => {
 
 
 const paymentTx = ref('')
-
+const orderDetails = ref({
+  address: '',
+  amount: 0
+})
 const createOrderM = useMutation({
   mutationKey: ['createOrder', quantity, address, feeRate],
   mutationFn: async () => {
@@ -171,42 +176,55 @@ const createOrderM = useMutation({
         totalPrice
       } = data.data
 
+
       const networkType = import.meta.env.VITE_APP_BITCOIN_NETWORK === 'testnet'
         ? BitcoinNetworkType.Testnet
         : BitcoinNetworkType.Mainnet;
-      getAddress({
-        payload: {
-          message: `We will need this address to pay for your order.`,
-          network: {
-            type: networkType,
+
+      try {
+
+        await getProviderOrThrow()
+        getAddress({
+          payload: {
+            message: `We will need this address to pay for your order.`,
+            network: {
+              type: networkType,
+            },
+            purposes: [AddressPurpose.Payment]
           },
-          purposes: [AddressPurpose.Payment]
-        },
-        onFinish(address) {
-          sendBtcTransaction({
-            payload: {
-              network: {
-                type: networkType
+          onFinish(address) {
+            sendBtcTransaction({
+              payload: {
+                network: {
+                  type: networkType
+                },
+                recipients: [
+                  {
+                    address: paymentAddress,
+                    amountSats: BigInt(totalPrice)
+                  }
+                ],
+                senderAddress: address.addresses[0].address,
               },
-              recipients: [
-                {
-                  address: paymentAddress,
-                  amountSats: BigInt(totalPrice)
-                }
-              ],
-              senderAddress: address.addresses[0].address,
-            },
-            onCancel: () => {
-              console.log('cancelled')
-            },
-            onFinish: (tx) => {
-              userPaid.value = true
-              paymentTx.value = `${import.meta.env.VITE_APP_MEMPOOL_URL}/tx/${tx}`
-            }
-          })
-        },
-        onCancel() { }
-      })
+              onCancel: () => {
+                console.log('cancelled')
+              },
+              onFinish: (tx) => {
+                userPaid.value = true
+                paymentTx.value = `${import.meta.env.VITE_APP_MEMPOOL_URL}/tx/${tx}`
+              }
+            })
+          },
+          onCancel() { }
+        })
+      } catch (e) {
+        isPreviewOpen.value = true
+        orderDetails.value = {
+          address: paymentAddress,
+          amount: totalPrice
+        }
+      }
+
     }
   }
 })
@@ -254,8 +272,21 @@ const { data: usdPrice } = useQuery({
 
 const progress = useMintProgress()
 
+const isPreviewOpen = ref(false);
+const changePreviewStatus = (status: boolean) => {
+  isPreviewOpen.value = status;
+};
+
+
 </script>
 <template>
+  <Modal :is-open="isPreviewOpen" @on-visibility-change="changePreviewStatus">
+    <div class="p-4 bg-[#252525] w-full rounded-lg text-base flex flex-col gap-y-4  sm:max-w-2xl">
+      <p>To complete the order</p>
+      <p>Please send: {{ (orderDetails.amount / 1e8).toFixed(8) }} BTC</p>
+      <p>To {{ orderDetails.address }}</p>
+    </div>
+  </Modal>
   <div class="">
     <div class="pt-[25px] px-[25px] pb-0">
       <Header />
