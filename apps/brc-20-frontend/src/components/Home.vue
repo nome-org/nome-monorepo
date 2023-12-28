@@ -345,7 +345,7 @@ const changePreviewStatus = (status: boolean) => {
               {{ isWhiteListOpen ? 'WL Access' : 'ENTER' }}
             </button>
             <div>
-              <input type="text" placeholder="Wallet address" v-model="address"
+              <input type="text" placeholder="Ordinals wallet address" v-model="address"
                 class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
               <div class="mt-8 relative sm:-left-12 gap-y-4 flex flex-col">
                 <DisclaimerCheckbox v-if="isWhiteListOpen" v-model="disclaimersCheck[0]"
