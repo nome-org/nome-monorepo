@@ -1,6 +1,6 @@
 import { prisma } from "../prisma/client.js"
 
-const claims = await prisma.claim.findMany({
+let claims = await prisma.claim.findMany({
   where: {
     freeAmount: {
       gt: 0,
@@ -12,6 +12,9 @@ const claims = await prisma.claim.findMany({
   },
 })
 
+claims = claims.filter((claim) => claim.orders.length === 0)
+
+console.log(`Deleting ${claims.length} claims`)
 for (const claim of claims) {
   if (claim.orders.length === 0) {
     await prisma.claim.delete({
