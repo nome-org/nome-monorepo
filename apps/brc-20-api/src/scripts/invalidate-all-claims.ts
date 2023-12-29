@@ -7,15 +7,17 @@ const claims = await prisma.claim.findMany({
     },
     claimedAmount: 0,
   },
+  include: {
+    orders: true,
+  },
 })
 
 for (const claim of claims) {
-  await prisma.claim.update({
-    where: {
-      id: claim.id,
-    },
-    data: {
-      claimedAmount: claim.freeAmount,
-    },
-  })
+  if (claim.orders.length === 0) {
+    await prisma.claim.delete({
+      where: {
+        id: claim.id,
+      },
+    })
+  }
 }
