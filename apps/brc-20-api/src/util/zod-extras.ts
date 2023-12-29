@@ -29,8 +29,8 @@ export const validTaprootAddress = validBTCAddress
 
 export const validBuyAmount = z
   .number()
-  .min(1000)
-  .max(250_000)
+  .min(5000)
+  .max(1_000_000)
   .refine((value) => {
     return value % 1000 === 0
   })

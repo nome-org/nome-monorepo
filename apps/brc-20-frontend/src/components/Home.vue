@@ -24,7 +24,7 @@ type IFee = {
 
 
 const address = ref("");
-const quantity = ref(1000);
+const quantity = ref();
 const selectedFee = ref<IFee | null>(null);
 const customFee = ref<number>();
 const feesQ = useQuery<{
@@ -81,7 +81,7 @@ const checkClaim = async () => {
     const { data } = await checkWLClaim()
     if (data && data.status === 'success') {
       const claimInfo = data.data
-      quantity.value = claimInfo.freeAmount || 1000
+      quantity.value = claimInfo.freeAmount
       eligibleFreeAmount.value = claimInfo.freeAmount
       isWhiteListed.value = claimInfo.isWhitelisted
     }
@@ -112,9 +112,9 @@ const userPaid = ref(true)
 const isAmountValid = computed(() => {
   const amount = quantity.value
   return amount > 0
-    && amount % 1000 === 0
-    && amount >= 1000
-    && amount <= 250_000
+    && amount % 5000 === 0
+    && amount >= 5000
+    && amount <= 1_000_000
 })
 
 const isFormValid = computed(() => {
@@ -396,7 +396,7 @@ const changePreviewStatus = (status: boolean) => {
                   <div class="mb-4 text-xl">
                     Total quantity
                   </div>
-                  <NumberInput placeholder="min 1,000 / max 250,000" v-model="quantity"
+                  <NumberInput placeholder="min 5,000 / max 1,000,000" v-model="quantity"
                     class="border-white border-2 border-solid border-opacity-40 p-1.5 w-full rounded-[10px] bg-transparent outline-none" />
                   <p class="mt-2 text-pink text-sm" v-if="!isAmountValid">
                     Please, make sure to place integer numbers with no hundreds (e.g. 1,000 | 18,000 | 111,001,000) within
