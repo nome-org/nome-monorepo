@@ -16,7 +16,7 @@ import { getKeyForIndex } from "../bitcoin/keys/server-keys.js"
 import { getWLBenefits } from "../util/get-wl-benefits.js"
 import { ORDER_EXPIRATION_TIME } from "../constants.js"
 import { isWhitelistOpen } from "../util/isWhiteListOpen.js"
-import { Claim, Order } from "@prisma/client"
+import { Order } from "@prisma/client"
 import { checkOrderDuplicate } from "../util/orders/isOrderDuplicate.js"
 import createHttpError from "http-errors"
 
@@ -70,18 +70,13 @@ export const createOrderEndpoint = defaultEndpointsFactory
     handler: async ({ input: { amount, receiveAddress, feeRate } }) => {
       const wlOpen = await isWhitelistOpen()
 
-      let existingClaim: (Claim & { orders: Order[] }) | null = null
+      const existingClaim = await prisma.claim.findFirst({
+        where: {
+          ordinalAddress: receiveAddress,
+        },
+      })
       let order: Order | null = null
       if (wlOpen) {
-        existingClaim = await prisma.claim.findFirst({
-          where: {
-            ordinalAddress: receiveAddress,
-          },
-          include: {
-            orders: true,
-          },
-        })
-
         if (!existingClaim) {
           throw createHttpError(400, "Invalid claim address")
         }

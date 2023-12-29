@@ -30,9 +30,7 @@ export async function inscribeTransfer({
   })
   const taprootAddress = await getTaprootAddress(firstKey)
 
-  const { price, freeAmount } = await getWLBenefits(
-    order.claim && { ...order.claim, orders: [order] },
-  )
+  const { price, freeAmount } = await getWLBenefits(order.claim)
 
   const priceInfo = calculatePrice({
     amount: order.amount,
