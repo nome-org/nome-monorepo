@@ -18,12 +18,12 @@ const percentage = computed(() => progress.value / 50_000_000 * 100)
                 <div class="flex flex-col gap-2">
                     <p>Total Supply – 100M</p>
                     <p>Public mint – 50M</p>
-                    <p>Minimum mint – 1K</p>
+                    <p>Minimum mint – 5K</p>
                 </div>
                 <div class="flex flex-col gap-2">
                     <p>Price – 0.00000013 BTC</p>
                     <p>WL price – 0.0000001 BTC</p>
-                    <p>Maximum mint – 250K</p>
+                    <p>Maximum mint – 1M</p>
                 </div>
             </div>
         </div>
