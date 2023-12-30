@@ -112,7 +112,7 @@ const userPaid = ref(true)
 const isAmountValid = computed(() => {
   const amount = quantity.value
   return amount > 0
-    && amount % 5000 === 0
+    && amount % 1000 === 0
     && amount >= 5000
     && amount <= 1_000_000
 })
