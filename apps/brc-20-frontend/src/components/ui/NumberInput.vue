@@ -5,8 +5,9 @@ import { formatNumber } from '../../util/formatNumber';
 const {
     className,
     placeholder,
+    modelValue
 } = defineProps({
-    modelValue: Number,
+    modelValue: String,
     className: String,
     placeholder: String,
     min: Number,
@@ -14,7 +15,7 @@ const {
 })
 
 const emit = defineEmits(['update:modelValue'])
-const formattedNumber = ref("")
+const formattedNumber = ref(modelValue)
 const handleChange = (e: Event) => {
     let value = Number((e.target as HTMLInputElement).value.replace(/,/g, ''))
     // format number with commas
@@ -22,7 +23,7 @@ const handleChange = (e: Event) => {
     if (
         !isNaN(value)
     ) {
-        emit('update:modelValue', value)
+        emit('update:modelValue', String(value))
         formattedNumber.value = formatNumber(value)
     }
 }

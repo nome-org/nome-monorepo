@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
+import { ref, computed } from "vue";
 
 import Footer from "./shared/Footer.vue";
 import Header from "./shared/Header.vue";
 import { useQuery, useMutation } from '@tanstack/vue-query'
 import { client } from "../api/client";
 import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
-import FeeRate from "./ui/FeeRate.vue";
+
 import { validate as validateBTCAddress } from 'bitcoin-address-validation'
 import DisclaimerCheckbox from "./ui/DisclaimerCheckbox.vue";
 import PriceItem from "./ui/PriceItem.vue";
@@ -15,56 +15,16 @@ import SaleProgress from "./SaleProgress.vue";
 import { useMintProgress } from "../api/queries/mint-progress";
 import { makeTwitterPost } from "../util/makeTwitterPost";
 import Modal from "./ui/Modal.vue";
+import FeeRateSelector from "./FeeRateSelector.vue";
 
-type IFee = {
-  name: string,
-  value: number,
-  time: string
-};
 
 
 const address = ref("");
-const quantity = ref();
-const selectedFee = ref<IFee | null>(null);
-const customFee = ref<number>();
-const feesQ = useQuery<{
-  fastestFee: number,
-  halfHourFee: number,
-  hourFee: number,
-  economyFee: number,
-  minimumFee: number
-}>({
-  queryKey: ['fees'],
-  queryFn: async () => {
-    return fetch(`${import.meta.env.VITE_APP_MEMPOOL_URL}/api/v1/fees/recommended`)
-      .then(res => res.json())
-  },
-})
+const quantity = ref("");
 
-const fees = ref<IFee[]>([])
-watch(feesQ.data, (feesResponse) => {
-  if (feesResponse && !customFee.value) {
-    customFee.value = feesResponse.fastestFee
-    fees.value = [
-      {
-        name: "Economy",
-        value: feesResponse.economyFee,
-        time: "Multiple days"
-      },
-      {
-        name: "Normal",
-        value: feesResponse.hourFee,
-        time: "1 hour"
-      },
-      {
-        name: "Custom",
-        value: feesResponse.fastestFee,
-        time: "Choose fee"
-      }
-    ]
-    selectedFee.value = fees.value[1];
-  }
-})
+
+
+
 
 const { refetch: checkWLClaim, isSuccess: isClaimChecked } = useQuery({
   queryKey: ['wl check', address],
@@ -81,7 +41,7 @@ const checkClaim = async () => {
     const { data } = await checkWLClaim()
     if (data && data.status === 'success') {
       const claimInfo = data.data
-      quantity.value = claimInfo.freeAmount
+      quantity.value = String(claimInfo.freeAmount)
       eligibleFreeAmount.value = claimInfo.freeAmount
       isWhiteListed.value = claimInfo.isWhitelisted
     }
@@ -110,7 +70,7 @@ const userPaid = ref(true)
 
 
 const isAmountValid = computed(() => {
-  const amount = quantity.value
+  const amount = Number(quantity.value)
   return amount > 0
     && amount % 1000 === 0
     && amount >= 5000
@@ -121,17 +81,12 @@ const isFormValid = computed(() => {
   return isAmountValid.value
 })
 
-const feeRate = computed(() => {
-  return (
-    selectedFee.value?.name === 'Custom'
-      ? customFee.value
-      : selectedFee.value?.value)
-})
+const feeRate = ref('1')
 
 const priceQ = useQuery({
-  queryKey: ['price', selectedFee, quantity, customFee],
+  queryKey: ['price', feeRate, quantity, address],
   queryFn: () => {
-    if (!selectedFee.value || !quantity.value || !address.value) {
+    if (!feeRate.value || !quantity.value || !address.value) {
       return
     }
     return client.provide('get', '/price', {
@@ -142,7 +97,7 @@ const priceQ = useQuery({
   },
   enabled: () => {
     return isFormValid.value
-      && !!selectedFee.value
+      && !!feeRate.value
       && isAddressValid.value
   },
 })
@@ -165,8 +120,8 @@ const createOrderM = useMutation({
     }
     const data = await client.provide('post', '/orders', {
       receiveAddress: address.value,
-      amount: quantity.value,
-      feeRate: feeRate.value,
+      amount: Number(quantity.value),
+      feeRate: Number(feeRate.value),
     })
 
     if (data.status === 'success') {
@@ -404,20 +359,7 @@ const changePreviewStatus = (status: boolean) => {
                   </p>
                 </label>
               </div>
-
-              <div class="grid grid-cols-3 gap-5 mt-8">
-                <FeeRate v-for="feeRate in fees" :label="feeRate.name" :time="feeRate.time" :key="feeRate.name"
-                  :is-selected="selectedFee?.name === feeRate.name" @selected-fee="selectedFee = feeRate"
-                  v-if="feesQ.isSuccess" :value="feeRate.value" />
-              </div>
-
-              <div class="mt-8 flex flex-col" v-if="selectedFee?.name === 'Custom'">
-                <label class="mb-2">You can add a custom fee below</label>
-                <div class="w-full bg-white text-black p-2 flex items-center gap-5 rounded-md">
-                  <NumberInput v-model="customFee" className="outline-none w-full" />
-                  <span>sats/vByte</span>
-                </div>
-              </div>
+              <FeeRateSelector v-model="feeRate" />
 
               <div :class="priceQ.isSuccess ? 'visible' : 'invisible'"
                 class="mt-8 flex flex-col gap-2 text-[#5a5a5a] text-xl">
