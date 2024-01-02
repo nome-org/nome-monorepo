@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@repo/shared-ui": "workspace:^",
     "@tanstack/vue-query": "^5.14.1",
     "bitcoin-address-validation": "^2.2.3",
     "oh-vue-icons": "1.0.0-rc3",

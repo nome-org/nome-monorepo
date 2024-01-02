@@ -5,11 +5,20 @@ import { ref, watch } from 'vue';
 import { FeeLabels } from '../../constants';
 import NumberInput from '../ui/NumberInput.vue';
 import FeeRate from './FeeRate.vue';
+const mainnetURL = "https://mempool.space"
+const testnetURL = "https://mempool.space/testnet"
 
-defineProps({
+const { mempoolURL } = defineProps({
     modelValue: {
         type: String,
         required: true
+    },
+    mempoolURL: {
+        type: String,
+        default: "https://mempool.space",
+        validator(value: string) {
+            return value === mainnetURL || value === testnetURL
+        },
     }
 })
 
@@ -33,10 +42,10 @@ const { isFetched } = useQuery<{
 }>({
     queryKey: ['fees'],
     queryFn: async () => {
-        const data = await fetch(`${import.meta.env.VITE_APP_MEMPOOL_URL}/api/v1/fees/recommended`)
+        const data = await fetch(`${mempoolURL}/api/v1/fees/recommended`)
             .then(res => res.json())
         customFee.value = String(data.fastestFee)
-        emit('update:modelValue', data.hourFee)
+        emit('update:modelValue', String(data.hourFee))
         selectedFee.value = FeeLabels.NORMAL
         fees.value = {
             [FeeLabels.ECONOMY]: data.economyFee,
@@ -53,13 +62,15 @@ const { isFetched } = useQuery<{
 const feeLabelsArr = [FeeLabels.ECONOMY, FeeLabels.NORMAL]
 watch(selectedFee, (newFee) => {
     if (newFee !== FeeLabels.CUSTOM) {
-        emit('update:modelValue', fees.value[newFee])
+        emit('update:modelValue', String(fees.value[newFee]))
+    } else {
+        emit('update:modelValue', String(customFee.value))
     }
 })
 
 watch(customFee, (fee) => {
     if (selectedFee.value === FeeLabels.CUSTOM) {
-        emit('update:modelValue', fee)
+        emit('update:modelValue', String(fee))
     }
 })
 

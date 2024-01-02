@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ProgressBar, formatNumber } from '@repo/shared-ui';
+import ProgressBar from './ui/ProgressBar.vue';
 import { computed } from 'vue';
-
+import { formatNumber } from '../util/formatNumber';
 import { useMintProgress } from '../api/queries/mint-progress';
 
 const progress = useMintProgress()

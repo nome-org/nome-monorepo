@@ -8,14 +8,16 @@ import { client } from "../api/client";
 import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
 
 import { validate as validateBTCAddress } from 'bitcoin-address-validation'
-import DisclaimerCheckbox from "./ui/DisclaimerCheckbox.vue";
-import PriceItem from "./ui/PriceItem.vue";
-import NumberInput from "./ui/NumberInput.vue";
-import SaleProgress from "./SaleProgress.vue";
 import { useMintProgress } from "../api/queries/mint-progress";
 import { makeTwitterPost } from "../util/makeTwitterPost";
-import Modal from "./ui/Modal.vue";
-import FeeRateSelector from "./FeeRateSelector/FeeRateSelector.vue";
+import {
+  FeeRateSelector,
+  DisclaimerCheckbox,
+  Modal,
+  NumberInput,
+  PriceItem,
+} from "@repo/shared-ui";
+import SaleProgress from "./SaleProgress.vue";
 
 
 
@@ -220,7 +222,7 @@ const { data: usdPrice } = useQuery({
         },
       }
     ).then(res => res.json());
-    return response.data.rateUsd;
+    return response.data.rateUsd as number;
   },
 });
 
@@ -370,7 +372,8 @@ const changePreviewStatus = (status: boolean) => {
                   (priceData?.basePostage || 0)
                 ) / 1e8).toFixed(8)" />
                 <PriceItem label="Total BTC:" :value="((priceData?.total || 0) / 1e8).toFixed(8)" />
-                <PriceItem label="Total USD:" :value="`$${(usdPrice * (priceData?.total || 0) / 1e8).toFixed(2)}`" />
+                <PriceItem v-if="usdPrice" label="Total USD:"
+                  :value="`$${(usdPrice * (priceData?.total || 0) / 1e8).toFixed(2)}`" />
 
               </div>
               <button :disabled="!isFormValid && progress < 50_000_000"
