@@ -15,7 +15,7 @@ import SaleProgress from "./SaleProgress.vue";
 import { useMintProgress } from "../api/queries/mint-progress";
 import { makeTwitterPost } from "../util/makeTwitterPost";
 import Modal from "./ui/Modal.vue";
-import FeeRateSelector from "./FeeRateSelector.vue";
+import FeeRateSelector from "./FeeRateSelector/FeeRateSelector.vue";
 
 
 
@@ -86,9 +86,6 @@ const feeRate = ref('1')
 const priceQ = useQuery({
   queryKey: ['price', feeRate, quantity, address],
   queryFn: () => {
-    if (!feeRate.value || !quantity.value || !address.value) {
-      return
-    }
     return client.provide('get', '/price', {
       feeRate: String(feeRate.value),
       amount: String(quantity.value),
@@ -96,9 +93,13 @@ const priceQ = useQuery({
     })
   },
   enabled: () => {
-    return isFormValid.value
-      && !!feeRate.value
+    return Boolean(
+      feeRate.value
+      && quantity.value
+      && address.value
+      && isFormValid.value
       && isAddressValid.value
+    )
   },
 })
 
@@ -361,7 +362,7 @@ const changePreviewStatus = (status: boolean) => {
               </div>
               <FeeRateSelector v-model="feeRate" />
 
-              <div :class="priceQ.isSuccess ? 'visible' : 'invisible'"
+              <div :class="priceQ.isSuccess.value ? 'visible' : 'invisible'"
                 class="mt-8 flex flex-col gap-2 text-[#5a5a5a] text-xl">
                 <PriceItem label="Tokens price BTC:" :value="((priceData?.brc20Price || 0) / 1e8).toFixed(8)" />
                 <PriceItem label="Network Fee:" :value="((

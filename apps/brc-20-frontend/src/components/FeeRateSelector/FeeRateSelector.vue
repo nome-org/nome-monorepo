@@ -2,9 +2,9 @@
 
 import { useQuery } from '@tanstack/vue-query';
 import { ref, watch } from 'vue';
-import FeeRate from './ui/FeeRate.vue'
-import NumberInput from './ui/NumberInput.vue'
-import { FeeLabels } from '../constants'
+import { FeeLabels } from '../../constants';
+import NumberInput from '../ui/NumberInput.vue';
+import FeeRate from './FeeRate.vue';
 
 defineProps({
     modelValue: {
@@ -16,7 +16,7 @@ defineProps({
 const emit = defineEmits(['update:modelValue']);
 
 
-const selectedFee = ref(FeeLabels.NORMAL);
+const selectedFee = ref(FeeLabels.CUSTOM);
 const customFee = ref('');
 
 const fees = ref({
@@ -36,6 +36,8 @@ const { isFetched } = useQuery<{
         const data = await fetch(`${import.meta.env.VITE_APP_MEMPOOL_URL}/api/v1/fees/recommended`)
             .then(res => res.json())
         customFee.value = String(data.fastestFee)
+        emit('update:modelValue', data.hourFee)
+        selectedFee.value = FeeLabels.NORMAL
         fees.value = {
             [FeeLabels.ECONOMY]: data.economyFee,
             [FeeLabels.NORMAL]: data.hourFee,
@@ -66,7 +68,7 @@ watch(customFee, (fee) => {
     <div class="grid grid-cols-3 gap-5 mt-8">
         <FeeRate :key="fee" v-for="fee in feeLabelsArr" v-model="selectedFee" :fee-rate="fees[fee]" :fee-rate-label="fee"
             v-if="isFetched" />
-        <FeeRate v-model="selectedFee" :fee-rate="fees[FeeLabels.CUSTOM]" :fee-rate-label="FeeLabels.CUSTOM" />
+        <FeeRate v-model="selectedFee" :fee-rate="Number(customFee)" :fee-rate-label="FeeLabels.CUSTOM" />
     </div>
     <div class="mt-8 flex flex-col" v-if="selectedFee === FeeLabels.CUSTOM">
         <label class="mb-2">You can add a custom fee below</label>
