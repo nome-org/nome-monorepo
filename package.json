@@ -1,5 +1,5 @@
 {
-  "name": "brc-20",
+  "name": "nome-monorepo",
   "private": true,
   "scripts": {
     "build:brc": "turbo build --filter brc-*",
