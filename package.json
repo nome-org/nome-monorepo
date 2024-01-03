@@ -4,6 +4,8 @@
   "scripts": {
     "build:brc": "turbo build --filter brc-*",
     "dev:brc": "turbo dev --filter brc-*",
+    "build:gif": "turbo build --filter gif-*",
+    "dev:gif": "turbo dev --filter gif-*",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
