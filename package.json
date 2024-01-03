@@ -2,8 +2,8 @@
   "name": "brc-20",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
+    "build:brc": "turbo build --filter brc-*",
+    "dev:brc": "turbo dev --filter brc-*",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
