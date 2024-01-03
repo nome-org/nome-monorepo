@@ -11,8 +11,6 @@ async function makeImageElement(image: File): Promise<HTMLImageElement> {
 }
 async function makeImageCanvas({
   image,
-  maxHeight,
-  maxWidth,
 }: {
   image: HTMLImageElement;
   maxWidth?: number;
@@ -23,7 +21,7 @@ async function makeImageCanvas({
     const { width, height } = image;
     canvas.width = width;
     canvas.height = height;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d")!;
     ctx.drawImage(image, 0, 0, width, height, 0, 0, width, height);
     URL.revokeObjectURL(image.src);
     resolve(canvas);
@@ -62,8 +60,9 @@ export function buildGif({
     const gif = new GIF({
       workers: 2,
       quality: 10,
-      workerScript: `${import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL
-        }/gif.worker.js`,
+      workerScript: `${
+        import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL
+      }/gif.worker.js`,
       // width: largestWidth,
       // height: largestHeight,
     });

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { available_rarity } from "../constants/rarity";
 import { ref } from "vue";
-import { useAuthStore } from "../stores/auth";
+// import { useAuthStore } from "../stores/auth";
 
 const selectedRarity = ref(available_rarity[0]);
-const auth = useAuthStore();
+// const auth = useAuthStore();
 </script>
 <template>
   <div class="">
@@ -74,7 +74,7 @@ const auth = useAuthStore();
                 <div class="h-9 mt-8 text-lg sm:text-base mb-1">Rarity</div>
               </div>
               <SelectRarity :selected-rarity="selectedRarity" @update:selected-rarity="selectedRarity = $event" />
-              <div :class="showGIF && files.length > 0 ? 'visible' : 'invisible'">
+              <!-- <div :class="showGIF && files.length > 0 ? 'visible' : 'invisible'">
                 <div class="flex mt-3 justify-between text-gray-500">
                   <div>Frames</div>
                   <div>{{ files.length }}</div>
@@ -93,14 +93,14 @@ const auth = useAuthStore();
                   <div>Final BTC price</div>
                   <div>{{ totalFee && totalFee.toFixed(8) }}</div>
                 </div>
-              </div>
+              </div> -->
               <div class="w-full pr-4 pl-4">
                 <div>
                   <div class="flex justify-center pt-12 w-full">
-                    <button @click="waitXV"
+                    <!-- <button @click="waitXV"
                       class="mx-0 mt-6 mb-20 min-w-[13.3rem] py-2 px-0 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black p-1 cursor-pointer z-10 rounded-xl">
                       INSCRIBE
-                    </button>
+                    </button> -->
                   </div>
                 </div>
               </div>

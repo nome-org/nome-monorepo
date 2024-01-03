@@ -71,7 +71,7 @@ const img = ref("");
                   <button type="button" @click="selectedRar = index" :class="index == selectedRar ? 'bg-gray-500' : 'bg-transparent'
                     "
                     class="border-solid border border-white cursor-pointer uppercase h-8 w-full transition-all text-white rounded-xl text-base">
-                    {{ rarityLabels[item] }}
+                    {{ rarityLabels[item as keyof typeof rarityLabels] }}
                   </button>
                 </div>
               </div>

@@ -1,10 +1,10 @@
-interface HTMLTransaction {
-  id: number;
-  created_at: string;
-  updated_at: string;
-  tx_id: string;
-  status: "PENDING" | "CONFIRMED";
-}
+// interface HTMLTransaction {
+//   id: number;
+//   created_at: string;
+//   updated_at: string;
+//   tx_id: string;
+//   status: "PENDING" | "CONFIRMED";
+// }
 
 export interface OrderWithStatus {
   id: number;

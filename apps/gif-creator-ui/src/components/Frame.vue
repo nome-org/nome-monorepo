@@ -33,7 +33,7 @@ const loadImage = (file: File): Promise<HTMLImageElement> => {
   });
 };
 
-const imageURL = computed((oldValue?: string) => {
+const imageURL = computed<string | null>((oldValue) => {
   if (oldValue) {
     URL.revokeObjectURL(oldValue);
   }
@@ -69,13 +69,13 @@ watch(
     URL.revokeObjectURL(image.src);
     const compressionSignal = new AbortController();
     let maxWidthOrHeight = Math.round(
-      largestDimension * (props.compressionRate / 100)
+      largestDimension * (props.compressionRate! / 100)
     );
     maxWidthOrHeight = Math.max(maxWidthOrHeight, 50);
     compressed.value = await imageCompression(props.original, {
       maxWidthOrHeight,
       maxSizeMB:
-        ((props.original.size / 1000000) * props.compressionRate) / 100,
+        ((props.original.size / 1000000) * props.compressionRate!) / 100,
       fileType: "image/webp",
       signal: compressionSignal.signal,
       onProgress(progress) {
@@ -117,7 +117,7 @@ const openPreview = () => {
 
 <template>
   <Modal :is-open="isPreviewOpen" @on-visibility-change="changePreviewStatus">
-    <img :src="imageURL" class="max-w-full max-h-screen"
+    <img :src="imageURL!" class="max-w-full max-h-screen"
       :style="{ imageRendering: isPixelated ? 'pixelated' : 'initial' }" />
   </Modal>
 
@@ -141,7 +141,7 @@ const openPreview = () => {
         }" :src="imageURL" />
       </div>
       <div class="rounded-b-lg flex py-2 px-4 justify-between items-center bg-[#1f1f1f] w-full">
-        <span class="text-2xl">{{ index + 1 }}</span>
+        <span class="text-2xl">{{ index! + 1 }}</span>
         <div class="flex items-center">
           <input :value="duration" :disabled="!imageURL" @input="
             $emit(

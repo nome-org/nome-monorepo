@@ -15,6 +15,6 @@ app
     config: { id: "G-HZQ4TKL9G9" },
   })
   .use(pinia)
-  .use(router)
+  .use(router as any)
   .use(VueQueryPlugin)
   .mount("#app");

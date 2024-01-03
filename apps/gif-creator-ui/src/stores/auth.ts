@@ -11,11 +11,13 @@ export const useAuthStore = defineStore("auth", {
     });
   },
   actions: {
-    /**
-     *
-     * @param {{paymentAddress: string, ordinalsAddress: string}} params
-     */
-    setAddresses({ paymentAddress, ordinalsAddress }) {
+    setAddresses({
+      paymentAddress,
+      ordinalsAddress,
+    }: {
+      paymentAddress: string;
+      ordinalsAddress: string;
+    }) {
       this.paymentAddress = paymentAddress;
       this.ordinalsAddress = ordinalsAddress;
     },

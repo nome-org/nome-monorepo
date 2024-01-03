@@ -48,7 +48,7 @@ const hasNoOrders = computed(() => {
                 <span class="capitalize basis-3/12">{{
                     order.status === "READY" ? "inscribed" : "inscribing"
                 }}</span>
-                <a :href="order.payment_tx_id &&
+                <a :href="order.payment_tx_id! &&
                     `https://mempool.space/tx/${order.payment_tx_id}`
                     " class="underline basis-4/12" target="_blank">
                     {{ order.payment_tx_id ? "Mempool link" : "Unpaid" }}
