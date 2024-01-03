@@ -1,4 +1,4 @@
-import { network } from "@/constants/bitcoin.ts";
+import { network } from "../constants/bitcoin.ts";
 import { AddressPurpose, getAddress } from "sats-connect";
 
 /**

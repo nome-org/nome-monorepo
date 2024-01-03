@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { available_rarity, rarityLabels } from "@/constants/rarity.js";
+import { available_rarity, rarityLabels } from "../constants/rarity.js";
 import { ref } from "vue";
 const quantity = ref(1);
 const selectedRar = ref(0);

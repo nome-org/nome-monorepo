@@ -8,7 +8,6 @@ import prisma from "../lib/prisma-client";
 import { getAddressByIndex } from "../lib/payments/server-keys";
 import { available_rarity } from "../constants/rarity";
 import { safeInt, taprootAddress } from "../types/zod-extras";
-import { mempool } from "../lib/mempool/mempool-client";
 
 const maxFileSize = 200_000;
 const base64Overhead = 4 * (maxFileSize / 3);
@@ -29,7 +28,7 @@ export const createOrderEndpoint = defaultEndpointsFactory.build({
         rarity: z.enum(available_rarity).default("random"),
         receiverAddress: taprootAddress,
         quantity: safeInt.default(1),
-        feeRate: safeInt.max(1000, "No way brah too much fee monies"),
+        feeRate: safeInt.min(1).max(1000, "No way brah too much fee monies"),
     }),
     output: z.object({
         id: safeInt,
@@ -39,11 +38,8 @@ export const createOrderEndpoint = defaultEndpointsFactory.build({
         }),
     }),
     handler: async ({
-        input: { files, rarity, receiverAddress, quantity },
+        input: { files, rarity, receiverAddress, quantity, feeRate },
     }) => {
-        const { fastestFee: feeRate } =
-            await mempool.bitcoin.fees.getFeesRecommended();
-
         const namedFiles = files.map((file) => ({
             ...file,
             name: `${v4()}.${file.name.split(".").pop()}`,

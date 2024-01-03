@@ -3,7 +3,6 @@ import { available_rarity } from "../constants/rarity";
 import z from "zod";
 import { calculatePrice } from "../lib/calculatePrice";
 import { safeInt } from "../types/zod-extras";
-import { mempool } from "../lib/mempool/mempool-client";
 
 export const getPriceEndpoint = defaultEndpointsFactory.build({
     method: "get",
@@ -12,7 +11,7 @@ export const getPriceEndpoint = defaultEndpointsFactory.build({
             z
                 .string()
                 .transform(Number)
-                .refine((x) => x > 0)
+                .refine((x) => x > 0),
         ),
         fee_rate: z
             .string({ description: "fee rate in sat/vbyte, currently ignored" })
@@ -28,10 +27,9 @@ export const getPriceEndpoint = defaultEndpointsFactory.build({
     output: z.object({
         totalFee: safeInt,
     }),
-    handler: async ({ input: { imageSizes, count, rareSats } }) => {
-        const { fastestFee } = await mempool.bitcoin.fees.getFeesRecommended();
+    handler: async ({ input: { imageSizes, count, rareSats, fee_rate } }) => {
         const feeDetails = await calculatePrice({
-            fee: fastestFee,
+            fee: fee_rate,
             imageFileSizes: imageSizes,
             quantity: count,
             rareSats,

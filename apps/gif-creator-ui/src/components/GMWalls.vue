@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { available_rarity } from "@/constants/rarity";
+import { available_rarity } from "../constants/rarity";
 import { ref } from "vue";
 import { useAuthStore } from "../stores/auth";
 
@@ -13,32 +13,27 @@ const auth = useAuthStore();
         <div>
           <a class="mx-0 mt-6 mb-20" href="/">
             <!--       <div style="" class="nome-logo headerLogo transition-transform duration-200 hover:scale-110">NōME</div>-->
-            <img
-              class="w-48 sm:w-[21vw] min-w-[7.3rem] mt-1 transition-transform duration-200 hover:scale-110"
-              src="../assets/images/logo_white.png"
-            />
+            <img class="w-48 sm:w-[21vw] min-w-[7.3rem] mt-1 transition-transform duration-200 hover:scale-110"
+              src="../assets/images/logo_white.png" />
           </a>
         </div>
 
         <div>
-          <a class="mx-0 mt-6 mb-20" target="_blank" href="https://nome.wtf/"
-            ><div
-              class="text-white underline text-lg transition-all duration-75 hover:italic underline-offset-8 hover:underline"
-            >
+          <a class="mx-0 mt-6 mb-20" target="_blank" href="https://nome.wtf/">
+            <div
+              class="text-white underline text-lg transition-all duration-75 hover:italic underline-offset-8 hover:underline">
               nome.wtf
-            </div></a
-          >
+            </div>
+          </a>
         </div>
       </div>
       <main>
         <div class="mt-1">
           <h1 class="text-2xl pb-2">• Walls → Digital Artifacts •</h1>
           <div
-            class="border-b border-solid border-opacity-20 border-white md:mt-0 mb-44 sm:mb-16 xl:mb-12 w-full relative"
-          >
+            class="border-b border-solid border-opacity-20 border-white md:mt-0 mb-44 sm:mb-16 xl:mb-12 w-full relative">
             <div
-              class="absolute left-0 top-8 sm:-top-12 sm:left-auto sm:right-4 lg:right-52 italic text-2xl sm:text-center"
-            >
+              class="absolute left-0 top-8 sm:-top-12 sm:left-auto sm:right-4 lg:right-52 italic text-2xl sm:text-center">
               BTC Ordinals <br />
               collection of <br />
               phone wallpapers
@@ -66,9 +61,7 @@ const auth = useAuthStore();
         <div>
           <div class="flex flex-col md:flex-row w-full gap-x-8">
             <div class="basis-full md:basis-1/2 flex justify-center">
-              <div
-                class="p-6 border border-opacity-20 border-white max-h-[30rem] w-full"
-              >
+              <div class="p-6 border border-opacity-20 border-white max-h-[30rem] w-full">
                 <img alt="" class="w-full h-full object-contain" />
               </div>
             </div>
@@ -76,19 +69,12 @@ const auth = useAuthStore();
             <div class="basis-full md:basis-1/2">
               <div class="w-full">
                 <div class="h-9 mt-8 text-lg sm:text-base mb-1">Quantity</div>
-                <input
-                  type="number"
-                  class="border border-solid border-white bg-transparent h-10 rounded-xl text-right pr-3 text-white w-full sm:w-[45%]"
-                />
+                <input type="number"
+                  class="border border-solid border-white bg-transparent h-10 rounded-xl text-right pr-3 text-white w-full sm:w-[45%]" />
                 <div class="h-9 mt-8 text-lg sm:text-base mb-1">Rarity</div>
               </div>
-              <SelectRarity
-                :selected-rarity="selectedRarity"
-                @update:selected-rarity="selectedRarity = $event"
-              />
-              <div
-                :class="showGIF && files.length > 0 ? 'visible' : 'invisible'"
-              >
+              <SelectRarity :selected-rarity="selectedRarity" @update:selected-rarity="selectedRarity = $event" />
+              <div :class="showGIF && files.length > 0 ? 'visible' : 'invisible'">
                 <div class="flex mt-3 justify-between text-gray-500">
                   <div>Frames</div>
                   <div>{{ files.length }}</div>
@@ -111,10 +97,8 @@ const auth = useAuthStore();
               <div class="w-full pr-4 pl-4">
                 <div>
                   <div class="flex justify-center pt-12 w-full">
-                    <button
-                      @click="waitXV"
-                      class="mx-0 mt-6 mb-20 min-w-[13.3rem] py-2 px-0 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black p-1 cursor-pointer z-10 rounded-xl"
-                    >
+                    <button @click="waitXV"
+                      class="mx-0 mt-6 mb-20 min-w-[13.3rem] py-2 px-0 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black p-1 cursor-pointer z-10 rounded-xl">
                       INSCRIBE
                     </button>
                   </div>

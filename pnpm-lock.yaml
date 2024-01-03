@@ -305,6 +305,9 @@ importers:
       '@heroicons/vue':
         specifier: ^2.0.18
         version: 2.1.1(vue@3.4.3)
+      '@repo/shared-ui':
+        specifier: workspace:^
+        version: link:../../packages/shared-ui
       '@supabase/supabase-js':
         specifier: ^2.39.0
         version: 2.39.2
@@ -384,6 +387,9 @@ importers:
       vite:
         specifier: ^4.5.0
         version: 4.5.1(@types/node@20.10.5)
+      vue-tsc:
+        specifier: ^1.8.25
+        version: 1.8.25(typescript@5.2.2)
 
   packages/shared-ui:
     dependencies:
@@ -2080,8 +2086,8 @@ packages:
     dependencies:
       '@volar/language-core': 1.11.1
       '@volar/source-map': 1.11.1
-      '@vue/compiler-dom': 3.3.11
-      '@vue/shared': 3.3.11
+      '@vue/compiler-dom': 3.4.3
+      '@vue/shared': 3.4.3
       computeds: 0.0.1
       minimatch: 9.0.3
       muggle-string: 0.3.1

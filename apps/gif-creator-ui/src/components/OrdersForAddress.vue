@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { validate as validateBitcoinAddress, getAddressInfo, AddressType } from "bitcoin-address-validation"
 import { useQuery } from '@tanstack/vue-query'
-import { getOrdersApi } from '@/api/get-orders.ts';
+import { getOrdersApi } from '../api/get-orders.ts';
 
 const walletAddress = ref("");
 
@@ -23,7 +23,7 @@ const { data: userOrders, isSuccess } = useQuery({
 });
 
 const hasNoOrders = computed(() => {
-    return isSuccess.value && userOrders.value.length === 0;
+    return isSuccess.value && userOrders.value?.length === 0;
 });
 </script>
 <template>

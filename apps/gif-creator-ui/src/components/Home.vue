@@ -9,24 +9,19 @@ import {
 
 import { useMutation, useQuery } from "@tanstack/vue-query";
 import { computed, onMounted, ref, watch } from "vue";
-import { getPriceApi } from "@/api/get-price.ts";
-import { inscribeApi } from "@/api/inscribe.ts";
-import { OrderWithStatus, getOrdersApi } from "@/api/get-orders.ts";
-import { fileToBase64 } from "@/util/fileToBase64.ts";
+import { getPriceApi } from "../api/get-price.ts";
+import { inscribeApi } from "../api/inscribe.ts";
+import { fileToBase64 } from "../util/fileToBase64.ts";
 import axios from "axios";
 import Frame from "./Frame.vue";
 import SelectRarity from "./shared/SelectRarity.vue";
 import Footer from "./shared/Footer.vue";
-import { buildGif } from "@/util/buildGIF.ts";
-import { network } from "@/constants/bitcoin.ts";
+import { buildGif } from "../util/buildGIF.ts";
+import { network } from "../constants/bitcoin.ts";
 import logo from "../assets/images/logo-with-slant.svg";
-import {
-  getAddressInfo,
-  validate as validateBitcoinAddress,
-  AddressType,
-} from "bitcoin-address-validation";
 import GetBetaAccess from "./GetBetaAccess.vue";
 import OrdersForAddress from "./OrdersForAddress.vue";
+import { FeeRateSelector } from "@repo/shared-ui"
 
 type CompressAble = {
   original: File;
@@ -36,6 +31,7 @@ type CompressAble = {
 
 const files = ref<Array<CompressAble>>([]);
 const selectedRarity = ref("random");
+const feeRate = ref("")
 const quantity = ref(1);
 const paymentAddress = ref("");
 const ordinalAddress = ref("");
@@ -75,7 +71,7 @@ watch([files, quality], () => {
 });
 
 async function getFiles(e: Event) {
-  const allAreImages = Array.from((e.target as HTMLInputElement).files).every(
+  const allAreImages = Array.from((e.target as HTMLInputElement).files!).every(
     (file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type)
   );
 
@@ -90,7 +86,7 @@ async function getFiles(e: Event) {
 
   gifSrc.value = "";
   const { files: newFilesList } = e.target as HTMLInputElement;
-  const newFiles = Array.from(newFilesList).slice(0, availableSlots);
+  const newFiles = Array.from(newFilesList!).slice(0, availableSlots);
   if (!newFiles.length) {
     e.preventDefault();
     return;
@@ -129,17 +125,17 @@ function removeFile(item: CompressAble) {
 }
 
 const { data: totalFee, dataUpdatedAt } = useQuery({
-  queryKey: ["price", files, selectedRarity, quantity],
+  queryKey: ["price", files, selectedRarity, quantity, feeRate],
   queryFn: async () => {
     const data = await getPriceApi({
       count: quantity.value,
-      fee: 6,
+      fee: Number(feeRate.value),
       imageSizes: files.value.map((file) => file.compressed.size),
       rareSats: selectedRarity.value,
     });
     return data.data.totalFee / 100_000_000;
   },
-  enabled: () => Boolean(gifSrc.value && files.value.length > 0),
+  enabled: () => Boolean(feeRate.value && gifSrc.value && files.value.length > 0),
 });
 const { data: usdPrice } = useQuery({
   queryKey: ["coinCap"],
@@ -187,7 +183,7 @@ const createInscriptionOrderMut = useMutation({
       },
     } = await inscribeApi({
       files: fileData,
-      feeRate: 6,
+      feeRate: Number(feeRate),
       payAddress: paymentAddress.value,
       rarity: selectedRarity.value as any,
       receiverAddress: ordinalAddress.value,
@@ -417,6 +413,7 @@ const handleContactAdded = () => {
                   <div class="h-9 mt-10 text-lg sm:text-base mb-1">Rarity</div>
                 </div>
                 <SelectRarity :selected-rarity="selectedRarity" @update:selected-rarity="selectedRarity = $event" />
+                <FeeRateSelector v-model="feeRate" />
                 <div class="mt-14" :class="gifSrc && files.length > 0 ? 'block' : 'hidden'">
                   <div class="flex mt-3 justify-between text-gray-500">
                     <div>Frames</div>
@@ -429,7 +426,7 @@ const handleContactAdded = () => {
                   <div class="flex justify-between text-gray-500">
                     <div>Final USD price</div>
                     <div v-show="usdPrice && totalFee">
-                      ${{ (usdPrice * totalFee).toFixed(2) }}
+                      ${{ (usdPrice * totalFee!).toFixed(2) }}
                     </div>
                   </div>
                   <div class="flex justify-between text-gray-500">
