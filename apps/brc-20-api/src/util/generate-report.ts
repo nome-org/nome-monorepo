@@ -34,6 +34,8 @@ export async function generateReport() {
       price = PRICE
     }
 
+    price = price / 1000
+
     const chargedAmount = order.amount - (order.claim?.claimedAmount || 0)
     pricePerOrder.set(order.id, price * chargedAmount)
   }
