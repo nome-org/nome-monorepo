@@ -1,8 +1,4 @@
-import {
-  ExpressZodAPIClient,
-  Implementation,
-  jsonEndpoints,
-} from "./generated";
+import { ExpressZodAPIClient, Implementation } from "./generated";
 
 export const exampleImplementation: Implementation = async (
   method,
