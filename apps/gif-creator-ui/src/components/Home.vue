@@ -165,7 +165,7 @@ const { data: usdPrice } = useQuery({
 
 
 const createInscriptionOrderMut = useMutation({
-  mutationKey: ["inscribe", files, selectedRarity, quantity],
+  mutationKey: ["inscribe", files, selectedRarity, quantity, feeRate],
   mutationFn: async () => {
     const fileData = [];
     for (const file of files.value) {
@@ -183,7 +183,7 @@ const createInscriptionOrderMut = useMutation({
       },
     } = await inscribeApi({
       files: fileData,
-      feeRate: Number(feeRate),
+      feeRate: Number(feeRate.value),
       payAddress: paymentAddress.value,
       rarity: selectedRarity.value as any,
       receiverAddress: ordinalAddress.value,
