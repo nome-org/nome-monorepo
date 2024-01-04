@@ -11,6 +11,11 @@ const routes = [
     name: "Mint",
     component: () => import("./components/Home.vue"),
   },
+  {
+    path: "/analytics/:key",
+    name: "Analytics",
+    component: () => import("./components/Analytics.vue"),
+  },
 ];
 
 const router = createRouter({

@@ -128,7 +128,35 @@ type GetWhitelistStatusResponse = {
     };
 }
 
-export type Path = "" | "/check-claim" | "/price" | "/orders" | "/orders/:id" | "/progress" | "/whitelist/status"
+type GetAnalyticsKeyInput = {
+    key: string;
+}
+
+type GetAnalyticsKeyResponse = {
+    status: "success";
+    data: {
+        totals: {
+            price: number;
+            orders: number;
+            feeRate: number;
+            amount: number;
+        };
+        orders: {
+            address: string;
+            price: number;
+            amount: number;
+            feeRate: number;
+            createdAt: string;
+        }[];
+    };
+} | {
+    status: "error";
+    error: {
+        message: string;
+    };
+}
+
+export type Path = "" | "/check-claim" | "/price" | "/orders" | "/orders/:id" | "/progress" | "/whitelist/status" | "/analytics/:key"
 
 export type Method = "get" | "post" | "put" | "delete" | "patch"
 
@@ -142,6 +170,7 @@ export interface Input extends Record<MethodPath, any> {
     "get /orders/:id": GetOrdersIdInput;
     "get /progress": GetProgressInput;
     "get /whitelist/status": GetWhitelistStatusInput;
+    "get /analytics/:key": GetAnalyticsKeyInput;
 }
 
 export interface Response extends Record<MethodPath, any> {
@@ -152,11 +181,12 @@ export interface Response extends Record<MethodPath, any> {
     "get /orders/:id": GetOrdersIdResponse;
     "get /progress": GetProgressResponse;
     "get /whitelist/status": GetWhitelistStatusResponse;
+    "get /analytics/:key": GetAnalyticsKeyResponse;
 }
 
-export const jsonEndpoints = { "get ": true, "get /check-claim": true, "get /price": true, "post /orders": true, "get /orders/:id": true, "get /progress": true, "get /whitelist/status": true }
+export const jsonEndpoints = { "get ": true, "get /check-claim": true, "get /price": true, "post /orders": true, "get /orders/:id": true, "get /progress": true, "get /whitelist/status": true, "get /analytics/:key": true }
 
-export const endpointTags = { "get ": [], "get /check-claim": [], "get /price": [], "post /orders": [], "get /orders/:id": [], "get /progress": [], "get /whitelist/status": [] }
+export const endpointTags = { "get ": [], "get /check-claim": [], "get /price": [], "post /orders": [], "get /orders/:id": [], "get /progress": [], "get /whitelist/status": [], "get /analytics/:key": [] }
 
 export type Provider = <M extends Method, P extends Path>(method: M, path: P, params: Input[`${M} ${P}`]) => Promise<Response[`${M} ${P}`]>
 

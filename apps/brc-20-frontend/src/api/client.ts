@@ -19,10 +19,11 @@ export const exampleImplementation: Implementation = async (
       body: hasBody ? JSON.stringify(params) : undefined,
     }
   );
-  if (`${method} ${path}` in jsonEndpoints) {
-    return response.json();
-  }
-  return response.text();
+  console.log(`[${method} ${path}]`, response);
+  // if (`${method} ${path}` in jsonEndpoints) {
+  return response.json();
+  // }
+  // return response.text();
 };
 
 export const client = new ExpressZodAPIClient(exampleImplementation);
