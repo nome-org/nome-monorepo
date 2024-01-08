@@ -1,4 +1,4 @@
-import { OrderStatus } from "@prisma/client"
+import { OrderStatus } from "@repo/brc-20-db"
 import { redisClient } from "../../middlewares/rate-limiter.js"
 import { prisma } from "../../prisma/client.js"
 

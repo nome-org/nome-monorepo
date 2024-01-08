@@ -1,4 +1,4 @@
-import { OrderStatus } from "@prisma/client"
+import { OrderStatus } from "@repo/brc-20-db"
 import { prisma } from "../../prisma/client.js"
 import { getInscriptionUTXOs } from "../../scheduler/watch-buys/getInscriptionUTXOs.js"
 import { getKeyForIndex } from "../../bitcoin/keys/server-keys.js"

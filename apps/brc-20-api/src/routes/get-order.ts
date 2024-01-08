@@ -11,7 +11,7 @@ import { prisma } from "../prisma/client.js"
 import createHttpError from "http-errors"
 import { getKeyForIndex } from "../bitcoin/keys/server-keys.js"
 import { getPaymentAddress } from "../bitcoin/inscriptions/get-payment-address.js"
-import { OrderStatus } from "@prisma/client"
+import { OrderStatus } from "@repo/brc-20-db"
 
 export const getOrderEndpoint = defaultEndpointsFactory.build({
   method: "get",

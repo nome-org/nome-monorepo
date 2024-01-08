@@ -1,5 +1,5 @@
 import { AddressTxsUtxo } from "@mempool/mempool.js/lib/interfaces/bitcoin/addresses.js"
-import { Order, Claim } from "@prisma/client"
+import { Order, Claim } from "@repo/brc-20-db"
 import { HDKey } from "@scure/bip32"
 import { buildTransferJSON } from "../../bitcoin/inscriptions/get-payment-address.js"
 import {

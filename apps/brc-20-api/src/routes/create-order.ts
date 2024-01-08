@@ -16,7 +16,7 @@ import { getKeyForIndex } from "../bitcoin/keys/server-keys.js"
 import { getWLBenefits } from "../util/get-wl-benefits.js"
 import { ORDER_EXPIRATION_TIME } from "../constants.js"
 import { isWhitelistOpen } from "../util/isWhiteListOpen.js"
-import { Order } from "@prisma/client"
+import { Order } from "@repo/brc-20-db"
 import { checkOrderDuplicate } from "../util/orders/isOrderDuplicate.js"
 import createHttpError from "http-errors"
 

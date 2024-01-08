@@ -1,4 +1,4 @@
-import { OrderStatus } from "@prisma/client"
+import { OrderStatus } from "@repo/brc-20-db"
 import { prisma } from "../prisma/client.js"
 import { PRICE, WL_PRICE } from "../constants.js"
 import { WL_EXPIRATION_DATE_TIME } from "./isWhiteListOpen.js"

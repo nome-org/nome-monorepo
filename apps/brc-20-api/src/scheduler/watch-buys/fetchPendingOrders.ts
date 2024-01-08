@@ -1,4 +1,4 @@
-import { OrderStatus } from "@prisma/client"
+import { OrderStatus } from "@repo/brc-20-db"
 import { prisma } from "../../prisma/client.js"
 
 export async function fetchPendingOrders() {

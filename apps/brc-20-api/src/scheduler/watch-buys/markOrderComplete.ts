@@ -1,4 +1,4 @@
-import { Claim, Order, OrderStatus } from "@prisma/client"
+import { Claim, Order, OrderStatus } from "@repo/brc-20-db"
 import { prisma } from "../../prisma/client.js"
 
 export async function markOrderComplete({

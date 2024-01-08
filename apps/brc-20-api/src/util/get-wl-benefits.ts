@@ -1,4 +1,4 @@
-import { Claim } from "@prisma/client"
+import { Claim } from "@repo/brc-20-db"
 import { PRICE, WL_PRICE } from "../constants.js"
 import { isWhitelistOpen } from "./isWhiteListOpen.js"
 

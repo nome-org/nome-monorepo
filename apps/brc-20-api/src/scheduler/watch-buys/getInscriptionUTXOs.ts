@@ -1,4 +1,4 @@
-import { Order } from "@prisma/client"
+import { Order } from "@repo/brc-20-db"
 import { HDKey } from "@scure/bip32"
 import { getPaymentAddress } from "../../bitcoin/inscriptions/get-payment-address.js"
 import { mempoolClient } from "../../bitcoin/mempool-client.js"

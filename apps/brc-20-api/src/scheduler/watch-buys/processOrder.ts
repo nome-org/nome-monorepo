@@ -1,4 +1,4 @@
-import { Order, Claim } from "@prisma/client"
+import { Order, Claim } from "@repo/brc-20-db"
 import { getKeyForIndex } from "../../bitcoin/keys/server-keys.js"
 import { logger } from "../../server.js"
 import { getInscriptionUTXOs } from "./getInscriptionUTXOs.js"
