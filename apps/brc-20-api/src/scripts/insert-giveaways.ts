@@ -6,6 +6,13 @@ type claimData = {
   freeAmount?: number
 }
 async function insert(items: claimData[]) {
+  await prisma.claim.deleteMany({
+    where: {
+      ordinalAddress: {
+        in: items.map((item) => item.ordinalAddress),
+      },
+    },
+  })
   await prisma.claim.createMany({
     data: items,
     skipDuplicates: true,
