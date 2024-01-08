@@ -42,6 +42,7 @@ export async function generateReport() {
 
   const formattedOrders = completeOrders.map((order) => {
     return {
+      id: order.id,
       address: order.receiveAddress,
       amount: order.amount,
       price: pricePerOrder.get(order.id) || 0,

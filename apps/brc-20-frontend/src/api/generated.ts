@@ -142,6 +142,7 @@ type GetAnalyticsKeyResponse = {
             amount: number;
         };
         orders: {
+            id: number;
             address: string;
             price: number;
             amount: number;

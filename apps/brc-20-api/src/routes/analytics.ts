@@ -17,6 +17,7 @@ export const analyticsEndpoint = defaultEndpointsFactory.build({
     }),
     orders: z.array(
       z.object({
+        id: z.number(),
         address: z.string(),
         price: z.number(),
         amount: z.number(),
