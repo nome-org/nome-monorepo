@@ -35,9 +35,7 @@ const percentage = computed(() => progress.value / 5_000_000 * 100)
                     Progress
                 </div>
                 <div class="flex gap-x-2">
-                    {{ progressFormatted }} / 5,000,000
-                    &nbsp;
-                    &nbsp;&nbsp;
+                    {{ progressFormatted }} / 5,000,000&nbsp;
                 </div>
             </div>
             <ProgressBar :percent="percentage" />
