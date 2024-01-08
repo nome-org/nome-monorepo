@@ -349,7 +349,7 @@ const changePreviewStatus = (status: boolean) => {
                 <!-- <img src="/stats.png" class="" alt="Stats" /> -->
                 <SaleProgress />
               </div>
-              <div class="mt-8 flex flex-col">
+              <div class="my-16 flex flex-col">
                 <label>
                   <div class="mb-4 text-xl">
                     Total quantity

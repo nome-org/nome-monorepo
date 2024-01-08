@@ -76,7 +76,7 @@ watch(customFee, (fee) => {
 
 </script>
 <template>
-    <div class="grid grid-cols-3 gap-5 mt-8">
+    <div class="grid grid-cols-3 gap-5">
         <FeeRate :key="fee" v-for="fee in feeLabelsArr" v-model="selectedFee" :fee-rate="fees[fee]" :fee-rate-label="fee"
             v-if="isFetched" />
         <FeeRate v-model="selectedFee" :fee-rate="Number(customFee)" :fee-rate-label="FeeLabels.CUSTOM" />

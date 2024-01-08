@@ -8,34 +8,36 @@ const progress = useMintProgress()
 
 const progressFormatted = computed(() => formatNumber(progress.value))
 
-const percentage = computed(() => progress.value / 50_000_000 * 100)
+const percentage = computed(() => progress.value / 5_000_000 * 100)
 </script>
 
 <template>
-    <div class="p-4 bg-[#252525] w-full rounded-lg text-sm sm:text-base">
-        <div class="pb-4 border-b border-[#6b6b6b] border-solid">
+    <div class="p-4 py-8 bg-[#252525] w-full rounded-lg text-sm sm:text-xl">
+        <div class="pb-8 border-b border-[#6b6b6b] border-solid">
             <div class="flex justify-between">
                 <div class="flex flex-col gap-2">
                     <p>Total Supply – 100M</p>
-                    <p>Public mint – 50M</p>
-                    <p>Minimum mint – 5K</p>
+                    <p>First round – 5M</p>
+                    <p>Price – 0.00000013 BTC</p>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <p>Price – 0.00000013 BTC</p>
-                    <p>WL price – 0.0000001 BTC</p>
+                    <p>Minimum mint – 5K</p>
                     <p>Maximum mint – 1M</p>
+                    <p>Price 5K – 0.00065 BTC</p>
                 </div>
             </div>
         </div>
-        <div class="pt-4">
+        <div class="pt-8">
             <div class="flex justify-between mb-4">
                 <div class="flex gap-x-2 ">
                     <img class="w-4" src="../assets/images/lightning-bolt-icon.png" alt="lightning bolt icon"
                         role="presentation">
                     Progress
                 </div>
-                <div>
-                    {{ progressFormatted }} / 50,000,000
+                <div class="flex gap-x-2">
+                    {{ progressFormatted }} / 5,000,000
+                    &nbsp;
+                    &nbsp;&nbsp;
                 </div>
             </div>
             <ProgressBar :percent="percentage" />
