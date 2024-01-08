@@ -1,4 +1,4 @@
-import { Order, OrderStatus } from "@prisma/client";
+import { Order, OrderStatus } from "@repo/gif-creator-db";
 import prisma from "../prisma-client";
 import {
     OrdinalsBotCreateOrderResponse,
@@ -20,7 +20,7 @@ export const handlePaidOrder = async (order: Order) => {
         "get",
         `${process.env.ORDINALS_BOT_API_BASE_URL}/order?id=${
             imageOrdinal!.ordinals_bot_order_id
-        }`
+        }`,
     );
 
     const ordinalsBotOrderData = ordinalsBotOrder.body as
@@ -29,7 +29,7 @@ export const handlePaidOrder = async (order: Order) => {
 
     if (ordinalsBotOrderData.status === "ok") {
         logger.info(
-            `sending ${ordinalsBotOrderData.charge.amount} to ${ordinalsBotOrderData.charge.address}`
+            `sending ${ordinalsBotOrderData.charge.amount} to ${ordinalsBotOrderData.charge.address}`,
         );
         const { hex } = await buildPaymentTx({
             keyIndex: order.id,

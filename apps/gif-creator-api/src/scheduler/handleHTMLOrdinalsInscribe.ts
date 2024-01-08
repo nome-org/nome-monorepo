@@ -1,4 +1,9 @@
-import { Order, OrderStatus, Ordinal, TransactionStatus } from "@prisma/client";
+import {
+    Order,
+    OrderStatus,
+    Ordinal,
+    TransactionStatus,
+} from "@repo/gif-creator-db";
 import prisma from "../lib/prisma-client";
 import { ordinalsBotInscribe } from "../lib/ordinals-bot/inscribe";
 import { base64 } from "@scure/base";
@@ -9,7 +14,7 @@ import { delay } from "../lib/util/delay";
 import { buildGifHTML } from "../lib/gif/build-html";
 
 const handleSingleOrder = async (
-    order: Order & { image_ordinals: Ordinal[] }
+    order: Order & { image_ordinals: Ordinal[] },
 ) => {
     const gifHTML = buildGifHTML(
         `${order.id}.gif`,
@@ -17,7 +22,7 @@ const handleSingleOrder = async (
             duration: ordinal.duration,
             tx_id: ordinal.tx_id!,
             ordinal_index: ordinal.ordinal_index || 0,
-        }))
+        })),
     );
 
     const htmlBytes = utf8ToBytes(gifHTML);

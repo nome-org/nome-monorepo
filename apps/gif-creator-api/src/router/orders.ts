@@ -2,7 +2,7 @@ import { defaultEndpointsFactory, ez } from "express-zod-api";
 import { z } from "zod";
 import prisma from "../lib/prisma-client";
 import { getAddressByIndex } from "../lib/payments/server-keys";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/gif-creator-db";
 import { safeInt, taprootAddress } from "../types/zod-extras";
 
 export const getOrdersEndpoint = defaultEndpointsFactory.build({
@@ -26,7 +26,7 @@ export const getOrdersEndpoint = defaultEndpointsFactory.build({
                     address: z.string(),
                     amount: safeInt,
                 }),
-            })
+            }),
         ),
         total: z.number().safe().min(0),
     }),
@@ -66,7 +66,7 @@ export const getOrdersEndpoint = defaultEndpointsFactory.build({
                         address: (await getAddressByIndex(order.id))!,
                         amount: order.total_fee,
                     },
-                }))
+                })),
             ),
             total,
         };

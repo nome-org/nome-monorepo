@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@repo/gif-creator-db";
 import { mockDeep, mockReset, DeepMockProxy } from "vitest-mock-extended";
 
 import prisma from "../src/lib/prisma-client";

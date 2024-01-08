@@ -1,5 +1,5 @@
 import { prismaMock } from "../prisma-singleton";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/gif-creator-db";
 import { describe, expect, it, vi } from "vitest";
 import { testEndpoint } from "express-zod-api";
 import { createOrderEndpoint } from "../../src/router/create-order";

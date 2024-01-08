@@ -1,6 +1,6 @@
 import { AsyncTask, SimpleIntervalJob } from "toad-scheduler";
 import prisma from "../lib/prisma-client";
-import { OrderStatus, TransactionStatus } from "@prisma/client";
+import { OrderStatus, TransactionStatus } from "@repo/gif-creator-db";
 import needle from "needle";
 import { MempoolTx } from "../types/mempool";
 import { checkAndInscribeCompleteOrders } from "./handleHTMLOrdinalsInscribe";
@@ -9,7 +9,7 @@ import { logger } from "../server";
 const checkTx = async (txId: string) => {
     const result = await needle(
         "get",
-        `${process.env.MEMPOOL_BASE_URL}/tx/${txId}`
+        `${process.env.MEMPOOL_BASE_URL}/tx/${txId}`,
     );
     const tx = result.body as MempoolTx;
 
@@ -58,7 +58,7 @@ const watchOrdinalTransactionsTask = new AsyncTask(
             await checkTx(tx.tx_id!);
         }
     },
-    (e) => logger.error(e)
+    (e) => logger.error(e),
 );
 
 export const watchOrdinalTransactionsJob = new SimpleIntervalJob(
@@ -69,5 +69,5 @@ export const watchOrdinalTransactionsJob = new SimpleIntervalJob(
     watchOrdinalTransactionsTask,
     {
         preventOverrun: true,
-    }
+    },
 );

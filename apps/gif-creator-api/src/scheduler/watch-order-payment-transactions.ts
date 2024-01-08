@@ -1,6 +1,6 @@
 import { AsyncTask, SimpleIntervalJob } from "toad-scheduler";
 import prisma from "../lib/prisma-client";
-import { Order, OrderStatus } from "@prisma/client";
+import { Order, OrderStatus } from "@repo/gif-creator-db";
 import { mempool } from "../lib/mempool/mempool-client";
 import { handlePaidOrder } from "../lib/order-handlers/handle-paid-orders";
 import { getAddressByIndex } from "../lib/payments/server-keys";
@@ -57,7 +57,7 @@ const watchOrderPaymentTransactionsTask = new AsyncTask(
             });
         }
     },
-    (e) => logger.error(e)
+    (e) => logger.error(e),
 );
 
 export const watchOrderPaymentTransactionsJob = new SimpleIntervalJob(
@@ -68,5 +68,5 @@ export const watchOrderPaymentTransactionsJob = new SimpleIntervalJob(
     watchOrderPaymentTransactionsTask,
     {
         preventOverrun: true,
-    }
+    },
 );

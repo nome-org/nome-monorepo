@@ -1,2 +1,2 @@
-import { PrismaClient } from "@prisma/client";
-export const prisma = new PrismaClient();
+import { PrismaClient } from "@repo/brc-20-db"
+export const prisma = new PrismaClient()

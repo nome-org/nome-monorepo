@@ -16,5 +16,5 @@ const specString = new Documentation({
 fs.mkdirSync(path.resolve(__dirname, "../../docs"), { recursive: true });
 fs.writeFileSync(
     path.resolve(__dirname, "../../docs/openapi.yaml"),
-    specString
+    specString,
 );
