@@ -10,7 +10,7 @@ export const updateOrderWebhook = defaultEndpointsFactory.build({
         ordinalsBotWebhookPayloadSchema,
         z.object({
             token: z.string(),
-        })
+        }),
     ),
     output: z.object({
         id: z.string(),

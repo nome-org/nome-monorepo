@@ -41,12 +41,11 @@ const webhookFileSchema = fileSchema.extend({
 });
 
 const txSchema = z.object({
-    commit: z.string(),
-    fees: safeInt,
+    // commit: z.string(),
+    // total_fees: safeInt,
     inscription: z.string(),
-    reveal: z.string(),
-    satpoint: z.string(),
-    updatedAt: z.string(),
+    // reveal: z.string(),
+    // updatedAt: z.string(),
 });
 
 const chargeSchema = z.object({
@@ -74,7 +73,7 @@ const chargeSchema = z.object({
 
 export const ordinalsBotWebhookPayloadSchema = z.object({
     id: z.string(),
-    index: safeInt,
+    index: z.number().min(0),
     file: webhookFileSchema,
     tx: txSchema,
 });
