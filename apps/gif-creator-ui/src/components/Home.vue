@@ -413,7 +413,9 @@ const handleContactAdded = () => {
                   <div class="h-9 mt-10 text-lg sm:text-base mb-1">Rarity</div>
                 </div>
                 <SelectRarity :selected-rarity="selectedRarity" @update:selected-rarity="selectedRarity = $event" />
-                <FeeRateSelector v-model="feeRate" />
+                <div class="mt-14">
+                  <FeeRateSelector v-model="feeRate" />
+                </div>
                 <div class="mt-14" :class="gifSrc && files.length > 0 ? 'block' : 'hidden'">
                   <div class="flex mt-3 justify-between text-gray-500">
                     <div>Frames</div>
