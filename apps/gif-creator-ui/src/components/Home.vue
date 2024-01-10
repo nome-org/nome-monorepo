@@ -403,7 +403,7 @@ const handleContactAdded = () => {
                 </div>
               </div>
               <!-- col-12 col-sm-6 flex-fill frame-box d-flex align-items-center justify-content-center -->
-              <div class="basis-full md:basis-1/2 flex-col flex max-w-sm mx-auto md:mx-0">
+              <div class="basis-full md:basis-1/2 flex-col flex max-w-lg mx-auto md:mx-0">
                 <div class="w-full">
                   <div class="h-9 text-lg sm:text-base mb-1 mt-8">
                     GIF Quantity
@@ -416,7 +416,7 @@ const handleContactAdded = () => {
                 <div class="mt-14">
                   <FeeRateSelector v-model="feeRate" />
                 </div>
-                <div class="mt-14" :class="gifSrc && files.length > 0 ? 'block' : 'hidden'">
+                <div class="mt-7" :class="gifSrc && files.length > 0 ? 'block' : 'hidden'">
                   <div class="flex mt-3 justify-between text-gray-500">
                     <div>Frames</div>
                     <div>{{ files.length }}</div>
