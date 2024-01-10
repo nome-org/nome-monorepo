@@ -175,6 +175,9 @@ importers:
       '@repo/gif-creator-db':
         specifier: workspace:^
         version: link:../../packages/gif-db
+      '@repo/unisat-api':
+        specifier: workspace:^
+        version: link:../../packages/unisat-api
       '@scure/base':
         specifier: ^1.1.3
         version: 1.1.5
@@ -410,6 +413,12 @@ importers:
         version: 5.2.2
 
   packages/typescript-config: {}
+
+  packages/unisat-api:
+    dependencies:
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
 
 packages:
 
