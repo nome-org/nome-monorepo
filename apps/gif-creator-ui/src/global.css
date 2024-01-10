@@ -12,15 +12,13 @@
   font-family: "Menoe Grotesque";
   font-weight: normal;
   font-style: italic;
-  src: url("assets/fonts/Menoe Grotesque-Regular Italic-Web.eot")
+  src:
+    url("assets/fonts/Menoe Grotesque-Regular Italic-Web.eot")
       format("embedded-opentype"),
     url("assets/fonts/Menoe Grotesque-Regular Italic-Web.woff2") format("woff2"),
     url("assets/fonts/Menoe Grotesque-Regular Italic-Web.woff") format("woff");
 }
 
-a:hover {
-  text-decoration: none;
-}
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;

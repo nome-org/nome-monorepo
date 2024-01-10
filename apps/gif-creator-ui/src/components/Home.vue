@@ -240,7 +240,7 @@ async function waitXV() {
   }
 }
 function sendBTC(address: string, amount: number) {
-  return new Promise((resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
     const sendBtcOptions: SendBtcTransactionOptions = {
       payload: {
         network: {
@@ -438,9 +438,9 @@ const handleContactAdded = () => {
                 </div>
                 <div class="w-full pr-4 pl-4">
                   <div>
-                    <div class="flex justify-center pt-12 w-full">
+                    <div class="flex flex-col items-center pt-12 w-full mt-6">
                       <button @click="waitXV" :disabled="orderingState !== OrderingState.None"
-                        class="mx-0 mt-6 min-w-[13.3rem] py-2 px-4 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black p-1 cursor-pointer z-10 rounded-xl disabled:opacity-50 disabled:cursor-wait disabled:hover:scale-100">
+                        class="mx-0 min-w-[13.3rem] py-2 px-4 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black cursor-pointer z-10 rounded-xl disabled:opacity-50 disabled:cursor-wait disabled:hover:scale-100">
                         <span v-if="orderingState ===
                           OrderingState.RequestingWalletAddress
                           ">
@@ -456,6 +456,14 @@ const handleContactAdded = () => {
                         </span>
                         <span v-else> INSCRIBE </span>
                       </button>
+                      <div class="w-full flex flex-col items-center mt-4" v-if="paymentTxId">
+                        <div class="w-full text-left input-title mt-3">Thank you for creating art with us!</div>
+                        <a :href="'https://mempool.space/tx/' + paymentTxId"
+                          class="text-left input-title underline underline-offset-4">
+                          Mempool link
+                        </a>
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -464,12 +472,6 @@ const handleContactAdded = () => {
 
             <OrdersForAddress />
 
-            <div class="w-full flex flex-wrap mt-48">
-              <div class="w-full sm:w-1/2 pr-4 pl-4">
-                <!--      <div class="w-full text-left input-title mt-3">Thank you</div>-->
-                <!--      <div class="w-full text-left input-title">Link to transaction</div>-->
-              </div>
-            </div>
           </div>
         </section>
       </main>
