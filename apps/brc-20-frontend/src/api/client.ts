@@ -15,7 +15,6 @@ export const exampleImplementation: Implementation = async (
       body: hasBody ? JSON.stringify(params) : undefined,
     }
   );
-  console.log(`[${method} ${path}]`, response);
   // if (`${method} ${path}` in jsonEndpoints) {
   return response.json();
   // }

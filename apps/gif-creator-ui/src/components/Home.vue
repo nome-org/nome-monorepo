@@ -2,34 +2,31 @@
 import {
   AddressPurpose,
 
-  SendBtcTransactionOptions,
+
   getAddress,
-  sendBtcTransaction,
+
 } from "sats-connect";
 
 import { useMutation, useQuery } from "@tanstack/vue-query";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { inscribeApi } from "../api/inscribe.ts";
 import { fileToBase64 } from "../util/fileToBase64.ts";
 import axios from "axios";
-import Frame from "./Frame.vue";
 import SelectRarity from "./shared/SelectRarity.vue";
 import Footer from "./shared/Footer.vue";
-import { buildGif } from "../util/buildGIF.ts";
 import { network } from "../constants/bitcoin.ts";
 import GetBetaAccess from "./GetBetaAccess.vue";
 import OrdersForAddress from "./OrdersForAddress.vue";
-import { FeeRateSelector, RangeInput } from "@repo/shared-ui"
+import { FeeRateSelector } from "@repo/shared-ui"
 import Header from "./shared/Header.vue";
 import GIFPreview from "./GIFPreview.vue";
 import { usePriceQuery } from "../api/queries/price";
 import MintInfo from "./MintInfo.vue";
+import { CompressAble, OrderingState } from "../constants/inscriptions";
+import InscribeButton from "./ui/InscribeButton.vue";
+import { sendBTC } from '../util/sendBTC'
+import FrameManager from "./FrameManager.vue";
 
-type CompressAble = {
-  original: File;
-  compressed: File;
-  duration: number;
-};
 
 const files = ref<Array<CompressAble>>([]);
 const selectedRarity = ref("random");
@@ -37,14 +34,11 @@ const feeRate = ref("")
 const quantity = ref(1);
 const paymentAddress = ref("");
 const ordinalAddress = ref("");
-const isXV = ref(true);
-const quality = ref(100);
+
 const paymentTxId = ref("");
 const gifSrc = ref("");
 const gifCompilationProgress = ref(0);
 const isCompilingGIF = ref(false);
-const framesContainerRef = ref<HTMLElement | null>(null);
-const frameCompressionState = ref<boolean[]>([]);
 const showGetBetaAccess = ref(true);
 
 onMounted(() => {
@@ -54,84 +48,34 @@ onMounted(() => {
 });
 
 
-const isCompressing = computed(() => {
-  return frameCompressionState.value.some((item) => item);
-});
 
-
-
-enum OrderingState {
-  None,
-  RequestingWalletAddress,
-  WaitingForCreation,
-  WaitingForPayment,
-}
 const orderingState = ref(OrderingState.None);
 
-watch([files, quality], () => {
-  gifSrc.value = "";
-});
 
-async function getFiles(e: Event) {
-  const allAreImages = Array.from((e.target as HTMLInputElement).files!).every(
-    (file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type)
-  );
+function handleGifProgress(progress: number) {
 
-  if (!allAreImages) {
-    alert("Please select only images");
-    return;
+  if (gifSrc.value) {
+    URL.revokeObjectURL(gifSrc.value);
+    gifSrc.value = "";
   }
-  const availableSlots = 10 - files.value.length;
-  if (availableSlots <= 0) {
-    return;
+  if (!isCompilingGIF.value) {
+    isCompilingGIF.value = true
   }
 
-  gifSrc.value = "";
-  const { files: newFilesList } = e.target as HTMLInputElement;
-  const newFiles = Array.from(newFilesList!).slice(0, availableSlots);
-  if (!newFiles.length) {
-    e.preventDefault();
-    return;
-  }
-  let imageFiles = newFiles.map((file) => {
-    return {
-      img: URL.createObjectURL(file),
-      original: file,
-      compressed: file,
-      duration: 0.5,
-    };
-  });
-  // show original images initially
-  files.value = [...files.value, ...imageFiles];
-  // compress images in the meanwhile
-  // after compression is done, replace original images with compressed ones
-  imageFiles.forEach((file) => {
-    URL.revokeObjectURL(file.img);
-  });
-  files.value = [...files.value.slice(0, -imageFiles.length), ...imageFiles];
-}
-function duplicateFile(item: CompressAble) {
-  if (files.value.length >= 10) {
-    return;
-  }
-  gifSrc.value = "";
-  files.value = files.value.concat([{ ...item }]);
+  gifCompilationProgress.value = progress
 }
 
-function removeFile(item: CompressAble) {
-  if (!item) {
-    return;
-  }
-  gifSrc.value = "";
-  files.value = files.value.filter((file) => file !== item);
+function handleGIFGenerated(
+  [gifUrl, frames]: [
+    string,
+    CompressAble[]
+  ]
+) {
+  isCompilingGIF.value = false
+  gifSrc.value = gifUrl;
+  files.value = frames
 }
 
-function handleFileCompressed(index: number, compressed: File) {
-  frameCompressionState.value[index] = false;
-  files.value[index].compressed = compressed;
-}
-
-console.log({ imageSizes: computed(() => files.value.map(file => file.compressed.size)) })
 const { data: totalFee, dataUpdatedAt } = usePriceQuery({
   feeRate: computed(() => Number(feeRate.value)),
   frameCount: computed(() => files.value.length),
@@ -217,21 +161,20 @@ async function waitXV() {
             paymentAddress.value = item.address;
           }
         });
-        if (paymentAddress.value) {
-          orderingState.value = OrderingState.WaitingForCreation;
-          const { address, amount } =
-            await createInscriptionOrderMut.mutateAsync();
-          sendBTC(address, amount)
-            .then(() => {
-              orderingState.value = OrderingState.None;
-            })
-            .catch(() => {
-              orderingState.value = OrderingState.None;
-            });
-          orderingState.value = OrderingState.WaitingForPayment;
-        } else {
-          isXV.value = false;
-        }
+
+        orderingState.value = OrderingState.WaitingForCreation;
+        const { address, amount } = await createInscriptionOrderMut.mutateAsync();
+        orderingState.value = OrderingState.WaitingForPayment;
+        sendBTC({
+          address, amount, network, paymentAddress: paymentAddress.value
+        })
+          .then((txId) => {
+            paymentTxId.value = txId;
+            orderingState.value = OrderingState.None;
+          })
+          .catch(() => {
+            orderingState.value = OrderingState.None;
+          });
       },
       onCancel: () => {
         orderingState.value = OrderingState.None;
@@ -241,56 +184,7 @@ async function waitXV() {
     orderingState.value = OrderingState.None;
   }
 }
-function sendBTC(address: string, amount: number) {
-  return new Promise<string>((resolve, reject) => {
-    const sendBtcOptions: SendBtcTransactionOptions = {
-      payload: {
-        network: {
-          type: network,
-        },
-        recipients: [
-          {
-            address: address,
-            amountSats: BigInt(amount),
-          },
-        ],
-        senderAddress: paymentAddress.value,
-      },
-      onFinish: (response) => {
-        paymentTxId.value = response;
-        resolve(response);
-      },
-      onCancel: reject,
-    };
-    return sendBtcTransaction(sendBtcOptions);
-  });
-}
 
-async function generateGIF() {
-  if (files.value.length == 0) {
-    return;
-  }
-
-  if (gifSrc.value) {
-    URL.revokeObjectURL(gifSrc.value);
-    gifSrc.value = "";
-  }
-
-  isCompilingGIF.value = true;
-  gifCompilationProgress.value = 0;
-  const gifBlob = await buildGif({
-    frames: files.value.map((item) => ({
-      imageFile: item.compressed,
-      duration: item.duration,
-    })),
-    onProgress: (progress) => {
-      gifCompilationProgress.value = Math.ceil(progress * 100);
-    },
-  });
-
-  gifSrc.value = URL.createObjectURL(gifBlob);
-  isCompilingGIF.value = false;
-}
 
 const handleContactAdded = () => {
   window.localStorage.setItem("has-beta-access", "true");
@@ -332,7 +226,7 @@ const handleContactAdded = () => {
           </div>
         </div>
         <section v-if="!showGetBetaAccess">
-          <div class="w-full lg:w-[90%] xl:w-[80%] 2xl:w-[57%] text-base">
+          <div class="w-full lg:w-[90%] xl:w-[80%] 2xl:w-[57%] text-base mb-12">
             1. Upload PNG or JPEG frames (10 Max);
             <br />
             2. Set order, timing, and .webp file size;
@@ -342,49 +236,10 @@ const handleContactAdded = () => {
             4. Inscribe frames + recursive GIFs.
           </div>
 
-          <div class="flex justify-start mt-12 w-full sm:w-1/2">
-            <label
-              class="min-w-[13.3rem] py-2 px-0 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black p-1 cursor-pointer z-10 rounded-xl mb-3">
-              UPLOAD FRAMES
-              <input type="file" accept="image/png, image/jpeg, image/webp" multiple hidden v-on:change="getFiles" />
-            </label>
-          </div>
-
-          <div align="center">
-            <!--        <button class="upload-button button" type="button" @click="upload">Add Picture</button>-->
-            <!-- <image-compressor :scale="scale" class="compressor" :done="getFiles"  :quality="quality" ref="compressor"></image-compressor> -->
-
-            <div class="w-full flex flex-wrap gap-4 mt-12 mb-12" ref="framesContainerRef">
-              <!-- <div class="w-full sm:w-1/2 pr-4 pl-4 md:w-1/3 pr-4 pl-4 lg:w-1/4 pr-4 pl-4 "> -->
-              <Frame v-for="(item, index) in files" :key="'frame/' + item.original.name + index" :index="index"
-                :original="item.original" v-model:duration="item.duration" @on-plus-click="duplicateFile(item)"
-                @on-x-click="removeFile(item)" @on-compressed="handleFileCompressed(index, $event)"
-                @on-compressing="frameCompressionState[index] = $event" :compression-rate="quality" />
-              <!-- </div> -->
-              <Frame v-if="files.length == 0" :index="0" :duration="0.5" />
-            </div>
-          </div>
-          <div class="w-full flex sm:flex-row flex-col-reverse sm:flex-wrap gap-16 sm:gap-0">
-            <div class="w-full p-0 basis-full sm:basis-1/2">
-              <button type="button" @click="generateGIF" :disabled="isCompilingGIF || isCompressing"
-                class="mx-0 mb-16 sm:mb-24 min-w-[13.3rem] py-2 px-0 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black p-1 cursor-pointer z-10 rounded-xl disabled:opacity-50 disabled:cursor-wait disabled:hover:scale-100">
-                <span v-if="isCompilingGIF"> Generating GIF... </span>
-                <span v-else-if="isCompressing"> Compressing... </span>
-                <span v-else> GENERATE GIF </span>
-              </button>
-            </div>
-            <div class="flex-1 px-0 basis-full sm:basis-1/2 my-4">
-              <div class="flex px-0 sm:pl-4 flex-col justify-center sm:justify-start sm:w-[40%] sm:min-w-[16rem]">
-                <RangeInput v-model="quality" :min="1" :max="100" :step="1" />
-                <label class="mt-[1.2rem] text-center w-full text-2xl sm:text-base">
-                  .webp file quality – {{ quality }}%
-                </label>
-              </div>
-            </div>
-          </div>
+          <FrameManager @generated="handleGIFGenerated" @progress="handleGifProgress" />
 
           <div>
-            <div class="flex flex-col md:flex-row w-full gap-x-12">
+            <div class="flex flex-col md:flex-row w-full gap-x-12 mt-4">
               <div class="basis-full md:basis-1/2 flex justify-center">
                 <GIFPreview :img-src="gifSrc" :is-loading="isCompilingGIF" :progress="gifCompilationProgress" />
               </div>
@@ -408,25 +263,9 @@ const handleContactAdded = () => {
                 <div class="w-full pr-4 pl-4">
                   <div>
                     <div class="flex flex-col items-center pt-12 w-full mt-6">
-                      <button @click="waitXV" :disabled="orderingState !== OrderingState.None"
-                        class="mx-0 min-w-[13.3rem] py-2 px-4 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black cursor-pointer z-10 rounded-xl disabled:opacity-50 disabled:cursor-wait disabled:hover:scale-100">
-                        <span v-if="orderingState ===
-                          OrderingState.RequestingWalletAddress
-                          ">
-                          Requesting Addresses...
-                        </span>
-                        <span v-else-if="orderingState === OrderingState.WaitingForCreation
-                          ">
-                          Creating order...
-                        </span>
-                        <span v-else-if="orderingState === OrderingState.WaitingForPayment
-                          ">
-                          Waiting for payment...
-                        </span>
-                        <span v-else> INSCRIBE </span>
-                      </button>
-                      <div class="w-full flex flex-col items-center mt-4" v-if="paymentTxId">
-                        <div class="w-full text-left input-title mt-3">Thank you for creating art with us!</div>
+                      <InscribeButton @inscribe="waitXV" :ordering-state="orderingState" />
+                      <div class="w-full flex flex-col items-center mt-7" v-if="paymentTxId">
+                        <div class="w-full text-left input-title">Thank you for creating art with us!</div>
                         <a :href="'https://mempool.space/tx/' + paymentTxId"
                           class="text-left input-title underline underline-offset-4">
                           Mempool link
@@ -448,5 +287,3 @@ const handleContactAdded = () => {
     <Footer />
   </div>
 </template>
-
-<style scoped></style>
