@@ -5,10 +5,10 @@ export const buildGifHTML = <
         duration: number;
         tx_id: string;
         ordinal_index: number;
-    }
+    },
 >(
     title: string,
-    files: ordinalImageData[]
+    files: ordinalImageData[],
 ) => {
     const firstImage = `${files[0].tx_id}i${files[0].ordinal_index}`;
     const imagesList = files
@@ -22,7 +22,7 @@ export const buildGifHTML = <
     <title>${title}</title>
 </head>
 <body>
-    <img id="gif" style="width:100%; height: 100%;" src="/content/${firstImage}" />
+    <img id="gif" style="width:100%;" src="/content/${firstImage}" />
     <script src="/content/f6ed1320befc0932761caad4e7f457e52a9af5e182af105933663fac5fa6c385i0"></script>
     <script>
         let ou = URL.createObjectURL
@@ -69,6 +69,6 @@ export const buildGifHTML = <
             minifyJS: true,
             preserveLineBreaks: false,
             collapseWhitespace: true,
-        }
+        },
     );
 };
