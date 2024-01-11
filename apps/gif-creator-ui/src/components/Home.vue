@@ -9,7 +9,6 @@ import {
 
 import { useMutation, useQuery } from "@tanstack/vue-query";
 import { computed, onMounted, ref, watch } from "vue";
-import { getPriceApi } from "../api/get-price.ts";
 import { inscribeApi } from "../api/inscribe.ts";
 import { fileToBase64 } from "../util/fileToBase64.ts";
 import axios from "axios";
@@ -18,10 +17,13 @@ import SelectRarity from "./shared/SelectRarity.vue";
 import Footer from "./shared/Footer.vue";
 import { buildGif } from "../util/buildGIF.ts";
 import { network } from "../constants/bitcoin.ts";
-import logo from "../assets/images/logo-with-slant.svg";
 import GetBetaAccess from "./GetBetaAccess.vue";
 import OrdersForAddress from "./OrdersForAddress.vue";
-import { FeeRateSelector } from "@repo/shared-ui"
+import { FeeRateSelector, RangeInput } from "@repo/shared-ui"
+import Header from "./shared/Header.vue";
+import GIFPreview from "./GIFPreview.vue";
+import { usePriceQuery } from "../api/queries/price";
+import MintInfo from "./MintInfo.vue";
 
 type CompressAble = {
   original: File;
@@ -124,19 +126,19 @@ function removeFile(item: CompressAble) {
   files.value = files.value.filter((file) => file !== item);
 }
 
-const { data: totalFee, dataUpdatedAt } = useQuery({
-  queryKey: ["price", files, selectedRarity, quantity, feeRate],
-  queryFn: async () => {
-    const data = await getPriceApi({
-      count: quantity.value,
-      fee: Number(feeRate.value),
-      imageSizes: files.value.map((file) => file.compressed.size),
-      rareSats: selectedRarity.value,
-    });
-    return data.data.totalFee / 100_000_000;
-  },
-  enabled: () => Boolean(feeRate.value && gifSrc.value && files.value.length > 0),
-});
+function handleFileCompressed(index: number, compressed: File) {
+  frameCompressionState.value[index] = false;
+  files.value[index].compressed = compressed;
+}
+
+console.log({ imageSizes: computed(() => files.value.map(file => file.compressed.size)) })
+const { data: totalFee, dataUpdatedAt } = usePriceQuery({
+  feeRate: computed(() => Number(feeRate.value)),
+  frameCount: computed(() => files.value.length),
+  imageSizes: computed(() => files.value.map(file => file.compressed.size)),
+  mintQuantity: quantity,
+  selectedRarity
+})
 const { data: usdPrice } = useQuery({
   queryKey: ["coinCap"],
   enabled: () => Boolean(totalFee.value && dataUpdatedAt.value),
@@ -159,7 +161,7 @@ const { data: usdPrice } = useQuery({
         },
       }
     );
-    return response.data.data.rateUsd;
+    return Number(response.data.data.rateUsd);
   },
 });
 
@@ -298,16 +300,7 @@ const handleContactAdded = () => {
 <template>
   <div class="">
     <div class="pt-[25px] px-[25px] pb-0">
-      <div class="min-h-[11.7rem] relative">
-        <a class="w-[48%] md:w-[23%] mx-0 mb-20 mt-6 invert hover:bg-bottom relative inline-block bg-no-repeat bg-cover bg-top before:absolute before:top-0 before:bottom-[-19%] before:left-0 before:right-0 after:absolute after:w-[99%] after:h-[8%] after:bottom-[-19%]"
-          href="/" :style="{ backgroundImage: `url(${logo})` }">
-          <img src="../assets/images/logo-blank.png" alt="" class="block w-full" />
-        </a>
-        <a class="right-0 top-0 absolute text-[20px] leading-[15px] mx-0 mt-6 mb-20 text-white underline transition-all duration-75 hover:italic underline-offset-8 hover:underline"
-          href="https://nome.gallery">
-          Gallery
-        </a>
-      </div>
+      <Header />
       <main>
         <div class="mt-6">
           <h1 class="text-2xl pb-2">• Stop motion tool •</h1>
@@ -365,10 +358,8 @@ const handleContactAdded = () => {
               <!-- <div class="w-full sm:w-1/2 pr-4 pl-4 md:w-1/3 pr-4 pl-4 lg:w-1/4 pr-4 pl-4 "> -->
               <Frame v-for="(item, index) in files" :key="'frame/' + item.original.name + index" :index="index"
                 :original="item.original" v-model:duration="item.duration" @on-plus-click="duplicateFile(item)"
-                @on-x-click="removeFile(item)" @on-compressed="
-                  item.compressed = $event;
-                frameCompressionState[index] = false;
-                " @on-compressing="frameCompressionState[index] = $event" :compression-rate="quality" />
+                @on-x-click="removeFile(item)" @on-compressed="handleFileCompressed(index, $event)"
+                @on-compressing="frameCompressionState[index] = $event" :compression-rate="quality" />
               <!-- </div> -->
               <Frame v-if="files.length == 0" :index="0" :duration="0.5" />
             </div>
@@ -382,13 +373,12 @@ const handleContactAdded = () => {
                 <span v-else> GENERATE GIF </span>
               </button>
             </div>
-            <div class="flex-1 px-0 basis-full sm:basis-1/2">
-              <div class="my-4 flex px-0 sm:pl-4 flex-col justify-center sm:justify-start sm:w-[40%] sm:min-w-[16rem]">
-                <input type="range" :value="quality" @change="
-                  quality = Number(($event.target as HTMLInputElement).value)
-                  " min="1" max="100" class="" />
-                <label class="mt-[1.2rem] text-center w-full text-2xl sm:text-base">.webp file quality – {{ quality
-                }}%</label>
+            <div class="flex-1 px-0 basis-full sm:basis-1/2 my-4">
+              <div class="flex px-0 sm:pl-4 flex-col justify-center sm:justify-start sm:w-[40%] sm:min-w-[16rem]">
+                <RangeInput v-model="quality" :min="1" :max="100" :step="1" />
+                <label class="mt-[1.2rem] text-center w-full text-2xl sm:text-base">
+                  .webp file quality – {{ quality }}%
+                </label>
               </div>
             </div>
           </div>
@@ -396,11 +386,7 @@ const handleContactAdded = () => {
           <div>
             <div class="flex flex-col md:flex-row w-full gap-x-12">
               <div class="basis-full md:basis-1/2 flex justify-center">
-                <div :class="isCompilingGIF ? 'cursor-wait' : ''"
-                  class="p-6 border border-opacity-20 border-white h-[30rem] w-full flex justify-center items-center mt-8">
-                  <img v-if="gifSrc && files.length > 0" :src="gifSrc" alt="" class="w-full h-full object-contain" />
-                  <span v-if="isCompilingGIF" class="text-4xl">{{ gifCompilationProgress }}%</span>
-                </div>
+                <GIFPreview :img-src="gifSrc" :is-loading="isCompilingGIF" :progress="gifCompilationProgress" />
               </div>
               <!-- col-12 col-sm-6 flex-fill frame-box d-flex align-items-center justify-content-center -->
               <div class="basis-full md:basis-1/2 flex-col flex max-w-lg mx-auto md:mx-0">
@@ -413,29 +399,12 @@ const handleContactAdded = () => {
                   <div class="h-9 mt-10 text-lg sm:text-base mb-1">Rarity</div>
                 </div>
                 <SelectRarity :selected-rarity="selectedRarity" @update:selected-rarity="selectedRarity = $event" />
-                <div class="mt-14">
+                <div class="mt-14 mb-7">
                   <FeeRateSelector v-model="feeRate" />
                 </div>
-                <div class="mt-7" :class="gifSrc && files.length > 0 ? 'block' : 'hidden'">
-                  <div class="flex mt-3 justify-between text-gray-500">
-                    <div>Frames</div>
-                    <div>{{ files.length }}</div>
-                  </div>
-                  <div class="flex justify-between text-gray-500">
-                    <div>Total items</div>
-                    <div>{{ files.length + quantity }}</div>
-                  </div>
-                  <div class="flex justify-between text-gray-500">
-                    <div>Final USD price</div>
-                    <div v-show="usdPrice && totalFee">
-                      ${{ (usdPrice * totalFee!).toFixed(2) }}
-                    </div>
-                  </div>
-                  <div class="flex justify-between text-gray-500">
-                    <div>Final BTC price</div>
-                    <div>{{ totalFee && totalFee.toFixed(8) }}</div>
-                  </div>
-                </div>
+                <MintInfo v-if="gifSrc && files.length > 0" :frames-count="files.length" :mint-quantity="quantity"
+                  :total-fee="totalFee" :usd-price="usdPrice" />
+
                 <div class="w-full pr-4 pl-4">
                   <div>
                     <div class="flex flex-col items-center pt-12 w-full mt-6">
@@ -480,12 +449,4 @@ const handleContactAdded = () => {
   </div>
 </template>
 
-<style scoped>
-input[type="range"] {
-  @apply appearance-none flex items-center h-px w-full m-0 p-0 border-0;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  @apply appearance-none bg-white h-8 w-4 sm:h-6 sm:w-3 rounded-lg;
-}
-</style>
+<style scoped></style>
