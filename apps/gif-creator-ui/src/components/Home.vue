@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import {
   AddressPurpose,
-
-
   getAddress,
-
 } from "sats-connect";
 
 import { useMutation, useQuery } from "@tanstack/vue-query";
@@ -46,13 +43,9 @@ onMounted(() => {
   }
 });
 
-
-
 const orderingState = ref(OrderingState.None);
 
-
 function handleGifProgress(progress: number) {
-
   if (gifSrc.value) {
     URL.revokeObjectURL(gifSrc.value);
     gifSrc.value = "";
@@ -60,7 +53,6 @@ function handleGifProgress(progress: number) {
   if (!isCompilingGIF.value) {
     isCompilingGIF.value = true
   }
-
   gifCompilationProgress.value = progress
 }
 
@@ -107,7 +99,6 @@ const { data: usdPrice } = useQuery({
     return Number(response.data.data.rateUsd);
   },
 });
-
 
 const createInscriptionOrderMut = useMutation({
   mutationKey: ["inscribe", files, selectedRarity, quantity, feeRate],
@@ -191,7 +182,6 @@ async function waitXV() {
     orderingState.value = OrderingState.None;
   }
 }
-
 
 const handleContactAdded = () => {
   window.localStorage.setItem("has-beta-access", "true");
