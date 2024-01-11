@@ -26,14 +26,13 @@ import { CompressAble, OrderingState } from "../constants/inscriptions";
 import InscribeButton from "./ui/InscribeButton.vue";
 import { sendBTC } from '../util/sendBTC'
 import FrameManager from "./FrameManager.vue";
+import { getWalletAddresses } from "../util/getWalletAddresses";
 
 
 const files = ref<Array<CompressAble>>([]);
 const selectedRarity = ref("random");
 const feeRate = ref("")
 const quantity = ref(1);
-const paymentAddress = ref("");
-const ordinalAddress = ref("");
 
 const paymentTxId = ref("");
 const gifSrc = ref("");
@@ -112,7 +111,13 @@ const { data: usdPrice } = useQuery({
 
 const createInscriptionOrderMut = useMutation({
   mutationKey: ["inscribe", files, selectedRarity, quantity, feeRate],
-  mutationFn: async () => {
+  mutationFn: async ({
+    ordinalAddress,
+    paymentAddress
+  }: {
+    ordinalAddress: string;
+    paymentAddress: string;
+  }) => {
     const fileData = [];
     for (const file of files.value) {
       fileData.push({
@@ -130,9 +135,9 @@ const createInscriptionOrderMut = useMutation({
     } = await inscribeApi({
       files: fileData,
       feeRate: Number(feeRate.value),
-      payAddress: paymentAddress.value,
+      payAddress: paymentAddress,
       rarity: selectedRarity.value as any,
-      receiverAddress: ordinalAddress.value,
+      receiverAddress: ordinalAddress,
     });
 
     return {
@@ -154,19 +159,21 @@ async function waitXV() {
         },
       },
       onFinish: async (response) => {
-        response.addresses.forEach((item) => {
-          if (item.purpose == "ordinals") {
-            ordinalAddress.value = item.address;
-          } else if (item.purpose == "payment") {
-            paymentAddress.value = item.address;
-          }
+        orderingState.value = OrderingState.WaitingForCreation;
+
+        const { ordinalAddress, paymentAddress } = getWalletAddresses(response)
+        const { address, amount } = await createInscriptionOrderMut.mutateAsync({
+          ordinalAddress,
+          paymentAddress
         });
 
-        orderingState.value = OrderingState.WaitingForCreation;
-        const { address, amount } = await createInscriptionOrderMut.mutateAsync();
         orderingState.value = OrderingState.WaitingForPayment;
+
         sendBTC({
-          address, amount, network, paymentAddress: paymentAddress.value
+          address,
+          amount,
+          network,
+          paymentAddress,
         })
           .then((txId) => {
             paymentTxId.value = txId;
@@ -217,8 +224,6 @@ const handleContactAdded = () => {
             enabling the creation of recursive animations, resizing images, and
             inscriptions on rare sats all in one place.
           </span>
-          <!--  To create animation, please follow the
-          steps: -->
 
           <br /><br />
           <div class="mt-12  h-[50vh]" v-if="showGetBetaAccess">
