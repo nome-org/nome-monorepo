@@ -64,3 +64,11 @@ model Ordinal {
   html_files_order_id   Int?
   html_files_order      Order?            @relation(name: "html_files", fields: [html_files_order_id], references: [id])
 }
+
+model UserSession {
+  id             Int      @id @default(autoincrement())
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  ordinalAddress String   @db.VarChar(255)
+  publicKey      String   @unique @db.VarChar(255)
+}

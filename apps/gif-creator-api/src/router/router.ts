@@ -4,6 +4,7 @@ import { getPriceEndpoint } from "./price";
 import { createOrderEndpoint } from "./create-order";
 import { updateOrderWebhook } from "./update-order-webhook";
 import path from "path";
+import { createSessionEndpoint } from "./create-session";
 
 export const routing: Routing = {
     orders: {
@@ -14,5 +15,6 @@ export const routing: Routing = {
         ":token": updateOrderWebhook,
     },
     price: getPriceEndpoint,
+    login: createSessionEndpoint,
     docs: new ServeStatic(path.resolve(__dirname, "../../docs")),
 };

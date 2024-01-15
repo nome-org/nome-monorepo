@@ -1,5 +1,5 @@
 {
-  "name": "gif-creator-frontend",
+  "name": "gif-creator-ui",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
   "dependencies": {
     "@heroicons/vue": "^2.0.18",
     "@repo/shared-ui": "workspace:^",
+    "@stacks/transactions": "^6.11.0",
     "@supabase/supabase-js": "^2.39.0",
     "@tanstack/vue-query": "^5.4.3",
     "@types/gif.js": "^0.2.5",

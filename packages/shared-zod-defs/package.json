@@ -1,0 +1,10 @@
+{
+  "name": "@repo/shared-zod-defs",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "dependencies": {
+    "bitcoin-address-validation": "^2.2.3",
+    "zod": "^3.22.4"
+  }
+}

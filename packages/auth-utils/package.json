@@ -1,0 +1,17 @@
+{
+  "name": "@repo/auth-utils",
+  "version": "1.0.0",
+  "description": "Authentication utilities",
+  "main": "index.ts",
+  "keywords": [
+    "auth",
+    "utils"
+  ],
+  "author": "hz",
+  "license": "MIT",
+  "dependencies": {
+    "@stacks/transactions": "^6.11.0",
+    "date-fns": "^3.2.0",
+    "jsontokens": "^4.0.1"
+  }
+}

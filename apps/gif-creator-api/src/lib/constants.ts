@@ -1,0 +1,1 @@
+export const MIN_ELIGIBLE_BALANCE = 1000;

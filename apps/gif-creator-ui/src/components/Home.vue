@@ -2,6 +2,7 @@
 import {
   AddressPurpose,
   getAddress,
+  signMessage
 } from "sats-connect";
 
 import { useMutation, useQuery } from "@tanstack/vue-query";
@@ -24,6 +25,9 @@ import InscribeButton from "./ui/InscribeButton.vue";
 import { sendBTC } from '../util/sendBTC'
 import FrameManager from "./FrameManager.vue";
 import { getWalletAddresses } from "../util/getWalletAddresses";
+import { useAuthStore } from "../stores/auth";
+import { makeRandomPrivKey, privateKeyToString, publicKeyToString, pubKeyfromPrivKey, compressPublicKey, } from '@stacks/transactions'
+import { apiClient } from "../api/client";
 
 
 const files = ref<Array<CompressAble>>([]);
@@ -36,6 +40,90 @@ const gifSrc = ref("");
 const gifCompilationProgress = ref(0);
 const isCompilingGIF = ref(false);
 const showGetBetaAccess = ref(true);
+const auth = useAuthStore()
+
+const createSessionMut = useMutation({
+  mutationKey: ["createSession"],
+  mutationFn: async ({
+    message,
+    ordinalAddress,
+    signature
+  }: {
+    message: string,
+    ordinalAddress: string,
+    signature: string
+  }) => {
+    const response = await apiClient.provide('post', '/login', {
+      message,
+      ordinalAddress,
+      signature
+    })
+
+    if (response.status !== 'success') {
+      throw new Error(response.error.message)
+    }
+
+    return response.data
+  }
+})
+
+const login = () => {
+  return new Promise<{
+    privateKey: string
+    ordinalAddress: string
+    paymentAddress: string
+  }>((resolve, reject) => {
+    getAddress({
+      payload: {
+        purposes: [AddressPurpose.Ordinals, AddressPurpose.Payment],
+        message:
+          "We need the address you'll use to pay for the service, and the address where you want to receive the Ordinals.",
+        network: {
+          type: network,
+        },
+      },
+      onFinish: async (response) => {
+        orderingState.value = OrderingState.WaitingForCreation;
+        const { ordinalAddress, paymentAddress } = getWalletAddresses(response)
+        const privateKey = privateKeyToString(makeRandomPrivKey())
+        const publicKey = publicKeyToString(compressPublicKey(pubKeyfromPrivKey(privateKey).data))
+        const message = import.meta.env.VITE_APP_AUTH_MESSAGE_PREFIX + publicKey
+        signMessage({
+          payload: {
+            address: ordinalAddress,
+            message,
+            network: {
+              type: network,
+            },
+          },
+          async onFinish(signature) {
+            await createSessionMut.mutateAsync({
+              message,
+              ordinalAddress,
+              signature
+            })
+            auth.setAddresses({
+              ordinalAddress,
+              paymentAddress,
+            })
+            auth.setPrivateKey(privateKey)
+            resolve({
+              privateKey,
+              paymentAddress,
+              ordinalAddress,
+            })
+          },
+          onCancel() {
+            reject("User refused to sign")
+          }
+        })
+      },
+      onCancel() {
+        reject("User refused to provide addresses")
+      }
+    })
+  })
+}
 
 onMounted(() => {
   if (window.localStorage.getItem("has-beta-access")) {
@@ -104,10 +192,8 @@ const createInscriptionOrderMut = useMutation({
   mutationKey: ["inscribe", files, selectedRarity, quantity, feeRate],
   mutationFn: async ({
     ordinalAddress,
-    paymentAddress
   }: {
     ordinalAddress: string;
-    paymentAddress: string;
   }) => {
     const fileData = [];
     for (const file of files.value) {
@@ -119,65 +205,53 @@ const createInscriptionOrderMut = useMutation({
         type: file.compressed.type,
       });
     }
-    const {
-      data: {
-        payment_details: { address, amount },
-      },
-    } = await inscribeApi({
+    const response = await inscribeApi({
       files: fileData,
       feeRate: Number(feeRate.value),
-      payAddress: paymentAddress,
+      quantity: Number(quantity.value),
       rarity: selectedRarity.value as any,
       receiverAddress: ordinalAddress,
     });
-
-    return {
-      address,
-      amount,
-    };
+    if (response.status !== 'success') {
+      throw new Error(response.error.message);
+    }
+    return response.data.payment_details
   },
 });
 async function waitXV() {
   try {
     orderingState.value = OrderingState.RequestingWalletAddress;
-    await getAddress({
-      payload: {
-        purposes: [AddressPurpose.Ordinals, AddressPurpose.Payment],
-        message:
-          "We need the address you'll use to pay for the service, and the address where you want to receive the Ordinals.",
-        network: {
-          type: network,
-        },
-      },
-      onFinish: async (response) => {
-        orderingState.value = OrderingState.WaitingForCreation;
-
-        const { ordinalAddress, paymentAddress } = getWalletAddresses(response)
-        const { address, amount } = await createInscriptionOrderMut.mutateAsync({
-          ordinalAddress,
-          paymentAddress
-        });
-
-        orderingState.value = OrderingState.WaitingForPayment;
-
-        sendBTC({
-          address,
-          amount,
-          network,
-          paymentAddress,
-        })
-          .then((txId) => {
-            paymentTxId.value = txId;
-            orderingState.value = OrderingState.None;
-          })
-          .catch(() => {
-            orderingState.value = OrderingState.None;
-          });
-      },
-      onCancel: () => {
+    if (!auth.isLoggedIn) {
+      try {
+        await login()
+      } catch (e) {
         orderingState.value = OrderingState.None;
-      },
+        return;
+      }
+    }
+
+    orderingState.value = OrderingState.WaitingForCreation;
+
+    const { ordinalAddress, paymentAddress } = auth
+    const { address, amount } = await createInscriptionOrderMut.mutateAsync({
+      ordinalAddress,
     });
+
+    orderingState.value = OrderingState.WaitingForPayment;
+
+    sendBTC({
+      address,
+      amount,
+      network,
+      paymentAddress,
+    })
+      .then((txId) => {
+        paymentTxId.value = txId;
+        orderingState.value = OrderingState.None;
+      })
+      .catch(() => {
+        orderingState.value = OrderingState.None;
+      });
   } catch (err) {
     orderingState.value = OrderingState.None;
   }

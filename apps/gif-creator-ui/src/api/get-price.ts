@@ -1,8 +1,5 @@
-import { api } from "./api-instance.ts";
+import { apiClient } from "./client.ts";
 
-type priceResponse = {
-  totalFee: number;
-};
 export const getPriceApi = async ({
   imageSizes,
   fee,
@@ -13,14 +10,11 @@ export const getPriceApi = async ({
   fee: number;
   count: number;
   rareSats: string;
-}): Promise<{ message: string; data: priceResponse; success: boolean }> => {
-  const response = await api.get("/price", {
-    params: {
-      imageSizes,
-      fee_rate: fee,
-      count,
-      rareSats,
-    },
+}) => {
+  return apiClient.provide("get", "/price", {
+    fee_rate: String(fee),
+    imageSizes: imageSizes.map(String),
+    count: String(count),
+    rareSats: rareSats as unknown as any,
   });
-  return response.data;
 };

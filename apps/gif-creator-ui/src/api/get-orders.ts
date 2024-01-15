@@ -18,17 +18,8 @@ export interface OrderWithStatus {
   status: "UNPAID" | "PENDING" | "READY";
 }
 
-import { api } from "./api-instance.ts";
+import { apiClient } from "./client.ts";
 
-export const getOrdersApi = async (
-  address: string
-): Promise<{
-  data: { data: OrderWithStatus[]; status: "success" | "error" };
-}> => {
-  const response = await api.get("/orders", {
-    params: {
-      address,
-    },
-  });
-  return response.data;
+export const getOrdersApi = async (address: string) => {
+  return apiClient.provide("get", "/orders", { address });
 };

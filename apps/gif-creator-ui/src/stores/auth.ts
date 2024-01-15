@@ -6,25 +6,36 @@ const STORE_KEY = "auth";
 export const useAuthStore = defineStore("auth", {
   state: () => {
     return useLocalStorage(STORE_KEY, {
+      privateKey: "",
       paymentAddress: "",
-      ordinalsAddress: "",
+      ordinalAddress: "",
     });
   },
   actions: {
     setAddresses({
       paymentAddress,
-      ordinalsAddress,
+      ordinalAddress,
     }: {
       paymentAddress: string;
-      ordinalsAddress: string;
+      ordinalAddress: string;
     }) {
       this.paymentAddress = paymentAddress;
-      this.ordinalsAddress = ordinalsAddress;
+      this.ordinalAddress = ordinalAddress;
+    },
+
+    setPrivateKey(privateKey: string) {
+      this.privateKey = privateKey;
     },
 
     logout() {
-      this.paymentAddress = "";
-      this.ordinalsAddress = "";
+      this.privateKey = "";
+    },
+  },
+  getters: {
+    isLoggedIn: (state) => {
+      return Boolean(
+        state.privateKey && state.paymentAddress && state.ordinalAddress,
+      );
     },
   },
 });

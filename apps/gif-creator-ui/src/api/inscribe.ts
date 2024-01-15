@@ -1,10 +1,4 @@
-// {
-//     name: string;
-//     type: string;
-//     dataURL: string;
-//     size: number;
-// }
-import { api } from "./api-instance.ts";
+import { apiClient } from "./client.ts";
 
 interface FileData {
   size: number;
@@ -18,18 +12,8 @@ interface InscribeParams {
   files: FileData[];
   rarity: "block78" | "pizza" | "uncommon" | "black" | "vintage" | "random";
   receiverAddress: string;
-  payAddress: string;
+  quantity: number;
   feeRate: number;
-}
-
-interface Charge {
-  amount: number;
-  address: string;
-}
-
-interface OrderData {
-  id: number;
-  payment_details: Charge;
 }
 
 export const inscribeApi = async ({
@@ -37,18 +21,13 @@ export const inscribeApi = async ({
   rarity,
   receiverAddress,
   feeRate,
-  payAddress,
-}: InscribeParams): Promise<{
-  message: string;
-  data: OrderData;
-  success: boolean;
-}> => {
-  const response = await api.post("/orders", {
+  quantity,
+}: InscribeParams) => {
+  return apiClient.provide("post", "/orders", {
     files,
     rarity,
     receiverAddress,
     feeRate,
-    payAddress,
+    quantity,
   });
-  return response.data;
 };

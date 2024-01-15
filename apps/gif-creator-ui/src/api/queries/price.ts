@@ -31,7 +31,11 @@ export function usePriceQuery({
         imageSizes: imageSizes.value,
         rareSats: selectedRarity.value,
       });
-      return data.data.totalFee / 100_000_000;
+      let price = 0;
+      if (data.status === "success") {
+        price = data.data.totalFee;
+      }
+      return price / 100_000_000;
     },
     enabled: () =>
       Boolean(
@@ -39,7 +43,7 @@ export function usePriceQuery({
           feeRate.value &&
           mintQuantity.value &&
           imageSizes.value.length &&
-          selectedRarity.value
+          selectedRarity.value,
       ),
   });
 }
