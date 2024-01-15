@@ -1,4 +1,5 @@
 import { apiClient } from "./client.ts";
+import { createToken } from "@repo/auth-utils";
 
 interface FileData {
   size: number;
@@ -14,6 +15,7 @@ interface InscribeParams {
   receiverAddress: string;
   quantity: number;
   feeRate: number;
+  token: string;
 }
 
 export const inscribeApi = async ({
@@ -22,12 +24,20 @@ export const inscribeApi = async ({
   receiverAddress,
   feeRate,
   quantity,
+  token,
 }: InscribeParams) => {
-  return apiClient.provide("post", "/orders", {
-    files,
-    rarity,
-    receiverAddress,
-    feeRate,
-    quantity,
-  });
+  return apiClient.provide(
+    "post",
+    "/orders",
+    {
+      files,
+      rarity,
+      receiverAddress,
+      feeRate,
+      quantity,
+    },
+    {
+      Authorization: `Bearer ${token}`,
+    },
+  );
 };

@@ -29,8 +29,8 @@ export const createOrderEndpoint = defaultEndpointsFactory
         input: z.object({
             files: z
                 .array(fileData)
-                .min(1)
-                .nonempty("Must have at least one file"),
+                .min(1, "Must have at least one file")
+                .max(100, "Too many files"),
             rarity: z.enum(available_rarity).default("random"),
             receiverAddress: taprootAddress,
             quantity: safeInt.default(1),

@@ -5,7 +5,10 @@ export const config = createConfig({
         listen: PORT,
         compression: true,
     },
-    cors: true,
+    cors: ({ defaultHeaders }) => ({
+        ...defaultHeaders,
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    }),
     logger: {
         level: "debug",
         color: true,

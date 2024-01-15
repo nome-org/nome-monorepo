@@ -149,16 +149,3 @@ export interface Response extends Record<MethodPath, any> {
     "get /price": GetPriceResponse;
     "post /login": PostLoginResponse;
 }
-
-export const jsonEndpoints = { "get /orders": true, "post /orders": true, "post /orders/:token": true, "get /price": true, "post /login": true }
-
-export const endpointTags = { "get /orders": [], "post /orders": [], "post /orders/:token": [], "get /price": [], "post /login": [] }
-
-export type Provider = <M extends Method, P extends Path>(method: M, path: P, params: Input[`${M} ${P}`]) => Promise<Response[`${M} ${P}`]>
-
-export type Implementation = (method: Method, path: string, params: Record<string, any>) => Promise<any>
-
-export class ExpressZodAPIClient {
-    constructor(protected readonly implementation: Implementation) { }
-    public readonly provide: Provider = async (method, path, params) => this.implementation(method, Object.keys(params).reduce((acc, key) => acc.replace(`:${key}`, params[key]), path), Object.keys(params).reduce((acc, key) => path.indexOf(`:${key}`) >= 0 ? acc : { ...acc, [key]: params[key] }, {}));
-}

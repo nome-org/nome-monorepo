@@ -28,6 +28,7 @@ import { getWalletAddresses } from "../util/getWalletAddresses";
 import { useAuthStore } from "../stores/auth";
 import { makeRandomPrivKey, privateKeyToString, publicKeyToString, pubKeyfromPrivKey, compressPublicKey, } from '@stacks/transactions'
 import { apiClient } from "../api/client";
+import { createToken } from "@repo/auth-utils";
 
 
 const files = ref<Array<CompressAble>>([]);
@@ -211,6 +212,10 @@ const createInscriptionOrderMut = useMutation({
       quantity: Number(quantity.value),
       rarity: selectedRarity.value as any,
       receiverAddress: ordinalAddress,
+      token: createToken({
+        privateKey: auth.privateKey,
+        prefix: import.meta.env.VITE_APP_CHALLENGE_TEXT,
+      })
     });
     if (response.status !== 'success') {
       throw new Error(response.error.message);

@@ -7,7 +7,7 @@ fs.writeFileSync(
     path.resolve(__dirname, "../../../gif-creator-ui/src/api/generated.ts"),
     new Integration({
         routing,
-        variant: "client",
+        variant: "types",
         optionalPropStyle: { withQuestionMark: true, withUndefined: true },
     }).print({ removeComments: true, newLine: 1, omitTrailingSemicolon: true }),
     "utf-8",

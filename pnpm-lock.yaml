@@ -308,6 +308,9 @@ importers:
       '@heroicons/vue':
         specifier: ^2.0.18
         version: 2.1.1(vue@3.4.3)
+      '@repo/auth-utils':
+        specifier: workspace:^
+        version: link:../../packages/auth-utils
       '@repo/shared-ui':
         specifier: workspace:^
         version: link:../../packages/shared-ui
