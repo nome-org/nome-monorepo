@@ -10,7 +10,12 @@ export default {
         "sans-serif",
       ],
     },
-    extend: {},
+    extend: {
+      colors: {
+        pink: "#ff00f0",
+        green: "#06ff00",
+      },
+    },
   },
   plugins: [],
 };

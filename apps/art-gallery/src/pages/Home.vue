@@ -11,7 +11,7 @@
           class="uppercase text-white text-4xl text-center flex justify-between w-3/4 max-w-[24rem] sm:w-full mx-auto mb-6">
           <span v-for="item in 'Gallery'.split('')">{{ item }}</span>
         </h1>
-        <router-link type="button" to="/"
+        <router-link type="button" to="/intro"
           class="uppercase bg-white text-black tracking-[0.3em] py-1 px-4 rounded-md transition-all hover:scale-110">
           enter
         </router-link>
