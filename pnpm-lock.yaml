@@ -20,6 +20,9 @@ importers:
 
   apps/art-gallery:
     dependencies:
+      '@repo/auth-utils':
+        specifier: workspace:^
+        version: link:../../packages/auth-utils
       '@supabase/supabase-js':
         specifier: ^2.39.0
         version: 2.39.2
@@ -387,6 +390,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      oh-vue-icons:
+        specifier: 1.0.0-rc3
+        version: 1.0.0-rc3(vue@3.4.3)
       pinia:
         specifier: ^2.1.7
         version: 2.1.7(typescript@5.2.2)(vue@3.4.3)
@@ -439,12 +445,18 @@ importers:
       '@stacks/transactions':
         specifier: ^6.11.0
         version: 6.11.0
+      '@vueuse/core':
+        specifier: ^10.5.0
+        version: 10.7.1(vue@3.4.3)
       date-fns:
         specifier: ^3.2.0
         version: 3.2.0
       jsontokens:
         specifier: ^4.0.1
         version: 4.0.1
+      pinia:
+        specifier: ^2.1.7
+        version: 2.1.7(typescript@5.2.2)(vue@3.4.3)
 
   packages/brc-db:
     dependencies:

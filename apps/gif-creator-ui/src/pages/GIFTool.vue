@@ -1,34 +1,27 @@
 <script setup lang="ts">
-import {
-  AddressPurpose,
-  getAddress,
-  signMessage
-} from "sats-connect";
-
 import { useMutation, useQuery } from "@tanstack/vue-query";
 import { computed, onMounted, ref } from "vue";
-import { inscribeApi } from "../api/inscribe.ts";
-import { fileToBase64 } from "../util/fileToBase64.ts";
+import { inscribeApi } from "../api/inscribe";
+import { fileToBase64 } from "../util/fileToBase64";
 import axios from "axios";
-import SelectRarity from "./shared/SelectRarity.vue";
-import Footer from "./shared/Footer.vue";
-import { network } from "../constants/bitcoin.ts";
-import GetBetaAccess from "./GetBetaAccess.vue";
-import OrdersForAddress from "./OrdersForAddress.vue";
+import SelectRarity from "../components/shared/SelectRarity.vue";
+import Footer from "../components/shared/Footer.vue";
+import { network } from "../constants/bitcoin";
+import GetBetaAccess from "../components/GetBetaAccess.vue";
+import OrdersForAddress from "../components/OrdersForAddress.vue";
 import { FeeRateSelector } from "@repo/shared-ui"
-import Header from "./shared/Header.vue";
-import GIFPreview from "./GIFPreview.vue";
+import Header from "../components/shared/Header.vue";
+import GIFPreview from "../components/GIFPreview.vue";
 import { usePriceQuery } from "../api/queries/price";
-import MintInfo from "./MintInfo.vue";
+import MintInfo from "../components/MintInfo.vue";
 import { CompressAble, OrderingState } from "../constants/inscriptions";
-import InscribeButton from "./ui/InscribeButton.vue";
+import InscribeButton from "../components/ui/InscribeButton.vue";
 import { sendBTC } from '../util/sendBTC'
-import FrameManager from "./FrameManager.vue";
-import { getWalletAddresses } from "../util/getWalletAddresses";
-import { useAuthStore } from "../stores/auth";
-import { makeRandomPrivKey, privateKeyToString, publicKeyToString, pubKeyfromPrivKey, compressPublicKey, } from '@stacks/transactions'
-import { apiClient } from "../api/client";
-import { createToken } from "@repo/auth-utils";
+import FrameManager from "../components/FrameManager.vue";
+import { createToken, useAuthStore } from "@repo/auth-utils";
+
+
+const auth = useAuthStore()
 
 
 const files = ref<Array<CompressAble>>([]);
@@ -41,90 +34,6 @@ const gifSrc = ref("");
 const gifCompilationProgress = ref(0);
 const isCompilingGIF = ref(false);
 const showGetBetaAccess = ref(true);
-const auth = useAuthStore()
-
-const createSessionMut = useMutation({
-  mutationKey: ["createSession"],
-  mutationFn: async ({
-    message,
-    ordinalAddress,
-    signature
-  }: {
-    message: string,
-    ordinalAddress: string,
-    signature: string
-  }) => {
-    const response = await apiClient.provide('post', '/login', {
-      message,
-      ordinalAddress,
-      signature
-    })
-
-    if (response.status !== 'success') {
-      throw new Error(response.error.message)
-    }
-
-    return response.data
-  }
-})
-
-const login = () => {
-  return new Promise<{
-    privateKey: string
-    ordinalAddress: string
-    paymentAddress: string
-  }>((resolve, reject) => {
-    getAddress({
-      payload: {
-        purposes: [AddressPurpose.Ordinals, AddressPurpose.Payment],
-        message:
-          "We need the address you'll use to pay for the service, and the address where you want to receive the Ordinals.",
-        network: {
-          type: network,
-        },
-      },
-      onFinish: async (response) => {
-        orderingState.value = OrderingState.WaitingForCreation;
-        const { ordinalAddress, paymentAddress } = getWalletAddresses(response)
-        const privateKey = privateKeyToString(makeRandomPrivKey())
-        const publicKey = publicKeyToString(compressPublicKey(pubKeyfromPrivKey(privateKey).data))
-        const message = import.meta.env.VITE_APP_AUTH_MESSAGE_PREFIX + publicKey
-        signMessage({
-          payload: {
-            address: ordinalAddress,
-            message,
-            network: {
-              type: network,
-            },
-          },
-          async onFinish(signature) {
-            await createSessionMut.mutateAsync({
-              message,
-              ordinalAddress,
-              signature
-            })
-            auth.setAddresses({
-              ordinalAddress,
-              paymentAddress,
-            })
-            auth.setPrivateKey(privateKey)
-            resolve({
-              privateKey,
-              paymentAddress,
-              ordinalAddress,
-            })
-          },
-          onCancel() {
-            reject("User refused to sign")
-          }
-        })
-      },
-      onCancel() {
-        reject("User refused to provide addresses")
-      }
-    })
-  })
-}
 
 onMounted(() => {
   if (window.localStorage.getItem("has-beta-access")) {
@@ -226,14 +135,7 @@ const createInscriptionOrderMut = useMutation({
 async function waitXV() {
   try {
     orderingState.value = OrderingState.RequestingWalletAddress;
-    if (!auth.isLoggedIn) {
-      try {
-        await login()
-      } catch (e) {
-        orderingState.value = OrderingState.None;
-        return;
-      }
-    }
+
 
     orderingState.value = OrderingState.WaitingForCreation;
 

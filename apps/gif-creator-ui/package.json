@@ -22,6 +22,7 @@
     "browser-image-compression": "^2.0.2",
     "gif.js": "^0.2.0",
     "lodash": "^4.17.21",
+    "oh-vue-icons": "1.0.0-rc3",
     "pinia": "^2.1.7",
     "sats-connect": "^1.1.1",
     "vue": "^3.3.11",
