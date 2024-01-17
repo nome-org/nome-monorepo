@@ -8,7 +8,7 @@ import prisma from "../lib/prisma-client";
 import { getAddressByIndex } from "../lib/payments/server-keys";
 import { available_rarity } from "../constants/rarity";
 import { safeInt, taprootAddress } from "../types/zod-extras";
-import { authMiddleware } from "../middlewares/auth-mw";
+// import { authMiddleware } from "../middlewares/auth-mw";
 
 const maxFileSize = 200_000;
 const base64Overhead = 4 * (maxFileSize / 3);
@@ -23,7 +23,7 @@ const fileData = z.object({
 });
 
 export const createOrderEndpoint = defaultEndpointsFactory
-    .addMiddleware(authMiddleware)
+    // .addMiddleware(authMiddleware)
     .build({
         method: "post",
         input: z.object({

@@ -29,7 +29,7 @@ type GetOrdersResponse = {
     };
 }
 
-type PostOrdersInput = {} & {
+type PostOrdersInput = {
     files: {
         name: string;
         size: number;
