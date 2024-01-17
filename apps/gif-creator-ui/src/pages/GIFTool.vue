@@ -18,7 +18,10 @@ import { CompressAble, OrderingState } from "../constants/inscriptions";
 import InscribeButton from "../components/ui/InscribeButton.vue";
 import { sendBTC } from '../util/sendBTC'
 import FrameManager from "../components/FrameManager.vue";
-import { createToken, useAuthStore } from "@repo/auth-utils";
+import {
+  //  createToken,
+  useAuthStore
+} from "@repo/auth-utils";
 
 
 const auth = useAuthStore()
@@ -121,10 +124,11 @@ const createInscriptionOrderMut = useMutation({
       quantity: Number(quantity.value),
       rarity: selectedRarity.value as any,
       receiverAddress: ordinalAddress,
-      token: createToken({
-        privateKey: auth.privateKey,
-        prefix: import.meta.env.VITE_APP_CHALLENGE_TEXT,
-      })
+      token: ""
+      // createToken({
+      //   privateKey: auth.privateKey,
+      //   prefix: import.meta.env.VITE_APP_CHALLENGE_TEXT,
+      // })
     });
     if (response.status !== 'success') {
       throw new Error(response.error.message);
