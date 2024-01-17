@@ -45,11 +45,9 @@ const isVerified = computed(() => auth.isLoggedIn)
           </div>
           <div class="w-1/2 sm:w-5/12 rounded-tl-md sm:border-l sm:border-t border-gray-600 h-5/6">
             <div class="sm:relative top-12 left-12">
-
               This is a platform for the community to explore the potential of Bitcoin Ordinals. Create GIF
               recursive animations on-chain and inscribe on rare sats all in one place.
             </div>
-
           </div>
         </div>
         <router-link to="/gif" class="sm:relative left-4 sm:self-start">

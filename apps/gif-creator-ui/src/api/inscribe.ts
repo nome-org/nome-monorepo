@@ -1,5 +1,4 @@
 import { apiClient } from "./client.ts";
-import { createToken } from "@repo/auth-utils";
 
 interface FileData {
   size: number;
