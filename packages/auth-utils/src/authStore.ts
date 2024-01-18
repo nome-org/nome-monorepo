@@ -1,12 +1,15 @@
 import { useLocalStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
+import { WalletType } from "@repo/wallet-utils";
 
 const STORE_KEY = "auth";
 type State = {
   privateKey: string;
   paymentAddress: string;
   ordinalAddress: string;
+  walletType?: WalletType;
 };
+
 export const useAuthStore = defineStore<
   typeof STORE_KEY,
   State,

@@ -11,6 +11,7 @@
     "@heroicons/vue": "^2.0.18",
     "@repo/auth-utils": "workspace:^",
     "@repo/shared-ui": "workspace:^",
+    "@repo/wallet-utils": "workspace:^",
     "@stacks/transactions": "^6.11.0",
     "@supabase/supabase-js": "^2.39.0",
     "@tanstack/vue-query": "^5.4.3",

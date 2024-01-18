@@ -1,0 +1,15 @@
+{
+  "name": "@repo/wallet-utils",
+  "version": "0.0.1",
+  "description": "Wallet utils",
+  "main": "index.ts",
+  "keywords": [
+    "wallet",
+    "utils"
+  ],
+  "author": "hz",
+  "dependencies": {
+    "@btckit/types": "^0.0.19",
+    "sats-connect": "^1.1.2"
+  }
+}

@@ -2,7 +2,9 @@
 defineProps({
   isOpen: Boolean,
 });
-const emit = defineEmits(["onVisibilityChange"]);
+const emit = defineEmits<{
+  onVisibilityChange: [event: boolean]
+}>();
 
 const close = (e: MouseEvent) => {
   if (e.target !== e.currentTarget) return;
@@ -10,12 +12,8 @@ const close = (e: MouseEvent) => {
 };
 </script>
 <template>
-  <div
-    v-if="isOpen"
-    @click="close"
-    style="overflow-y: scroll; z-index: 99"
-    class="fixed top-0 left-0 bg-black bg-opacity-80 w-screen h-screen flex items-center justify-center z-50 overflow-auto"
-  >
+  <div v-if="isOpen" @click="close"
+    class="fixed top-0 left-0 bg-black bg-opacity-80 w-screen h-screen flex items-center justify-center z-50 overflow-auto">
     <slot></slot>
   </div>
 </template>

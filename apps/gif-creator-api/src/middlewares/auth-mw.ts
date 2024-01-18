@@ -6,6 +6,7 @@ import prisma from "../lib/prisma-client";
 import { verifyToken } from "@repo/auth-utils";
 
 const prefix = process.env.CHALLENGE_TEXT!;
+// TODO: Check session valid through brc20 token amount
 
 export const authMiddleware = createMiddleware({
     security: {

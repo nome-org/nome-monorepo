@@ -10,6 +10,7 @@
   "author": "hz",
   "license": "MIT",
   "dependencies": {
+    "@repo/wallet-utils": "workspace:^",
     "@stacks/transactions": "^6.11.0",
     "@vueuse/core": "^10.5.0",
     "date-fns": "^3.2.0",

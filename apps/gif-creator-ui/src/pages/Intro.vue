@@ -1,16 +1,50 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import Button from '../components/ui/Button.vue';
 import { useAuth } from '../util/useAuth';
+import { Modal } from '@repo/shared-ui';
+import { WalletType } from '@repo/wallet-utils';
 const {
   auth,
   login
 } = useAuth()
 
 const isVerified = computed(() => auth.isLoggedIn)
+const isWalletSelectionOpen = ref(false)
+
+const openWalletSelection = () => {
+  isWalletSelectionOpen.value = true
+}
+
+
+const loginXverse = () => {
+  login({ walletType: WalletType.xverse })
+}
+const loginUnisat = () => {
+  login({ walletType: WalletType.unisat })
+}
+const loginLeather = () => {
+  login({ walletType: WalletType.leather })
+}
 
 </script>
 <template>
+  <Modal :is-open="isWalletSelectionOpen" @on-visibility-change="isWalletSelectionOpen = $event">
+
+    <div class="bg-white text-black p-8 rounded shadow flex flex-col">
+      <h2 class="text-2xl font-bold mb-4">Select wallet</h2>
+      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="loginXverse">
+        Xverse
+      </button>
+      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="loginUnisat">
+        Unisat
+      </button>
+      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="loginLeather">
+        Leather
+      </button>
+    </div>
+
+  </Modal>
   <div class="relative h-screen w-screen bg-black ">
 
     <div class="w-full h-full z-10 relative flex flex-col items-center">
@@ -25,7 +59,7 @@ const isVerified = computed(() => auth.isLoggedIn)
         <div class="text-pink">
           BUY $N0ME BRC-20 TO
         </div>
-        <Button :disabled="isVerified" @click="login" class-name="mt-4">
+        <Button :disabled="isVerified" @click="openWalletSelection" class-name="mt-4">
           VERIFY
         </Button>
       </div>

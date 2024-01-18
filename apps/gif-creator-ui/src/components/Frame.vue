@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch, onUnmounted } from "vue";
-import Modal from "./Modal.vue";
+import {Modal} from "@repo/shared-ui";
 import { formatBytes } from "../util/formatBytes.ts";
 import imageCompression from "browser-image-compression";
 const emit = defineEmits([
