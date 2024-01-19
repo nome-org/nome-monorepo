@@ -40,7 +40,6 @@ const { refetch: checkWLClaim, isSuccess: isClaimChecked } = useQuery({
 })
 const isAddressChecked = ref(false)
 const checkClaim = async () => {
-  isAddressChecked.value = true
   // if (isWhiteListOpen.value) {
   const { data } = await checkWLClaim()
   if (data && data.status === 'success') {
@@ -48,6 +47,7 @@ const checkClaim = async () => {
     quantity.value = String(claimInfo.freeAmount)
     eligibleFreeAmount.value = claimInfo.freeAmount
     isWhiteListed.value = claimInfo.isWhitelisted
+    isAddressChecked.value = true
   }
   // }
 
@@ -216,6 +216,9 @@ const changePreviewStatus = (status: boolean) => {
   isPreviewOpen.value = status;
 };
 
+const saleWording = computed(() => {
+  return eligibleFreeAmount.value ? "Claim" : "Buy"
+})
 
 </script>
 <template>
@@ -299,12 +302,12 @@ const changePreviewStatus = (status: boolean) => {
         </div>
         <div class="border-t border-solid border-opacity-20 border-white"></div>
         <div class="py-8" v-show="isClaimChecked && eligibleFreeAmount">
-          <p>
-            <span class="text-green">Congratulations!</span>
+          <p class="text-green">
+            <span class="">Congratulations!</span>
 
             You got
             {{ eligibleFreeAmount.toLocaleString() }}
-            You got 1,000 FREE $N0ME tokens. <br />
+            FREE $N0ME tokens. <br />
             The next step is to pay the network fees below, feel free to add extra tokens on top.
           </p>
           <!-- <p v-else-if="isWhiteListOpen && isWhiteListed">
@@ -363,12 +366,12 @@ const changePreviewStatus = (status: boolean) => {
               <button :disabled="!isFormValid && progress < 50_000_000"
                 class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 @click="createOrderM.mutate({ xverse: true })">
-                Buy with Xverse
+                {{ saleWording }} with Xverse
               </button>
               <button :disabled="!isFormValid && progress < 50_000_000"
                 class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 @click="createOrderM.mutate({ xverse: false })">
-                Buy with other wallet
+                {{ saleWording }} with other wallet
               </button>
               <p class="text-center text-xl text-[#5a5a5a] mt-4" v-if="paymentTx">
                 Link to the <a :href="paymentTx" target="_blank" rel="noreferrer noopener"
