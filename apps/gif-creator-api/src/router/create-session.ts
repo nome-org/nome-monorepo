@@ -49,7 +49,7 @@ export const createSessionEndpoint = defaultEndpointsFactory.build({
         } = await checkUserBalance({ address: ordinalAddress });
 
         if (Number(availableBalance) < MIN_ELIGIBLE_BALANCE) {
-            throw createHttpError(403, "Insufficient balance");
+            throw createHttpError(403, "Insufficient $N0ME balance");
         }
 
         const publicKey = message.replace(prefix, "");

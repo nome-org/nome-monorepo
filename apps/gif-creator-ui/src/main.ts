@@ -19,8 +19,10 @@ const icons = Object.values({
 addIcons(...icons);
 
 import App from "./App.vue";
-import "./global.css";
 import router from "./router.ts";
+import Vue3Toasity, { type ToastContainerOptions } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+import "./global.css";
 
 const pinia = createPinia();
 const app = createApp(App);
@@ -30,6 +32,9 @@ app
   .use(VueGtag, {
     config: { id: "G-HZQ4TKL9G9" },
   })
+  .use(Vue3Toasity, {
+    autoClose: 3000,
+  } as ToastContainerOptions)
   .use(pinia)
   .use(router as any)
   .use(VueQueryPlugin)

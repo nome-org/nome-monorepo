@@ -4,6 +4,7 @@ import Button from '../components/ui/Button.vue';
 import { useAuth } from '../util/useAuth';
 import { Modal } from '@repo/shared-ui';
 import { WalletType } from '@repo/wallet-utils';
+import { toast } from 'vue3-toastify'
 const {
   auth,
   login
@@ -18,8 +19,14 @@ const openWalletSelection = () => {
 
 
 const handleLogin = async (walletType: WalletType) => {
-  await login({ walletType })
-  isWalletSelectionOpen.value = false
+  try {
+
+    await login({ walletType })
+    isWalletSelectionOpen.value = false
+  } catch (error: unknown) {
+
+    toast.error((error as Error).message)
+  }
 }
 </script>
 <template>
