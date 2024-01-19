@@ -99,50 +99,40 @@ export function useAuth() {
   });
 
   const login = async ({ walletType }: { walletType: WalletType }) => {
-    try {
-      console.log("login");
-      const { ordinalAddress, paymentAddress } = await getAddresses({
-        message: getAddressesMsg,
-        networkType: network,
-        walletType,
-      });
-      // const { ordinalAddress, paymentAddress } = (await getAddresses({
-      //   message: getAddressesMsg,
-      //   networkType: network,
-      //   walletType: walletType,
-      // })) as any;
-      console.log({ ordinalAddress, paymentAddress });
-      auth.setAddresses({
-        ordinalAddress,
-        paymentAddress,
-      });
-      const privateKey = privateKeyToString(makeRandomPrivKey());
-      const publicKey = publicKeyToString(
-        compressPublicKey(pubKeyfromPrivKey(privateKey).data),
-      );
-      const message = import.meta.env.VITE_APP_AUTH_MESSAGE_PREFIX + publicKey;
-      const signature = await signMessage({
-        message,
-        networkType: network,
-        tapRootAddress: ordinalAddress,
-        walletType,
-      });
+    const { ordinalAddress, paymentAddress } = await getAddresses({
+      message: getAddressesMsg,
+      networkType: network,
+      walletType,
+    });
+    const privateKey = privateKeyToString(makeRandomPrivKey());
+    const publicKey = publicKeyToString(
+      compressPublicKey(pubKeyfromPrivKey(privateKey).data),
+    );
+    const message = import.meta.env.VITE_APP_AUTH_MESSAGE_PREFIX + publicKey;
+    const signature = await signMessage({
+      message,
+      networkType: network,
+      tapRootAddress: ordinalAddress,
+      walletType,
+    });
 
-      await createSessionMut.mutateAsync({
-        message,
-        ordinalAddress,
-        signature,
-      });
-      auth.setPrivateKey(privateKey);
+    await createSessionMut.mutateAsync({
+      message,
+      ordinalAddress,
+      signature,
+    });
+    auth.setAddresses({
+      ordinalAddress,
+      paymentAddress,
+    });
 
-      return {
-        privateKey,
-        paymentAddress,
-        ordinalAddress,
-      };
-    } catch (e) {
-      console.log(e);
-    }
+    auth.setPrivateKey(privateKey);
+
+    return {
+      privateKey,
+      paymentAddress,
+      ordinalAddress,
+    };
   };
   return {
     login,
