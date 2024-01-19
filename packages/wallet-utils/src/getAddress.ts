@@ -51,7 +51,6 @@ export const getAddressesXverse: getAddresses = (
     getAddress({
       onCancel: reject,
       onFinish(results) {
-        console.log("getAddressXverse", results);
         resolve(getWalletAddresses(results) as Results);
       },
       payload: {
@@ -82,7 +81,6 @@ export const getAddressesLeather: getAddresses = async () => {
   const response = (await window.btc.request("getAddresses", {
     types: ["p2wpkh", "p2tr"],
   })) as unknown as any;
-  console.log(response);
   const error = response.error as RpcError | undefined;
   if (error) {
     throw new Error(error.message);

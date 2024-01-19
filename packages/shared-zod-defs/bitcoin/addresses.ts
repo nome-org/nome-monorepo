@@ -18,11 +18,11 @@ export const safeString = z
 export const validBTCAddress = safeString
   .refine((value) => {
     return validate(value);
-  })
+  }, "Invalid BTC address")
   .describe("Valid BTC address");
 
 export const validTaprootAddress = validBTCAddress
   .refine((value) => {
     return getAddressInfo(value).type === AddressType.p2tr;
-  })
+  }, "Invalid taproot address")
   .describe("Valid taproot address");

@@ -58,8 +58,7 @@ export const useAuthStore = defineStore<
   getters: {
     isLoggedIn: (state) => {
       return Boolean(
-        // state.privateKey &&
-        state.paymentAddress && state.ordinalAddress
+        state.privateKey && state.paymentAddress && state.ordinalAddress
       );
     },
   },
