@@ -5,14 +5,14 @@ import z from "zod";
 import { checkUserBalance } from "../lib/brc/check-user-balance";
 import { MIN_ELIGIBLE_BALANCE } from "../lib/constants";
 import prisma from "../lib/prisma-client";
-import { validTaprootAddress } from "@repo/shared-zod-defs";
+import { validBTCAddress } from "@repo/shared-zod-defs";
 
 const prefix = process.env.AUTH_MESSAGE_PREFIX!;
 export const createSessionEndpoint = defaultEndpointsFactory.build({
     method: "post",
     input: z.object({
-        ordinalAddress: validTaprootAddress,
-        signature: z.string().max(100),
+        ordinalAddress: validBTCAddress,
+        signature: z.string().max(255),
         message: z
             .string()
             .startsWith(prefix, "Message must start with prefix")
