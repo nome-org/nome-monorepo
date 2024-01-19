@@ -17,29 +17,23 @@ const openWalletSelection = () => {
 }
 
 
-const loginXverse = () => {
-  login({ walletType: WalletType.xverse })
+const handleLogin = async (walletType: WalletType) => {
+  await login({ walletType })
+  isWalletSelectionOpen.value = false
 }
-const loginUnisat = () => {
-  login({ walletType: WalletType.unisat })
-}
-const loginLeather = () => {
-  login({ walletType: WalletType.leather })
-}
-
 </script>
 <template>
   <Modal :is-open="isWalletSelectionOpen" @on-visibility-change="isWalletSelectionOpen = $event">
 
     <div class="bg-white text-black p-8 rounded shadow flex flex-col">
       <h2 class="text-2xl font-bold mb-4">Select wallet</h2>
-      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="loginXverse">
+      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="handleLogin(WalletType.xverse)">
         Xverse
       </button>
-      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="loginUnisat">
+      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="handleLogin(WalletType.unisat)">
         Unisat
       </button>
-      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="loginLeather">
+      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="handleLogin(WalletType.leather)">
         Leather
       </button>
     </div>
