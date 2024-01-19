@@ -18,6 +18,7 @@ import {
   PriceItem,
 } from "@repo/shared-ui";
 import SaleProgress from "./SaleProgress.vue";
+import { useBTCPrice } from "../api/queries/coin-cap-btc-price";
 
 
 
@@ -206,30 +207,7 @@ const isEligibleToMint = computed(() => {
   return shouldMint
 })
 
-const { data: usdPrice } = useQuery({
-  queryKey: ["coinCap"],
-  enabled: () => Boolean(address.value && priceData.value && priceQ.dataUpdatedAt.value),
-  refetchInterval: () => {
-    const now = new Date().getTime();
-    const shouldRefresh = Boolean(
-      priceQ.dataUpdatedAt.value &&
-      now - priceQ.dataUpdatedAt.value < 60_000
-    );
-
-    return shouldRefresh ? 20_000 : false;
-  },
-  queryFn: async () => {
-    const response = await fetch(
-      "https://api.coincap.io/v2/rates/bitcoin",
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).then(res => res.json());
-    return response.data.rateUsd as number;
-  },
-});
+const { data: usdPrice } = useBTCPrice();
 
 const progress = useMintProgress()
 
