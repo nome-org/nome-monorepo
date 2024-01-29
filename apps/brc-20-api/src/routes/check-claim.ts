@@ -31,8 +31,10 @@ export const checkClaimEndpoint = defaultEndpointsFactory.build({
     let freeAmount = 0
     let price = PRICE
 
-    if (claim && wlOpen) {
+    if (claim && claim.freeAmount) {
       freeAmount = claim.freeAmount - claim.claimedAmount
+    }
+    if (wlOpen) {
       price = WL_PRICE
     }
 

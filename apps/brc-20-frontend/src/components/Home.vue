@@ -18,6 +18,7 @@ import {
   PriceItem,
 } from "@repo/shared-ui";
 import SaleProgress from "./SaleProgress.vue";
+import { useBTCPrice } from "../api/queries/coin-cap-btc-price";
 
 
 
@@ -39,16 +40,16 @@ const { refetch: checkWLClaim, isSuccess: isClaimChecked } = useQuery({
 })
 const isAddressChecked = ref(false)
 const checkClaim = async () => {
-  isAddressChecked.value = true
-  if (isWhiteListOpen.value) {
-    const { data } = await checkWLClaim()
-    if (data && data.status === 'success') {
-      const claimInfo = data.data
-      quantity.value = String(claimInfo.freeAmount)
-      eligibleFreeAmount.value = claimInfo.freeAmount
-      isWhiteListed.value = claimInfo.isWhitelisted
-    }
+  // if (isWhiteListOpen.value) {
+  const { data } = await checkWLClaim()
+  if (data && data.status === 'success') {
+    const claimInfo = data.data
+    quantity.value = String(claimInfo.freeAmount)
+    eligibleFreeAmount.value = claimInfo.freeAmount
+    isWhiteListed.value = claimInfo.isWhitelisted
+    isAddressChecked.value = true
   }
+  // }
 
 }
 
@@ -73,10 +74,14 @@ const userPaid = ref(true)
 
 
 const isAmountValid = computed(() => {
+  let min = 5000
+  if (eligibleFreeAmount.value) {
+    min = eligibleFreeAmount.value
+  }
   const amount = Number(quantity.value)
   return amount > 0
     && amount % 1000 === 0
-    && amount >= 5000
+    && amount >= min
     && amount <= 1_000_000
 })
 
@@ -202,30 +207,7 @@ const isEligibleToMint = computed(() => {
   return shouldMint
 })
 
-const { data: usdPrice } = useQuery({
-  queryKey: ["coinCap"],
-  enabled: () => Boolean(address.value && priceData.value && priceQ.dataUpdatedAt.value),
-  refetchInterval: () => {
-    const now = new Date().getTime();
-    const shouldRefresh = Boolean(
-      priceQ.dataUpdatedAt.value &&
-      now - priceQ.dataUpdatedAt.value < 60_000
-    );
-
-    return shouldRefresh ? 20_000 : false;
-  },
-  queryFn: async () => {
-    const response = await fetch(
-      "https://api.coincap.io/v2/rates/bitcoin",
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).then(res => res.json());
-    return response.data.rateUsd as number;
-  },
-});
+const { data: usdPrice } = useBTCPrice();
 
 const progress = useMintProgress()
 
@@ -234,6 +216,9 @@ const changePreviewStatus = (status: boolean) => {
   isPreviewOpen.value = status;
 };
 
+const saleWording = computed(() => {
+  return eligibleFreeAmount.value ? "Claim" : "Buy"
+})
 
 </script>
 <template>
@@ -316,22 +301,23 @@ const changePreviewStatus = (status: boolean) => {
           </div>
         </div>
         <div class="border-t border-solid border-opacity-20 border-white"></div>
-        <div class="py-8" v-show="isWhiteListOpen && isClaimChecked">
-          <p v-if="eligibleFreeAmount > 0 && isWhiteListOpen">
-            <span class="text-green">Congratulations!</span> You got
+        <div class="py-8" v-show="isClaimChecked && eligibleFreeAmount">
+          <p class="text-green">
+            <span class="">Congratulations!</span>
+
+            You got
             {{ eligibleFreeAmount.toLocaleString() }}
-            FREE $N0ME tokens as a Holder, Team, or GA Winner. <br />
-            Please, pay the Network fees below. You have <span class="text-green">10 minutes</span> to purchase
-            more tokens.
+            FREE $N0ME tokens. <br />
+            The next step is to pay the network fees below, feel free to add extra tokens on top.
           </p>
-          <p v-else-if="isWhiteListOpen && isWhiteListed">
+          <!-- <p v-else-if="isWhiteListOpen && isWhiteListed">
             Welcome to the Whitelist mint! You have <span class="text-green">10 minutes</span> to purchase the
             $N0ME tokens.
           </p>
           <p class="mt-4" v-else>
             Sorry, your wallet is not registered for Whitelist,
             <span class="text-green">public $N0ME mint</span> starts in 2 hours after the WL.
-          </p>
+          </p> -->
         </div>
 
         <div v-if="isEligibleToMint" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
@@ -380,12 +366,12 @@ const changePreviewStatus = (status: boolean) => {
               <button :disabled="!isFormValid && progress < 50_000_000"
                 class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 @click="createOrderM.mutate({ xverse: true })">
-                Buy with Xverse
+                {{ saleWording }} with Xverse
               </button>
               <button :disabled="!isFormValid && progress < 50_000_000"
                 class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 @click="createOrderM.mutate({ xverse: false })">
-                Buy with other wallet
+                {{ saleWording }} with other wallet
               </button>
               <p class="text-center text-xl text-[#5a5a5a] mt-4" v-if="paymentTx">
                 Link to the <a :href="paymentTx" target="_blank" rel="noreferrer noopener"

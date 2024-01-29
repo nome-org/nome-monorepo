@@ -15,7 +15,7 @@ const {
 })
 
 const emit = defineEmits(['update:modelValue'])
-const formattedNumber = ref(modelValue)
+const formattedNumber = ref(modelValue && formatNumber(Number(modelValue)))
 const handleChange = (e: Event) => {
     let value = Number((e.target as HTMLInputElement).value.replace(/,/g, ''))
     // format number with commas
