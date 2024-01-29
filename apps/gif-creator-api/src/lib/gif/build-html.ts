@@ -12,7 +12,10 @@ export const buildGifHTML = <
 ) => {
     const firstImage = `${files[0].tx_id}i${files[0].ordinal_index}`;
     const imagesList = files
-        .map((f) => `"${f.tx_id}i${f.ordinal_index}"`)
+        .map((f) => ({
+            id: `"${f.tx_id}i${f.ordinal_index}"`,
+            time: f.duration,
+        }))
         .join(",\n");
 
     return minify(
@@ -52,8 +55,8 @@ export const buildGifHTML = <
                 });
                 
                 for (let image of images) {
-                    gif.addFrame(await mb("/content/" + image), {
-                        delay: 1000
+                    gif.addFrame(await mb("/content/" + image.id), {
+                        delay: image.time
                     });
                 }
                 gif.on('finished', (blob) => {
