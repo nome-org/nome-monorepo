@@ -1,6 +1,6 @@
 {
   "name": "brc-20-api",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "the api for the nome brc-20 sale app",
   "type": "module",
   "exports": "./index.js",
