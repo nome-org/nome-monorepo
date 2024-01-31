@@ -71,4 +71,6 @@ model UserSession {
   updated_at     DateTime @updatedAt
   ordinalAddress String   @db.VarChar(255)
   publicKey      String   @unique @db.VarChar(255)
+  lastCheckedAt  DateTime @default(now())
+  isExpired      Boolean  @default(false)
 }

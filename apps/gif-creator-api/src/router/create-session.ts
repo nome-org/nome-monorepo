@@ -2,10 +2,9 @@ import { Verifier } from "bip322-js";
 import { defaultEndpointsFactory } from "express-zod-api";
 import createHttpError from "http-errors";
 import z from "zod";
-import { checkUserBalance } from "../lib/brc/check-user-balance";
-import { MIN_ELIGIBLE_BALANCE } from "../lib/constants";
 import prisma from "../lib/prisma-client";
 import { validBTCAddress } from "@repo/shared-zod-defs";
+import { isUserEligible } from "../lib/brc/isUserEligible";
 
 const prefix = process.env.AUTH_MESSAGE_PREFIX!;
 export const createSessionEndpoint = defaultEndpointsFactory.build({
@@ -44,11 +43,9 @@ export const createSessionEndpoint = defaultEndpointsFactory.build({
             throw createHttpError(409, "Session already exists");
         }
 
-        const {
-            data: { availableBalance },
-        } = await checkUserBalance({ address: ordinalAddress });
+        const isEligible = await isUserEligible({ address: ordinalAddress });
 
-        if (Number(availableBalance) < MIN_ELIGIBLE_BALANCE) {
+        if (!isEligible) {
             throw createHttpError(403, "Insufficient $N0ME balance");
         }
 

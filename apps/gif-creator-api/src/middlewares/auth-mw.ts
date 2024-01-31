@@ -4,6 +4,7 @@ import { createMiddleware } from "express-zod-api";
 import prisma from "../lib/prisma-client";
 
 import { verifyToken } from "@repo/auth-utils";
+import { isUserEligible } from "../lib/brc/isUserEligible";
 
 const prefix = process.env.CHALLENGE_TEXT!;
 // TODO: Check session valid through brc20 token amount
@@ -32,13 +33,37 @@ export const authMiddleware = createMiddleware({
                 token,
             });
 
-            const session = await prisma.userSession.findUnique({
+            let session = await prisma.userSession.findUnique({
                 where: {
                     publicKey,
+                    isExpired: false,
                 },
             });
+
             if (!session) {
                 throw createHttpError(401, "No session, log in first!");
+            }
+            const sevenDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7);
+            if (session.lastCheckedAt < sevenDaysAgo) {
+                const isExpired = !(await isUserEligible({
+                    address: session.ordinalAddress,
+                }));
+                // just to avoid a noop update
+                if (isExpired) {
+                    session = await prisma.userSession.update({
+                        where: {
+                            id: session.id,
+                        },
+                        data: {
+                            lastCheckedAt: new Date(),
+                            isExpired,
+                        },
+                    });
+                }
+            }
+
+            if (session.isExpired) {
+                throw createHttpError(401, "Session Expired");
             }
 
             return { session };
