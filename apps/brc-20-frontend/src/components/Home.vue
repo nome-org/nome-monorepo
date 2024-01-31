@@ -275,7 +275,7 @@ const saleWording = computed(() => {
                 <DisclaimerCheckbox v-if="isWhiteListOpen" v-model="disclaimersCheck[0]"
                   text="If you are a holder, please, provide the wallet address that holds the 1/1 art." />
                 <DisclaimerCheckbox v-model="disclaimersCheck[1]"
-                  text="If you place someone else's address, your tokens will be sent to another person." />
+                  text="Confirm that I want to receive tokens to this Ordinals address" />
               </div>
             </div>
           </div>
