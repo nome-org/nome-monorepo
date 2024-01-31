@@ -245,38 +245,18 @@ const saleWording = computed(() => {
           </div>
         </div>
         <div class="w-full lg:w-[90%] xl:w-[80%] 2xl:w-[57%] text-base">
-          <span class="block mb-12">
+          <span class="block mb-12 mt-24">
             NōME is a brand that changes the world by bringing art back to people. The brand name translates as no one or
-            no ID. We prioritize privacy and create solutions to empower people to own their data.
+            no ID. We prioritize privacy and create solutions to empower people to own their data. We launched the first
+            crowdfunding mint, leveraging the modern Bitcoin BRC-20 technology. BRC-20 is an experimental standard for
+            fungible tokens on the L1 Bitcoin blockchain.
           </span>
-
-          <h1 class="uppercase underline underline-offset-4 mb-6 text-xl block">
-            "NOME ART"
-          </h1>
-          <p class="mb-8">
-            We established an independent
-            <span class="font-bold text-pink">
-              nonprofit organization 501(c)(3)
-            </span>
-            to move the global Digital Art movement
-            forward. NOME ART's mission is to be the best place to learn about crypto art, and tech, and have fun. We
-            believe in a future where systems are self-sovereign and decentralized.
-          </p>
-          <p class="mb-8">
-            Today, we are excited to launch the first
-            <span class="font-bold text-pink">
-              crowdfunding
-            </span>
-            mint,
-            leveraging the modern
-            <span class="font-bold text-pink">
-              Bitcoin BRC-20
-            </span>
-            technology.
-            BRC-20 is an experimental standard for fungible tokens on the L1 Bitcoin blockchain. Raised funds will be
-            invested back into the ecosystem, improving the Web3 space with our Ordinals tech tools and education.
-          </p>
-
+          <span class="block mb-12">
+            $NOME BRC-20 give access to "NOME gallery" – the world's first luxury Ordinals Art Gallery on Bitcoin that
+            showcases the works of some of the best contemporary artists. Our mission is to support digital artists of
+            various art styles and help them share their visionary creations with audiences by staying at the forefront of
+            innovation.
+          </span>
         </div>
 
 

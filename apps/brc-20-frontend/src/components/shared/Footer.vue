@@ -25,9 +25,9 @@
         <!--        <img src="../../assets/images/ordinalsbot_logo.png" class="max-h-[1.8rem] sm:max-h-[1.7rem]" alt="">-->
         <img src="../../assets/images/xverse_logo_white.png" class="max-h-[1.1rem]" alt="">
       </div>
-      <a href="https://nome.wtf" target="_blank" rel="noreferrer noopener"
+      <a href="https://nome.gallery" target="_blank" rel="noreferrer noopener"
         class="text-white underline text-[20px] leading-[16px] pb-[25px] transition-all duration-75 hover:italic underline-offset-4 sm:underline-offset-8 hover:underline absolute bottom-[25px] right-0">
-        nome.wtf
+        gallery
       </a>
 
     </div>
