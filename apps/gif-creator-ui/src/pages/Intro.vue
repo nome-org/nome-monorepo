@@ -34,13 +34,19 @@ const handleLogin = async (walletType: WalletType) => {
 
     <div class="bg-white text-black p-8 rounded shadow flex flex-col">
       <h2 class="text-2xl font-bold mb-4">Select wallet</h2>
-      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="handleLogin(WalletType.xverse)">
+      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200 flex items-center gap-x-4"
+        @click="handleLogin(WalletType.xverse)">
+        <img src="../assets/images/xverse-icon.png" class="h-4">
         Xverse
       </button>
-      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="handleLogin(WalletType.unisat)">
+      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200 flex items-center gap-x-4"
+        @click="handleLogin(WalletType.unisat)">
+        <img src="../assets/images/unisat-icon.png" class="h-4">
         Unisat
       </button>
-      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200" @click="handleLogin(WalletType.leather)">
+      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200 flex items-center gap-x-4"
+        @click="handleLogin(WalletType.leather)">
+        <img src="../assets/images/leather-icon.png" class="h-4">
         Leather
       </button>
     </div>

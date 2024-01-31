@@ -128,7 +128,25 @@ type PostLoginResponse = {
     };
 }
 
-export type Path = "/orders" | "/orders" | "/orders/:token" | "/price" | "/login"
+type GetFramesInput = {} & {
+    take?: number;
+    skip?: number;
+}
+
+type GetFramesResponse = {
+    status: "success";
+    data: {
+        results: string[];
+        total: number;
+    };
+} | {
+    status: "error";
+    error: {
+        message: string;
+    };
+}
+
+export type Path = "/orders" | "/orders" | "/orders/:token" | "/price" | "/login" | "/frames"
 
 export type Method = "get" | "post" | "put" | "delete" | "patch"
 
@@ -140,6 +158,7 @@ export interface Input extends Record<MethodPath, any> {
     "post /orders/:token": PostOrdersTokenInput;
     "get /price": GetPriceInput;
     "post /login": PostLoginInput;
+    "get /frames": GetFramesInput;
 }
 
 export interface Response extends Record<MethodPath, any> {
@@ -148,4 +167,5 @@ export interface Response extends Record<MethodPath, any> {
     "post /orders/:token": PostOrdersTokenResponse;
     "get /price": GetPriceResponse;
     "post /login": PostLoginResponse;
+    "get /frames": GetFramesResponse;
 }
