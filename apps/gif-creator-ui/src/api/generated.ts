@@ -146,7 +146,23 @@ type GetFramesResponse = {
     };
 }
 
-export type Path = "/orders" | "/orders" | "/orders/:token" | "/price" | "/login" | "/frames"
+type GetSessionInput = {} & {}
+
+type GetSessionResponse = {
+    status: "success";
+    data: {
+        isExpired: boolean;
+        ordinalAddress: string;
+        publicKey: string;
+    };
+} | {
+    status: "error";
+    error: {
+        message: string;
+    };
+}
+
+export type Path = "/orders" | "/orders" | "/orders/:token" | "/price" | "/login" | "/frames" | "/session"
 
 export type Method = "get" | "post" | "put" | "delete" | "patch"
 
@@ -159,6 +175,7 @@ export interface Input extends Record<MethodPath, any> {
     "get /price": GetPriceInput;
     "post /login": PostLoginInput;
     "get /frames": GetFramesInput;
+    "get /session": GetSessionInput;
 }
 
 export interface Response extends Record<MethodPath, any> {
@@ -168,4 +185,5 @@ export interface Response extends Record<MethodPath, any> {
     "get /price": GetPriceResponse;
     "post /login": PostLoginResponse;
     "get /frames": GetFramesResponse;
+    "get /session": GetSessionResponse;
 }

@@ -6,6 +6,7 @@ import { updateOrderWebhook } from "./update-order-webhook";
 import path from "path";
 import { createSessionEndpoint } from "./create-session";
 import { getFramesEndpoint } from "./frames";
+import { getSessionDetailsEndpoint } from "./get-session-details";
 
 export const routing: Routing = {
     orders: {
@@ -18,5 +19,6 @@ export const routing: Routing = {
     price: getPriceEndpoint,
     login: createSessionEndpoint,
     frames: getFramesEndpoint,
+    session: getSessionDetailsEndpoint,
     docs: new ServeStatic(path.resolve(__dirname, "../../docs")),
 };

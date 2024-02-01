@@ -1,17 +1,45 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import Button from '../components/ui/Button.vue';
 import { useAuth } from '../util/useAuth';
 import { Modal } from '@repo/shared-ui';
 import { WalletType } from '@repo/wallet-utils';
 import { toast } from 'vue3-toastify'
+import { useQuery } from '@tanstack/vue-query';
+import { apiClient } from '../api/client';
+import { createToken } from '@repo/auth-utils';
+import { useRouter } from 'vue-router'
 const {
   auth,
   login
 } = useAuth()
-
-const isVerified = computed(() => auth.isLoggedIn)
+const router = useRouter()
 const isWalletSelectionOpen = ref(false)
+
+useQuery({
+  queryKey: ['session', auth.privateKey],
+  queryFn: async () => {
+    const token = createToken({
+      privateKey: auth.privateKey,
+      prefix: import.meta.env.VITE_APP_CHALLENGE_TEXT,
+    })
+
+    const data = await apiClient.provide('get', '/session', {}, {
+      Authorization: `Bearer ${token}`
+    })
+
+    if (data.status === 'error') {
+      return false
+    }
+
+    const isSessionValid = !data.data.isExpired
+
+    if (isSessionValid) {
+      router.push('/gif')
+    }
+  },
+  enabled: () => !!auth.privateKey
+})
 
 const openWalletSelection = () => {
   isWalletSelectionOpen.value = true
@@ -74,8 +102,8 @@ const handleLogin = async (walletType: WalletType) => {
       </div>
 
       <div class="mt-16 flex flex-col items-center">
-        <button :disabled="isVerified" @click="openWalletSelection"
-          class="bg-transparent text-white rounded-lg border border-pink py-1 px-4 tracking-[0.3em]">
+        <button @click="openWalletSelection"
+          class="bg-transparent text-white rounded-lg border border-pink py-1 px-4 tracking-[0.3em] disabled:opacity-50">
           VERIFY
         </button>
         <div class="text-pink mt-4 text-xl">
