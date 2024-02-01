@@ -62,15 +62,31 @@ const handleLogin = async (walletType: WalletType) => {
         </h1>
         <img src="../assets/images/logo-white.png" alt="NoMe logo" class="w-3/4 max-w-[18rem] sm:w-full mx-auto mt-8" />
       </div>
-      <div class="mt-16 flex flex-col items-center">
-        <div class="text-pink">
-          BUY $N0ME BRC-20 TO
-        </div>
-        <Button :disabled="isVerified" @click="openWalletSelection" class-name="mt-4">
-          VERIFY
-        </Button>
+      <div class="max-w-xl text-lg sm:text-xl text-white italic text-center mt-16">
+
+        <h2>
+          Welcome to the NōME gallery – a space for
+          premium 1/1 art and unique digital experiences.
+        </h2>
+        <h2 class="mt-8">
+          We open the first GIF animation tool to inscribe stop-motion art on Bitcoin.
+        </h2>
       </div>
-      <div class="flex flex-col gap-y-8 items-center sm:flex-row sm:w-full max-w-3xl mt-20 sm:h-32">
+
+      <div class="mt-16 flex flex-col items-center">
+        <button :disabled="isVerified" @click="openWalletSelection"
+          class="bg-transparent text-white rounded-lg border border-pink py-1 px-4 tracking-[0.3em]">
+          VERIFY
+        </button>
+        <div class="text-pink mt-4 text-xl">
+          $N0ME BRC-20 TO ENTER
+        </div>
+      </div>
+      <a href="https://brc20.nome.wtf" target="_blank" class="sm:fixed sm:bottom-12 mt-12 text-gray-500 italic">
+        Get tokens if you don't have
+        <span class="text-green">$NOME →</span>
+      </a>
+      <!-- <div class="flex flex-col gap-y-8 items-center sm:flex-row sm:w-full max-w-3xl mt-20 sm:h-32">
         <router-link to="/gallery" class="sm:relative right-4 sm:self-end">
           <Button :disabled="!isVerified">
             Expo
@@ -96,7 +112,7 @@ const handleLogin = async (walletType: WalletType) => {
             Tool
           </Button>
         </router-link>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
