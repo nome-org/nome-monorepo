@@ -113,7 +113,7 @@ const createInscriptionOrderMut = useMutation({
     for (const file of files.value) {
       fileData.push({
         dataURL: await fileToBase64(file.compressed),
-        duration: 1000,
+        duration: file.duration,
         name: file.original.name,
         size: file.compressed.size,
         type: file.compressed.type,

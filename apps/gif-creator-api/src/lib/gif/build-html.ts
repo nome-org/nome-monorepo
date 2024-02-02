@@ -11,12 +11,12 @@ export const buildGifHTML = <
     files: ordinalImageData[],
 ) => {
     const firstImage = `${files[0].tx_id}i${files[0].ordinal_index}`;
-    const imagesList = files
-        .map((f) => ({
+    const imagesList = JSON.stringify(
+        files.map((f) => ({
             id: `"${f.tx_id}i${f.ordinal_index}"`,
             time: f.duration,
-        }))
-        .join(",\n");
+        })),
+    );
 
     return minify(
         `
@@ -49,7 +49,7 @@ export const buildGifHTML = <
         fetch("/content/31092f07be03ab4a2e9a663dfdfd22742476508332ec0ae8dd30dc44d6ccc410i0")
             .then(res => res.blob())
             .then(async blob => {
-                let images = [${imagesList}],
+                let images = ${imagesList},
                 gif = new GIF({
                     workerScript: ou(blob),
                 });
