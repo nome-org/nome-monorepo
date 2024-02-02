@@ -3,30 +3,32 @@ import ErrorResponse from "../lib/error-response";
 import prisma from "../lib/prisma-client";
 import z from "zod";
 import { ordinalsBotWebhookPayloadSchema } from "../types/ordinals-bot";
-
+// TODO: use ordinalsbot get order info api this is no longer useful
 export const updateOrderWebhook = defaultEndpointsFactory.build({
     method: "post",
-    input: z.intersection(
-        ordinalsBotWebhookPayloadSchema,
-        z.object({
-            token: z.string(),
-        }),
-    ),
+    input: ordinalsBotWebhookPayloadSchema,
     output: z.object({
         id: z.string(),
         success: z.boolean(),
     }),
-    handler: async ({ input: { id, token, file, tx } }) => {
+    handler: async ({ input: payload }) => {
         //once it gets here
 
-        if (!token) {
+        if (!payload.token) {
             throw new ErrorResponse("Invalid order token", 401);
         }
+        if (payload.state) {
+            return {
+                id: payload.id,
+                success: true,
+            };
+        }
 
+        const { tx, id, token, file } = payload;
         const existingFile = await prisma.ordinal.findFirst({
             where: {
-                name: file.name,
                 ordinals_bot_order_id: id,
+                name: file.name,
                 OR: [
                     {
                         image_files_order: {

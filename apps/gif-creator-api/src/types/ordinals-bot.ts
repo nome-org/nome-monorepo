@@ -35,19 +35,6 @@ const fileSchema = z.object({
     s3Key: z.string(),
 });
 
-const webhookFileSchema = fileSchema.extend({
-    iqueued: z.boolean(),
-    iqueuedAt: safeInt,
-});
-
-const txSchema = z.object({
-    // commit: z.string(),
-    // total_fees: safeInt,
-    inscription: z.string(),
-    // reveal: z.string(),
-    // updatedAt: z.string(),
-});
-
 const chargeSchema = z.object({
     id: z.string(),
     description: z.string(),
@@ -70,13 +57,40 @@ const chargeSchema = z.object({
     ttl: safeInt,
     lightning_invoice: lightningInvoiceSchema,
 });
-
-export const ordinalsBotWebhookPayloadSchema = z.object({
+const webhookPendingPayload = z.object({
+    token: z.string(),
     id: z.string(),
-    index: z.number().min(0),
-    file: webhookFileSchema,
-    tx: txSchema,
+    state: z.enum(["waiting-confirmation", "prep", "queued"]),
 });
+
+const webhookFileInscribedPayload = z.object({
+    token: z.string(),
+    id: z.string(),
+    index: z.number(),
+    state: z.literal(undefined),
+    file: z.object({
+        iqueued: z.boolean(),
+        iqueuedAt: z.number(),
+        name: z.string(),
+        s3Key: z.string(),
+        size: z.number(),
+        type: z.string(),
+        url: z.string(),
+    }),
+    tx: z.object({
+        commit: z.string(),
+        parent: z.string().nullable(),
+        reveal: z.string(),
+        total_fees: z.number(),
+        inscription: z.string(),
+        updatedAt: z.string(),
+    }),
+});
+
+export const ordinalsBotWebhookPayloadSchema = z.union([
+    webhookPendingPayload,
+    webhookFileInscribedPayload,
+]);
 
 export const ordinalsBotCreateOrderResponseSchema = z.object({
     id: z.string(),
