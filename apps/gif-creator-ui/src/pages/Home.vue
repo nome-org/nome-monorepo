@@ -22,7 +22,7 @@
           class="w-3/4 max-w-[24rem] sm:w-full mx-auto mt-8 hover:opacity-0 transition-all ease-in" />
       </div>
       <div class="fixed bottom-0 w-full flex justify-between pb-10 text-white sm:text-xl px-4 sm:px-12 flex-wrap">
-        <div class="capitalize">JAN 2024</div>
+        <div class="capitalize">2024</div>
         <div class="">Ordinals Gallery</div>
       </div>
     </div>

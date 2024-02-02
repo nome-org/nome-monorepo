@@ -88,32 +88,41 @@ const handleLogin = async (walletType: WalletType) => {
           class="uppercase text-white text-4xl text-center flex justify-between w-3/4 max-w-[24rem] sm:w-full mx-auto mt-8">
           <span v-for="item in 'Gallery'.split('')">{{ item }}</span>
         </h1>
-        <img src="../assets/images/logo-white.png" alt="NoMe logo" class="w-3/4 max-w-[18rem] sm:w-full mx-auto mt-8" />
+        <img src="../assets/images/logo-white.png" alt="NoMe logo" class="w-3/4 max-w-[16rem] sm:w-full mx-auto mt-8" />
       </div>
-      <div class="max-w-xl text-lg sm:text-xl text-white italic text-center mt-16">
+      <div class="max-w-xl text-lg sm:text-2xl text-white italic text-center mt-20 font-sans-serif">
 
-        <h2>
+        <h2 class="leading-relaxed tracking-wider">
           Welcome to the NōME gallery – a space for
-          premium 1/1 art and unique digital experiences.
+          premium 1/1 art and unique digital experiences
         </h2>
-        <h2 class="mt-8">
-          We open the first GIF animation tool to inscribe stop-motion art on Bitcoin.
+        <h2 class="mt-8 leading-relaxed tracking-wider">
+          We open the first GIF animation tool to inscribe <span class="whitespace-nowrap">stop-motion</span> art on
+          Bitcoin
         </h2>
       </div>
 
-      <div class="mt-16 flex flex-col items-center">
-        <button @click="openWalletSelection"
-          class="bg-transparent text-white rounded-lg border border-pink py-1 px-4 tracking-[0.3em] disabled:opacity-50">
-          VERIFY
-        </button>
-        <div class="text-pink mt-4 text-xl">
-          $N0ME BRC-20 TO ENTER
+      <div class="mt-32 flex flex-col items-center">
+        <div class="flex gap-x-4">
+
+          <button @click="openWalletSelection"
+            class="bg-transparent text-white rounded-lg border border-pink transition-all hover:bg-pink pl-6 py-1 pr-4 tracking-[0.3em] disabled:opacity-50 w-32">
+            VERIFY
+          </button>
+          <a href="https://brc20.nome.wtf" target="_blank"
+            class="bg-transparent text-white rounded-lg border border-pink transition-all hover:bg-pink pl-6 py-1 pr-4 tracking-[0.3em] disabled:opacity-50 w-32 text-center">
+            BUY
+          </a>
         </div>
+        <!-- <div class="text-pink mt-4 text-xl">
+          $N0ME BRC-20 TO ENTER
+        </div> -->
       </div>
-      <a href="https://brc20.nome.wtf" target="_blank" class="sm:fixed sm:bottom-12 mt-12 text-gray-500 italic">
-        Get tokens if you don't have
+      <!-- <a href="https://brc20.nome.wtf" target="_blank"
+        class="sm:fixed sm:bottom-12 mt-12 text-gray-500 italic text-xl font-sans-serif">
+        Buy tokens if you don't have
         <span class="text-green">$NOME →</span>
-      </a>
+      </a> -->
       <!-- <div class="flex flex-col gap-y-8 items-center sm:flex-row sm:w-full max-w-3xl mt-20 sm:h-32">
         <router-link to="/gallery" class="sm:relative right-4 sm:self-end">
           <Button :disabled="!isVerified">
