@@ -13,6 +13,7 @@ export default {
         "Arial",
         "sans-serif",
       ],
+      "sans-serif": ["Helvetica", "Arial", "sans-serif"],
     },
     extend: {
       colors: {
