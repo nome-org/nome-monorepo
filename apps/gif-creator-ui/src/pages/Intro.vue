@@ -59,22 +59,24 @@ const handleLogin = async (walletType: WalletType) => {
 </script>
 <template>
   <Modal :is-open="isWalletSelectionOpen" @on-visibility-change="isWalletSelectionOpen = $event">
-
-    <div class="bg-white text-black p-8 rounded shadow flex flex-col">
-      <h2 class="text-2xl font-bold mb-4">Select wallet</h2>
-      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200 flex items-center gap-x-4"
+    <div class="bg-white text-black p-8 rounded shadow flex flex-col w-full max-w-xs items-center opacity-90">
+      <h2 class="text-3xl mb-8 font-sans-serif italic">Select a wallet</h2>
+      <button
+        class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-300 flex items-center gap-x-4 w-full transition-all"
         @click="handleLogin(WalletType.xverse)">
-        <img src="../assets/images/xverse-icon.png" class="h-4">
+        <img src="../assets/images/xverse-icon.png" class="h-8">
         Xverse
       </button>
-      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200 flex items-center gap-x-4"
+      <button
+        class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-300 flex items-center gap-x-4 w-full transition-all"
         @click="handleLogin(WalletType.unisat)">
-        <img src="../assets/images/unisat-icon.png" class="h-4">
+        <img src="../assets/images/unisat-icon.png" class="h-8">
         Unisat
       </button>
-      <button class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-200 flex items-center gap-x-4"
+      <button
+        class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-300 flex items-center gap-x-4 w-full transition-all"
         @click="handleLogin(WalletType.leather)">
-        <img src="../assets/images/leather-icon.png" class="h-4">
+        <img src="../assets/images/leather-icon.png" class="h-8">
         Leather
       </button>
     </div>
@@ -88,15 +90,15 @@ const handleLogin = async (walletType: WalletType) => {
           class="uppercase text-white text-4xl text-center flex justify-between w-3/4 max-w-[24rem] sm:w-full mx-auto mt-8">
           <span v-for="item in 'Gallery'.split('')">{{ item }}</span>
         </h1>
-        <img src="../assets/images/logo-white.png" alt="NoMe logo" class="w-3/4 max-w-[16rem] sm:w-full mx-auto mt-8" />
+        <img src="../assets/images/logo-white.png" alt="NoMe logo" class="w-3/4 max-w-[24rem] sm:w-full mx-auto mt-8" />
       </div>
-      <div class="max-w-xl text-lg sm:text-2xl text-white italic text-center mt-20 font-sans-serif">
+      <div class="max-w-3xl text-xl sm:text-3xl text-white italic text-center mt-24 font-sans-serif">
 
-        <h2 class="leading-relaxed tracking-wider">
+        <h2 class="leading-[1.7] tracking-wider">
           Welcome to the NōME gallery – a space for
           premium 1/1 art and unique digital experiences
         </h2>
-        <h2 class="mt-8 leading-relaxed tracking-wider">
+        <h2 class="mt-8 leading-[1.7] tracking-wider">
           We open the first GIF animation tool to inscribe <span class="whitespace-nowrap">stop-motion</span> art on
           Bitcoin
         </h2>
