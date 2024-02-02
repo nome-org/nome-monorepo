@@ -1,6 +1,6 @@
 import { Integration } from "express-zod-api";
 import path from "node:path";
-import fs from "fs";
+import fs from "node:fs";
 import { routing } from "../router/router";
 
 fs.writeFileSync(

@@ -67,7 +67,7 @@ const webhookFileInscribedPayload = z.object({
     token: z.string(),
     id: z.string(),
     index: z.number(),
-    state: z.literal(undefined),
+    state: z.null(),
     file: z.object({
         iqueued: z.boolean(),
         iqueuedAt: z.number(),

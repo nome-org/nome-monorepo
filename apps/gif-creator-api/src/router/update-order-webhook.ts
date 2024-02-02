@@ -3,7 +3,6 @@ import ErrorResponse from "../lib/error-response";
 import prisma from "../lib/prisma-client";
 import z from "zod";
 import { ordinalsBotWebhookPayloadSchema } from "../types/ordinals-bot";
-// TODO: use ordinalsbot get order info api this is no longer useful
 export const updateOrderWebhook = defaultEndpointsFactory.build({
     method: "post",
     input: ordinalsBotWebhookPayloadSchema,

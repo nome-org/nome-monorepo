@@ -60,22 +60,31 @@ type PostOrdersResponse = {
 }
 
 type PostOrdersTokenInput = {
+    token: string;
+    id: string;
+    state: "waiting-confirmation" | "prep" | "queued";
+} | {
+    token: string;
     id: string;
     index: number;
+    state: null;
     file: {
-        size: number;
-        type: string;
-        name: string;
-        url: string;
-        s3Key: string;
         iqueued: boolean;
         iqueuedAt: number;
+        name: string;
+        s3Key: string;
+        size: number;
+        type: string;
+        url: string;
     };
     tx: {
+        commit: string;
+        parent: string | null;
+        reveal: string;
+        total_fees: number;
         inscription: string;
+        updatedAt: string;
     };
-} & {
-    token: string;
 }
 
 type PostOrdersTokenResponse = {
