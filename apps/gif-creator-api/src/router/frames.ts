@@ -2,7 +2,7 @@ import { defaultEndpointsFactory } from "express-zod-api";
 import { authMiddleware } from "../middlewares/auth-mw";
 import z from "zod";
 import prisma from "../lib/prisma-client";
-import { OrderStatus } from "@repo/gif-creator-db";
+import { TransactionStatus } from "@repo/gif-creator-db";
 
 export const getFramesEndpoint = defaultEndpointsFactory
     .addMiddleware(authMiddleware)
@@ -19,8 +19,9 @@ export const getFramesEndpoint = defaultEndpointsFactory
         handler: async ({ input: { take, skip } }) => {
             const frames = await prisma.ordinal.findMany({
                 where: {
+                    tx_status: TransactionStatus.CONFIRMED,
                     image_files_order: {
-                        status: OrderStatus.UNPAID,
+                        isNot: null,
                     },
                 },
                 distinct: ["hash"],
@@ -30,11 +31,18 @@ export const getFramesEndpoint = defaultEndpointsFactory
                     created_at: "desc",
                 },
             });
+            const [{ total }] = await prisma.$queryRaw<[{ total: bigint }]>`
+                SELECT COUNT(DISTINCT hash) as "total"
+                FROM ordinal
+                WHERE image_files_order_id IS NOT NULL
+                AND tx_status = ${TransactionStatus.CONFIRMED}
+                `;
+
             return {
                 results: frames.map(
                     (item) => `${item.tx_id}i${item.ordinal_index}`,
                 ),
-                total: 1,
+                total: Number(total),
             };
         },
     });
