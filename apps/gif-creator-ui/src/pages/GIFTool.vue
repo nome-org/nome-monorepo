@@ -22,6 +22,7 @@ import {
   //  createToken,
   useAuthStore
 } from "@repo/auth-utils";
+import VideoPlayer from "../components/shared/VideoPlayer.vue";
 
 
 const auth = useAuthStore()
@@ -201,6 +202,8 @@ const handleContactAdded = () => {
           </span>
 
           <br /><br />
+          <VideoPlayer source="https://link.storjshare.io/s/jx5dbptn3eokr6l5jlns6dokh7uq/nome%2FGIF%20tutorial.mp4?view=1"
+            :show-controls="true" />
           <div class="mt-12  h-[50vh]" v-if="showGetBetaAccess">
             <GetBetaAccess @addContact="handleContactAdded" />
           </div>
