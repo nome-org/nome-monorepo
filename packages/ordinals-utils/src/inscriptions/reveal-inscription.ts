@@ -1,62 +1,8 @@
 import { Buff } from "@cmdcode/buff"
 import { keys } from "@cmdcode/crypto-tools"
-import { Address, ScriptData, Signer, Tap, Tx } from "@cmdcode/tapscript"
+import { ScriptData, Tap, Tx, Address, Signer } from "@cmdcode/tapscript"
 
-export const buildCommitData = async ({
-  file,
-  secret,
-}: {
-  file: Blob
-  secret: Uint8Array
-}) => {
-  const fileData = new Uint8Array(await file.arrayBuffer())
-
-  const marker = Buff.encode("ord")
-  const mimetype = Buff.encode(file.type)
-
-  const seckey = keys.get_seckey(secret)
-  const pubkey = keys.get_pubkey(seckey, true)
-
-  const script = [
-    pubkey,
-    "OP_CHECKSIG",
-    "OP_0",
-    "OP_IF",
-    marker,
-    "01",
-    mimetype,
-    "OP_0",
-    fileData,
-    "OP_ENDIF",
-  ]
-
-  const tapleaf = Tap.encodeScript(script)
-  // Generate a tapkey that includes our leaf script. Also, create a merlke proof
-  // (cblock) that targets our leaf and proves its inclusion in the tapkey.
-  const [tpubkey, cblock] = Tap.getPubKey(pubkey, { target: tapleaf })
-  // A taproot address is simply the tweaked public key, encoded in bech32 format.
-  const inscribingAddress = Address.p2tr.fromPubKey(
-    tpubkey,
-    process.env.NETWORK_MODE === "testnet" ? "testnet" : "main",
-  )
-
-  /* NOTE: To continue with this example, send 100_000 sats to the above address.
-   * You will also need to make a note of the txid and vout of that transaction,
-   * so that you can include that information below in the redeem tx.
-   */
-
-  // console.log("Your txhex:", Tx.encode(txdata).hex)
-  // console.dir(txdata, { depth: null })
-
-  return {
-    inscribingAddress,
-    cblock,
-    tpubkey,
-    seckey,
-    script,
-  }
-}
-export const buildInscriptionTx = ({
+export const revealInscription = ({
   utxo,
   cblock,
   tpubkey,
@@ -64,7 +10,8 @@ export const buildInscriptionTx = ({
   script,
   recipientAddress,
   minerFee,
-  price,
+  price = 0,
+  treasuryAddress,
 }: {
   cblock: string
   tpubkey: string
@@ -77,7 +24,8 @@ export const buildInscriptionTx = ({
     value: number
   }
   minerFee: number
-  price: number
+  price?: number
+  treasuryAddress?: string
 }) => {
   const pubkey = keys.get_pubkey(seckey, true)
 
@@ -110,10 +58,10 @@ export const buildInscriptionTx = ({
     ],
   })
 
-  if (price) {
+  if (price && treasuryAddress) {
     txdata.vout.push({
       value: price,
-      scriptPubKey: Address.toScriptPubKey(process.env.TREASURY_ADDRESS!),
+      scriptPubKey: Address.toScriptPubKey(treasuryAddress),
     })
   }
 
@@ -132,5 +80,10 @@ export const buildInscriptionTx = ({
 
   const { vsize: sizeInVBytes } = Tx.util.getTxSize(txdata)
 
-  return { txdata, txHash: Tx.encode(txdata), sizeInVBytes }
+  return {
+    txdata,
+    txHash: Tx.encode(txdata),
+    sizeInVBytes,
+    txId: Tx.util.getTxid(txdata),
+  }
 }

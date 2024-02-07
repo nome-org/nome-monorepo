@@ -1,0 +1,23 @@
+{
+    "name": "@repo/ordinals-utils",
+    "version": "0.0.1",
+    "type": "module",
+    "description": "",
+    "main": "index.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "hz",
+    "license": "ISC",
+    "dependencies": {
+        "@cmdcode/buff": "^2.2.4",
+        "@cmdcode/crypto-tools": "^2.6.10",
+        "@cmdcode/tapscript": "^1.4.4"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^6.14.0",
+        "@typescript-eslint/parser": "^6.14.0",
+        "eslint": "^8.55.0"
+    }
+}

@@ -1,5 +1,5 @@
 import { HDKey } from "@scure/bip32"
-import { buildCommitData } from "./inscribe.js"
+import { buildFileInscriptionCommit } from "@repo/ordinals-utils"
 
 export const buildTransferJSON = (amount: number) => {
   return new Blob(
@@ -10,8 +10,9 @@ export const buildTransferJSON = (amount: number) => {
   )
 }
 export const getPaymentAddress = (key: HDKey, amount: number) => {
-  return buildCommitData({
+  return buildFileInscriptionCommit({
     file: buildTransferJSON(amount),
     secret: key.privateKey!,
+    network: process.env.NETWORK_MODE === "testnet" ? "testnet" : "main",
   })
 }

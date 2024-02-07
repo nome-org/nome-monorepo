@@ -1,13 +1,14 @@
 import { Address, Signer, Tap, Tx } from "@cmdcode/tapscript"
-import { HDKey } from "@scure/bip32"
-import { BASE_POSTAGE } from "../../constants.js"
+import { BASE_POSTAGE } from "../constants.js"
 
 export const transferInscription = async ({
-  key,
+  pubkey,
+  seckey,
   utxo,
   recipientAddress,
 }: {
-  key: HDKey
+  pubkey: Uint8Array
+  seckey: Uint8Array
   utxo: {
     txid: string
     vout: number
@@ -22,7 +23,7 @@ export const transferInscription = async ({
         vout: utxo.vout,
         prevout: {
           value: utxo.value,
-          scriptPubKey: ["OP_1", Tap.getPubKey(key.publicKey!)[0]],
+          scriptPubKey: ["OP_1", Tap.getPubKey(pubkey)[0]],
         },
       },
     ],
@@ -35,12 +36,16 @@ export const transferInscription = async ({
     ],
   })
 
-  const [tSeckey] = Tap.getSecKey(key.privateKey!)
+  const [tSeckey] = Tap.getSecKey(seckey)
 
   const sig = Signer.taproot.sign(tSeckey, transferTx, 0)
 
   // Let's add this signature to our witness data for input 0.
+
   transferTx.vin[0].witness = [sig]
 
-  return transferTx
+  return {
+    data: transferTx,
+    hex: Tx.encode(transferTx).hex,
+  }
 }

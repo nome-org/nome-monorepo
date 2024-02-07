@@ -20,24 +20,15 @@ importers:
 
   apps/brc-20-api:
     dependencies:
-      '@cmdcode/buff':
-        specifier: ^2.2.4
-        version: 2.2.4
-      '@cmdcode/buff-utils':
-        specifier: ^2.0.0
-        version: 2.0.0
-      '@cmdcode/crypto-tools':
-        specifier: ^2.6.10
-        version: 2.6.10
-      '@cmdcode/tapscript':
-        specifier: ^1.4.4
-        version: 1.4.4
       '@mempool/mempool.js':
         specifier: ^2.3.0
         version: 2.3.0
       '@repo/brc-20-db':
         specifier: workspace:^
         version: link:../../packages/brc-db
+      '@repo/ordinals-utils':
+        specifier: workspace:^
+        version: link:../../packages/ordinals-utils
       '@scure/bip32':
         specifier: ^1.3.3
         version: 1.3.3
@@ -441,6 +432,28 @@ importers:
         specifier: ^5.9.1
         version: 5.9.1
 
+  packages/ordinals-utils:
+    dependencies:
+      '@cmdcode/buff':
+        specifier: ^2.2.4
+        version: 2.2.4
+      '@cmdcode/crypto-tools':
+        specifier: ^2.6.10
+        version: 2.6.10
+      '@cmdcode/tapscript':
+        specifier: ^1.4.4
+        version: 1.4.4
+    devDependencies:
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.14.0
+        version: 6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.55.0)(typescript@5.2.2)
+      '@typescript-eslint/parser':
+        specifier: ^6.14.0
+        version: 6.14.0(eslint@8.55.0)(typescript@5.2.2)
+      eslint:
+        specifier: ^8.55.0
+        version: 8.55.0
+
   packages/shared-ui:
     dependencies:
       '@tanstack/vue-query':
@@ -547,10 +560,6 @@ packages:
 
   /@btckit/types@0.0.19:
     resolution: {integrity: sha512-APoOfYSg9SRR4CMXL606IDtpgh+ZD3kS/+iY0BkUALD6HvXo2pVw20L5YYIc+HrgMcF6WN0TH7TXdVs+Vu+kww==}
-    dev: false
-
-  /@cmdcode/buff-utils@2.0.0:
-    resolution: {integrity: sha512-hduPGB45//2hzpjuudhXrbTRWyD+sjcry/bmmYjh1+SOtiZl4AgRRaTDr5FuG1VVjgkoTFBtc5DmBj3x3PlmTA==}
     dev: false
 
   /@cmdcode/buff@2.2.4:

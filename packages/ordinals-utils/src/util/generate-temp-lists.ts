@@ -9,8 +9,8 @@ function genRandomAddress(network: Networks) {
 
 const networks = ["testnet", "mainnet"]
 async function main() {
-  const network = process.argv[2] || "testnet"
-  const freeAmount = process.argv[3] || 1000
+  const network = "testnet"
+  const freeAmount = 1000
 
   if (networks.indexOf(network) === -1) {
     throw new Error(`Invalid network: ${network}`)
@@ -21,4 +21,4 @@ async function main() {
   }
 }
 
-await main()
+main()
