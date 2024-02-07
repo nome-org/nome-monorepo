@@ -2,12 +2,12 @@
 import { ref } from 'vue';
 import Button from '../components/ui/Button.vue';
 import { useAuth } from '../util/useAuth';
-import { Modal } from '@repo/shared-ui';
 import { WalletType } from '@repo/wallet-utils';
 import { toast } from 'vue3-toastify'
 import { useQuery } from '@tanstack/vue-query';
 import { apiClient } from '../api/client';
 import { createToken } from '@repo/auth-utils';
+import SelectWallet from '../components/shared/SelectWallet.vue';
 
 const {
   auth,
@@ -55,30 +55,8 @@ const handleLogin = async (walletType: WalletType) => {
 }
 </script>
 <template>
-  <Modal :is-open="isWalletSelectionOpen" @on-visibility-change="isWalletSelectionOpen = $event">
-    <div class="bg-white text-black p-8 rounded shadow flex flex-col w-full max-w-xs items-center opacity-90">
-      <h2 class="text-3xl mb-8 font-sans-serif italic">Select a wallet</h2>
-      <button
-        class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-300 flex items-center gap-x-4 w-full transition-all"
-        @click="handleLogin(WalletType.xverse)">
-        <img src="../assets/images/xverse-icon.png" class="h-8">
-        Xverse
-      </button>
-      <button
-        class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-300 flex items-center gap-x-4 w-full transition-all"
-        @click="handleLogin(WalletType.unisat)">
-        <img src="../assets/images/unisat-icon.png" class="h-8">
-        Unisat
-      </button>
-      <button
-        class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-300 flex items-center gap-x-4 w-full transition-all"
-        @click="handleLogin(WalletType.leather)">
-        <img src="../assets/images/leather-icon.png" class="h-8">
-        Leather
-      </button>
-    </div>
-
-  </Modal>
+  <SelectWallet @wallet-selected="handleLogin($event)" @close-modal="isWalletSelectionOpen = false"
+    :is-open="isWalletSelectionOpen" />
   <div class="relative  bg-black ">
 
     <div class="w-full h-full z-10 relative flex flex-col items-center">
