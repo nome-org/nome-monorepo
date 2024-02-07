@@ -2,8 +2,8 @@
 
 <template>
   <div class="relative h-screen w-screen">
-    <video src="/gallery-gradient.mp4" muted playsinline loop autoplay preload="auto"
-      class="min-w-full min-h-full object-cover fixed z-0"></video>
+    <video src="https://link.storjsatelliteshare.io/s/jvgpeibj5mmzcwnlzyrcy7tbw5ma/nome%2Fgallery-gradient.mp4?view=1"
+      muted playsinline loop autoplay preload="auto" class="min-w-full min-h-full object-cover fixed z-0"></video>
 
     <div class="w-full h-full z-10 relative flex flex-col items-center justify-center">
       <div class="relative flex flex-col items-center w-full">

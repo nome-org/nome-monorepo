@@ -17,8 +17,9 @@ function handleVolumeChange(e: Event) {
 
 <template>
   <div class="relative h-screen w-screen">
-    <video src="/brc-20-intro.mp4" playsinline loop id="video" autoplay preload="auto" :muted="isMuted"
-      :volume="volume / 100" class="min-w-full h-1/3 sm:min-h-full object-cover fixed z-0"></video>
+    <video src="https://link.storjshare.io/s/jx2mdhfjftrebliubzlmkr33bkea/nome%2Fbrc-20-intro.mp4?view=1" playsinline loop
+      id="video" autoplay preload="auto" :muted="isMuted" :volume="volume / 100"
+      class="min-w-full h-1/3 sm:min-h-full object-cover fixed z-0"></video>
 
     <div
       class="h-2/3 sm:h-20 fixed bg-black items-center bottom-0 w-full flex justify-between p-3 text-white text-xl px-3 sm:px-12 flex-wrap flex-col sm:flex-row">
