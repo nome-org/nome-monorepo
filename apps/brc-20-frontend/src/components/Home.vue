@@ -252,7 +252,7 @@ const saleWording = computed(() => {
             fungible tokens on the L1 Bitcoin blockchain.
           </span>
           <span class="block mb-12">
-            $NOME BRC-20 give access to "NOME gallery" – the world's first luxury Ordinals Art Gallery on Bitcoin that
+            $NOME BRC-20 gives access to "NOME gallery" – the world's first luxury Ordinals Art Gallery on Bitcoin that
             showcases the works of some of the best contemporary artists. Our mission is to support digital artists of
             various art styles and help them share their visionary creations with audiences by staying at the forefront of
             innovation.
