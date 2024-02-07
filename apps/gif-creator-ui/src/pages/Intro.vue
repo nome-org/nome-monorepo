@@ -8,15 +8,15 @@ import { toast } from 'vue3-toastify'
 import { useQuery } from '@tanstack/vue-query';
 import { apiClient } from '../api/client';
 import { createToken } from '@repo/auth-utils';
-import { useRouter } from 'vue-router'
+
 const {
   auth,
   login
 } = useAuth()
-const router = useRouter()
+
 const isWalletSelectionOpen = ref(false)
 
-useQuery({
+const { data: isSessionValid } = useQuery({
   queryKey: ['session', auth.privateKey],
   queryFn: async () => {
     const token = createToken({
@@ -33,10 +33,7 @@ useQuery({
     }
 
     const isSessionValid = !data.data.isExpired
-
-    if (isSessionValid) {
-      router.push('/gif')
-    }
+    return isSessionValid
   },
   enabled: () => !!auth.privateKey
 })
@@ -82,7 +79,7 @@ const handleLogin = async (walletType: WalletType) => {
     </div>
 
   </Modal>
-  <div class="relative h-screen w-screen bg-black ">
+  <div class="relative  bg-black ">
 
     <div class="w-full h-full z-10 relative flex flex-col items-center">
       <div class="relative flex flex-col items-center">
@@ -90,22 +87,24 @@ const handleLogin = async (walletType: WalletType) => {
           class="uppercase text-white text-4xl text-center flex justify-between w-3/4 max-w-[24rem] sm:w-full mx-auto mt-8">
           <span v-for="item in 'Gallery'.split('')">{{ item }}</span>
         </h1>
-        <img src="../assets/images/logo-white.png" alt="NoMe logo" class="w-3/4 max-w-[24rem] sm:w-full mx-auto mt-8" />
+        <img src="../assets/images/logo-white.png" alt="NoMe logo" class="w-3/4 max-w-[18rem] sm:w-full mx-auto mt-8" />
       </div>
-      <div class="max-w-3xl text-xl sm:text-3xl text-white italic text-center mt-24 font-sans-serif">
+      <div class="max-w-3xl text-xl sm:text-2xl text-white italic text-center mt-12 sm:mt-24 font-sans-serif px-8">
 
         <h2 class="leading-[1.7] tracking-wider">
           Welcome to the NōME gallery – a space for
           premium 1/1 art and unique digital experiences
         </h2>
         <h2 class="mt-8 leading-[1.7] tracking-wider">
-          We open the first GIF animation tool to inscribe <span class="whitespace-nowrap">stop-motion</span> art on
-          Bitcoin
+          $NOME BRC-20 gives access to gallery
+          <br>
+          exhibitions and art tools.
+          Verify or buy tokens to enter
         </h2>
       </div>
 
-      <div class="mt-32 flex flex-col items-center">
-        <div class="flex gap-x-4">
+      <div class="mt-16 sm:mt-32 pb-32 flex flex-col items-center">
+        <div class="flex flex-col sm:flex-row gap-4">
 
           <button @click="openWalletSelection"
             class="bg-transparent text-white rounded-lg border border-pink transition-all hover:bg-pink pl-6 py-1 pr-4 tracking-[0.3em] disabled:opacity-50 w-32">
@@ -116,6 +115,9 @@ const handleLogin = async (walletType: WalletType) => {
             BUY
           </a>
         </div>
+        <router-link v-if="isSessionValid"
+          class="w-full mt-8 flex border rounded-lg items-center justify-center border-white py-1 hover:bg-white hover:text-black transition-all tracking-[0.3em]"
+          to="/gif">ENTER</router-link>
         <!-- <div class="text-pink mt-4 text-xl">
           $N0ME BRC-20 TO ENTER
         </div> -->
