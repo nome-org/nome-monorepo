@@ -8,15 +8,16 @@ import {
   FaVolumeMute,
   BiChevronCompactUp,
   BiChevronCompactDown,
+  IoCloseOutline,
 } from "oh-vue-icons/icons";
 
-const icons = Object.values({
+addIcons(
   FaVolumeUp,
   FaVolumeMute,
   BiChevronCompactUp,
   BiChevronCompactDown,
-});
-addIcons(...icons);
+  IoCloseOutline,
+);
 
 import App from "./App.vue";
 import router from "./router.ts";

@@ -4,6 +4,7 @@ import { CompressAble } from '../constants/inscriptions';
 import { buildGif } from '../util/buildGIF';
 import Frame from './Frame.vue';
 import { RangeInput } from '@repo/shared-ui';
+import FramesLibrary from './FramesLibrary.vue';
 const framesContainerRef = ref<HTMLElement | null>(null);
 const frameCompressionState = ref<boolean[]>([]);
 const files = ref<CompressAble[]>([])
@@ -103,9 +104,12 @@ async function generateGIF() {
 watch([files, quality], () => {
   emit('generated', ['', files.value]);
 });
+
+const isFrameLibOpen = ref(false)
 </script>
 
 <template>
+  <FramesLibrary v-if="isFrameLibOpen" @close-modal="isFrameLibOpen = false" />
   <div class="flex justify-start w-full sm:w-1/2">
     <label
       class="min-w-[13.3rem] py-2 px-0 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black p-1 cursor-pointer z-10 rounded-xl mb-3">

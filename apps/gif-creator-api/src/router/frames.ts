@@ -9,8 +9,8 @@ export const getFramesEndpoint = defaultEndpointsFactory
     .build({
         method: "get",
         input: z.object({
-            take: z.number().min(1).max(100).default(10),
-            skip: z.number().min(0).safe().default(0),
+            take: z.coerce.number().min(1).max(100).default(10),
+            skip: z.coerce.number().min(0).safe().default(0),
         }),
         output: z.object({
             results: z.array(z.string()),
