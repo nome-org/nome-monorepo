@@ -10,7 +10,6 @@ import { network } from "../constants/bitcoin";
 import GetBetaAccess from "../components/GetBetaAccess.vue";
 import OrdersForAddress from "../components/OrdersForAddress.vue";
 import { FeeRateSelector } from "@repo/shared-ui"
-import Header from "../components/shared/Header.vue";
 import GIFPreview from "../components/GIFPreview.vue";
 import { usePriceQuery } from "../api/queries/price";
 import MintInfo from "../components/MintInfo.vue";
@@ -23,6 +22,7 @@ import {
   useAuthStore
 } from "@repo/auth-utils";
 import VideoPlayer from "../components/shared/VideoPlayer.vue";
+import NewHeader from "../components/shared/NewHeader.vue";
 
 
 const auth = useAuthStore()
@@ -176,10 +176,10 @@ const handleContactAdded = () => {
 </script>
 <template>
   <div class="">
+    <NewHeader />
     <div class="pt-[25px] px-[25px] pb-0">
-      <Header />
       <main>
-        <div class="mt-6">
+        <div class="mt-20">
           <h1 class="text-2xl pb-2">• Stop motion tool •</h1>
           <div
             class="border-b border-solid border-opacity-20 border-white md:mt-0 mb-44 sm:mb-16 xl:mb-12 w-full relative">

@@ -20,6 +20,7 @@
     "axios": "^1.6.0",
     "bitcoin-address-validation": "^2.2.3",
     "browser-image-compression": "^2.0.2",
+    "daisyui": "^4.6.2",
     "gif.js": "^0.2.0",
     "lodash": "^4.17.21",
     "oh-vue-icons": "1.0.0-rc3",

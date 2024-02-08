@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/vue-query';
 import { apiClient } from '../api/client';
 import { createToken } from '@repo/auth-utils';
 import SelectWallet from '../components/shared/SelectWallet.vue';
+import NewHeader from '../components/shared/NewHeader.vue';
 
 const {
   auth,
@@ -60,36 +61,14 @@ const handleLogin = async (walletType: WalletType) => {
   <div class="relative  bg-black ">
 
     <div class="w-full h-full z-10 relative flex flex-col items-center">
-      <header class="flex justify-between w-full">
-        <div class="flex-1 p-8">
-          <button class="uppercase underline underline-offset-4 tracking-widest">Menu</button>
-        </div>
-        <div class="relative flex flex-col items-center flex-1">
-          <h1
-            class="uppercase text-white text-4xl text-center flex justify-between w-3/4 max-w-[24rem] sm:w-full mx-auto mt-8">
-            <span v-for="item in 'Gallery'.split('')">{{ item }}</span>
-          </h1>
-          <img src="../assets/images/logo-white.png" alt="NoMe logo" class="w-3/4 max-w-[18rem] sm:w-full mx-auto mt-8" />
-        </div>
-        <div class="pt-12 pr-12 flex gap-x-4 flex-1 justify-end">
-          <a href="https://twitter.com/nome_nft" target="_blank">
-            <img src="../assets/images/twitter-icon.png" alt="" class="w-8 h-8 invert">
-          </a>
-          <a href="https://discord.gg/nome" target="_blank">
-            <img src="../assets/images/discord-icon.png" alt="" class="w-8 h-8 invert">
-          </a>
-          <a href="https://youtube.com/@nome_nft" target="_blank">
-            <img src="../assets/images/youtube-icon.png" alt="" class="w-8 h-8 invert">
-          </a>
-        </div>
-      </header>
-      <div class="max-w-3xl text-xl sm:text-2xl text-white italic text-center mt-12 sm:mt-24 font-sans-serif px-8">
+      <NewHeader />
+      <div class="max-w-4xl text-xl sm:text-3xl text-white italic text-center mt-12 sm:mt-28 font-sans-serif px-8">
 
-        <h2 class="leading-[1.7] tracking-wider">
+        <h2 class="leading-[1.7] tracking-[0.055em]">
           Welcome to the NōME gallery – a space for
           premium 1/1 art and unique digital experiences
         </h2>
-        <h2 class="mt-8 leading-[1.7] tracking-wider">
+        <h2 class="mt-9 leading-[1.7] tracking-[0.055em]">
           $NOME BRC-20 gives access to gallery
           <br>
           exhibitions and art tools.
@@ -97,7 +76,7 @@ const handleLogin = async (walletType: WalletType) => {
         </h2>
       </div>
 
-      <div class="mt-16 sm:mt-32 pb-32 flex flex-col items-center">
+      <div class="mt-16 sm:mt-40 pb-32 flex flex-col items-center">
         <div class="flex flex-col sm:flex-row gap-4">
 
           <button @click="openWalletSelection"
