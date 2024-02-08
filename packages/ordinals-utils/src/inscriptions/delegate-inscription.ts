@@ -33,7 +33,7 @@ export const buildDelegateInscriptionCommit = async ({
     "OP_IF",
     marker,
     delegateCode,
-    Buff.encode(reversedHash + reversedIndex),
+    Buff.hex(reversedHash + reversedIndex),
     "OP_ENDIF",
   ]
 
