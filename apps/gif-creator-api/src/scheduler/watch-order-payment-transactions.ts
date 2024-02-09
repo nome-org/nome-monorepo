@@ -5,6 +5,7 @@ import { mempool } from "../lib/mempool/mempool-client";
 import { handlePaidOrder } from "../lib/order-handlers/handle-paid-orders";
 import { getAddressByIndex } from "../lib/payments/server-keys";
 import { logger } from "../server";
+import { GIF_WALLET_INDEX } from "../constants/wallet-accounts";
 
 const checkAddress = async ({
     address,
@@ -52,7 +53,11 @@ const watchOrderPaymentTransactionsTask = new AsyncTask(
 
         for (const order of orders) {
             await checkAddress({
-                address: (await getAddressByIndex(order.id))!,
+                address: (await getAddressByIndex({
+                    accountIndex: GIF_WALLET_INDEX,
+                    keyIndex: order.id,
+                    isTaproot: false,
+                }))!,
                 order,
             });
         }

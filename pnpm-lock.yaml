@@ -169,6 +169,9 @@ importers:
       '@repo/gif-creator-db':
         specifier: workspace:^
         version: link:../../packages/gif-db
+      '@repo/ordinals-utils':
+        specifier: workspace:^
+        version: link:../../packages/ordinals-utils
       '@repo/shared-zod-defs':
         specifier: workspace:^
         version: link:../../packages/shared-zod-defs

@@ -27,6 +27,12 @@ enum OrderStatus {
   READY
 }
 
+enum DelegateOrdinalStatus {
+  UNPAID
+  PENDING
+  CONFIRMED
+}
+
 model Order {
   id                    Int         @id @default(autoincrement())
   created_at            DateTime    @default(now())
@@ -73,4 +79,18 @@ model UserSession {
   publicKey      String   @unique @db.VarChar(255)
   lastCheckedAt  DateTime @default(now())
   isExpired      Boolean  @default(false)
+}
+
+model DelegateOrdinal {
+  id               Int                   @id @default(autoincrement())
+  created_at       DateTime              @default(now())
+  updated_at       DateTime              @updatedAt
+  minter_address   String                @db.VarChar(255)
+  receiver_address String                @db.VarChar(255)
+  tx_status        DelegateOrdinalStatus @default(UNPAID)
+  total_fee        Int
+  fee_rate         Int
+  payment_tx_id    String?               @db.VarChar(255)
+  tx_id            String?               @unique @db.VarChar(255)
+  ordinal_index    Int?
 }

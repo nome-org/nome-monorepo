@@ -21,6 +21,7 @@
         "@redocly/cli": "^1.4.0",
         "@repo/auth-utils": "workspace:^",
         "@repo/gif-creator-db": "workspace:^",
+        "@repo/ordinals-utils": "workspace:^",
         "@repo/shared-zod-defs": "workspace:^",
         "@repo/unisat-api": "workspace:^",
         "@scure/base": "^1.1.3",

@@ -3,6 +3,7 @@ import { getUTXOsByIndex } from "../mempool/getUTXOByIndex";
 import { getKeyByIndex } from "./server-keys";
 import { networkMode } from "./network";
 import needle from "needle";
+import { GIF_WALLET_INDEX } from "../../constants/wallet-accounts";
 
 export const buildPaymentTx = async ({
     keyIndex,
@@ -15,11 +16,19 @@ export const buildPaymentTx = async ({
     receiverAddress: string;
     feeRate: number;
 }) => {
-    const key = getKeyByIndex(keyIndex);
+    const key = getKeyByIndex({
+        keyIndex,
+        accountIndex: GIF_WALLET_INDEX,
+        isTaproot: false,
+    });
     const btc = await import("@scure/btc-signer");
     const tx = new btc.Transaction();
 
-    let UTXOs = await getUTXOsByIndex(keyIndex);
+    let UTXOs = await getUTXOsByIndex({
+        accountIndex: GIF_WALLET_INDEX,
+        keyIndex,
+        isTaproot: false,
+    });
     if (!UTXOs.length) throw new Error("No inputs to sign");
     // const isSendingMax = utxo.value < amount;
 
@@ -63,7 +72,7 @@ export const buildPaymentTx = async ({
             tx.addOutputAddress(
                 btc.getAddress("wpkh", key.privateKey!, networkMode)!,
                 BigInt(output.value),
-                networkMode
+                networkMode,
             );
             return;
         }

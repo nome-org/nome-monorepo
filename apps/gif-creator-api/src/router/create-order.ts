@@ -8,6 +8,7 @@ import prisma from "../lib/prisma-client";
 import { getAddressByIndex } from "../lib/payments/server-keys";
 import { available_rarity } from "../constants/rarity";
 import { safeInt, taprootAddress } from "../types/zod-extras";
+import { GIF_WALLET_INDEX } from "../constants/wallet-accounts";
 // import { authMiddleware } from "../middlewares/auth-mw";
 
 const maxFileSize = 200_000;
@@ -100,7 +101,11 @@ export const createOrderEndpoint = defaultEndpointsFactory
             return {
                 id: newOrder.id,
                 payment_details: {
-                    address: (await getAddressByIndex(newOrder.id))!,
+                    address: (await getAddressByIndex({
+                        accountIndex: GIF_WALLET_INDEX,
+                        keyIndex: newOrder.id,
+                        isTaproot: false,
+                    }))!,
                     amount: detailed_fees.totalFee,
                 },
             };

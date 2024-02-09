@@ -4,6 +4,7 @@ import prisma from "../lib/prisma-client";
 import { getAddressByIndex } from "../lib/payments/server-keys";
 import { OrderStatus } from "@repo/gif-creator-db";
 import { safeInt, taprootAddress } from "../types/zod-extras";
+import { GIF_WALLET_INDEX } from "../constants/wallet-accounts";
 
 export const getOrdersEndpoint = defaultEndpointsFactory.build({
     method: "get",
@@ -63,7 +64,11 @@ export const getOrdersEndpoint = defaultEndpointsFactory.build({
                 orders.map(async (order) => ({
                     ...order,
                     payment_details: {
-                        address: (await getAddressByIndex(order.id))!,
+                        address: (await getAddressByIndex({
+                            accountIndex: GIF_WALLET_INDEX,
+                            keyIndex: order.id,
+                            isTaproot: false,
+                        }))!,
                         amount: order.total_fee,
                     },
                 })),
