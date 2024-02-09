@@ -17,7 +17,8 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/mint",
     name: "Bear Market",
-    component: () => import("./pages/gallery/Miami.vue"),
+    component: () => import("./pages/gallery/BearMarketMint.vue"),
+    beforeEnter: brcGuard,
   },
   {
     path: "/gallery",
@@ -36,11 +37,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import("./pages/GIFTool.vue"),
     beforeEnter: brcGuard,
   },
-  {
-    path: "/member",
-    name: "Member",
-    component: () => import("./pages/Member.vue"),
-  },
+  // {
+  //   path: "/member",
+  //   name: "Member",
+  //   component: () => import("./pages/Member.vue"),
+  // },
 ];
 
 const router = createRouter({

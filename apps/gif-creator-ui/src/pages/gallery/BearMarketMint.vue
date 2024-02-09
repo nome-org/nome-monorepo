@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { createClient } from '@supabase/supabase-js'
-import { createInscription, BitcoinNetworkType } from 'sats-connect'
 
 import Footer from './Footer.vue';
 import { computed, ref } from 'vue';
@@ -17,21 +16,6 @@ const inscribe = async () => {
   if (!isEmailSet) {
     submitEmail()
   }
-  createInscription({
-    onFinish() { },
-    onCancel() { },
-    payload: {
-      network: {
-        type: BitcoinNetworkType.Mainnet
-      },
-
-      payloadType: "PLAIN_TEXT",
-      contentType: 'text/html',
-      content: `<body style="height: 100vh; margin:0;">
-<img src="/content/f521bd6f20436933d980a326fd983f84d13a04bd952f12a52f57ea7d27fb00c3i0" style="width: 100%; height: 100%; object-fit: contain;">
-</body>`,
-    },
-  })
 }
 
 const submitEmail = async () => {
@@ -83,8 +67,8 @@ const submitEmail = async () => {
             </li>
             <li>
               3. Enter URL on top:
-              <a class="inline underline underline-offset-4 italic" href="https://nome.gallery/miami">
-                nome.gallery/miami
+              <a class="inline underline underline-offset-4 italic" href="https://nome.gallery/mint">
+                nome.gallery/mint
               </a>
             </li>
             <li>4. Proceed with the mint in the wallet</li>
