@@ -343,12 +343,12 @@ const saleWording = computed(() => {
                   :value="`$${(usdPrice * (priceData?.total || 0) / 1e8).toFixed(2)}`" />
 
               </div>
-              <button :disabled="!isFormValid && progress < 50_000_000"
+              <button :disabled="!isFormValid && progress < 5_000_000"
                 class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 @click="createOrderM.mutate({ xverse: true })">
                 {{ saleWording }} with Xverse
               </button>
-              <button :disabled="!isFormValid && progress < 50_000_000"
+              <button :disabled="!isFormValid && progress < 5_000_000"
                 class="text-black bg-white w-full rounded-lg p-1 text-xl mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 @click="createOrderM.mutate({ xverse: false })">
                 {{ saleWording }} with other wallet
