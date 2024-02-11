@@ -19,6 +19,7 @@ import { isWhitelistOpen } from "../util/isWhiteListOpen.js"
 import { Order } from "@repo/brc-20-db"
 import { checkOrderDuplicate } from "../util/orders/isOrderDuplicate.js"
 import createHttpError from "http-errors"
+import { getProgress } from "../scheduler/watch-buys/updateProgress.js"
 
 function renewOrderExpiryDate(id: number) {
   return prisma.order.update({
@@ -68,6 +69,12 @@ export const createOrderEndpoint = defaultEndpointsFactory
       totalPrice: z.number().describe("Total order price in sats"),
     }),
     handler: async ({ input: { amount, receiveAddress, feeRate } }) => {
+      const progress = await getProgress()
+      const isFinished = progress >= 5000_000
+
+      if (isFinished) {
+        throw createHttpError(400, "Minting is finished")
+      }
       const wlOpen = await isWhitelistOpen()
 
       const existingClaim = await prisma.claim.findFirst({

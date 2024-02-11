@@ -12,6 +12,6 @@ export const checkProgressEndpoint = defaultEndpointsFactory.build({
   }),
   handler: async () => {
     const progress = await getProgress()
-    return { progress }
+    return { progress: Math.min(5000_000, progress) }
   },
 })
