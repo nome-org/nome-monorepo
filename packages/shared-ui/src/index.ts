@@ -6,6 +6,7 @@ import ProgressBar from "./components/ui/ProgressBar.vue";
 import DisclaimerCheckbox from "./components/ui/DisclaimerCheckbox.vue";
 import { formatNumber } from "./util/formatNumber";
 import RangeInput from "./components/ui/RangeInput.vue";
+import SelectWallet from "./components/SelectWallet.vue";
 
 export {
   FeeRateSelector,
@@ -16,4 +17,5 @@ export {
   DisclaimerCheckbox,
   formatNumber,
   RangeInput,
+  SelectWallet,
 };

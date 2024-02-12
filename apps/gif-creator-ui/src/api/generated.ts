@@ -171,7 +171,28 @@ type GetSessionResponse = {
     };
 }
 
-export type Path = "/orders" | "/orders" | "/orders/:token" | "/price" | "/login" | "/frames" | "/session"
+type PostBearInput = {} & {
+    receiverAddress: string;
+    feeRate: number;
+}
+
+type PostBearResponse = {
+    status: "success";
+    data: {
+        id: number;
+        payment_details: {
+            address: string;
+            amount: number;
+        };
+    };
+} | {
+    status: "error";
+    error: {
+        message: string;
+    };
+}
+
+export type Path = "/orders" | "/orders" | "/orders/:token" | "/price" | "/login" | "/frames" | "/session" | "/bear"
 
 export type Method = "get" | "post" | "put" | "delete" | "patch"
 
@@ -185,6 +206,7 @@ export interface Input extends Record<MethodPath, any> {
     "post /login": PostLoginInput;
     "get /frames": GetFramesInput;
     "get /session": GetSessionInput;
+    "post /bear": PostBearInput;
 }
 
 export interface Response extends Record<MethodPath, any> {
@@ -195,4 +217,5 @@ export interface Response extends Record<MethodPath, any> {
     "post /login": PostLoginResponse;
     "get /frames": GetFramesResponse;
     "get /session": GetSessionResponse;
+    "post /bear": PostBearResponse;
 }

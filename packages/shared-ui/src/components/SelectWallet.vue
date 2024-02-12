@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Modal } from '@repo/shared-ui';
+
 import { WalletType } from '@repo/wallet-utils';
+import Modal from './ui/Modal.vue';
 
 const { isOpen } = defineProps<{
   isOpen: boolean
@@ -18,19 +19,19 @@ const emit = defineEmits<{
       <button
         class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-300 flex items-center gap-x-4 w-full transition-all"
         @click="$emit('walletSelected', WalletType.xverse)">
-        <img src="../../assets/images/xverse-icon.png" class="h-8">
+        <img src="../assets/images/xverse-icon.png" class="h-8">
         Xverse
       </button>
       <button
         class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-300 flex items-center gap-x-4 w-full transition-all"
         @click="$emit('walletSelected', WalletType.unisat)">
-        <img src="../../assets/images/unisat-icon.png" class="h-8">
+        <img src="../assets/images/unisat-icon.png" class="h-8">
         Unisat
       </button>
       <button
         class="mb-2 px-4 py-2 font-semibold rounded hover:bg-gray-300 flex items-center gap-x-4 w-full transition-all"
         @click="$emit('walletSelected', WalletType.leather)">
-        <img src="../../assets/images/leather-icon.png" class="h-8">
+        <img src="../assets/images/leather-icon.png" class="h-8">
         Leather
       </button>
     </div>

@@ -465,6 +465,9 @@ importers:
 
   packages/shared-ui:
     dependencies:
+      '@repo/wallet-utils':
+        specifier: workspace:^
+        version: link:../wallet-utils
       '@tanstack/vue-query':
         specifier: ^5.17.0
         version: 5.17.0(vue@3.4.3)

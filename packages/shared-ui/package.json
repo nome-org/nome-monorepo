@@ -15,5 +15,8 @@
       "import": "./src/index.ts",
       "require": "./src/index.js"
     }
+  },
+  "dependencies": {
+    "@repo/wallet-utils": "workspace:^"
   }
 }

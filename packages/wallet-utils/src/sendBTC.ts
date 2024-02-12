@@ -1,5 +1,6 @@
 import { RpcError, SendTransferResponseBody } from "@btckit/types";
 import { BitcoinNetworkType, sendBtcTransaction } from "sats-connect";
+import { getLeatherBTCProvider } from "./util/btc-provider";
 
 type Payload = {
   recipient: string;
@@ -25,10 +26,8 @@ export async function sendBTCLeather({
   amountInSats,
   recipient,
 }: Payload): Promise<string> {
-  if (!window.btc) {
-    throw new Error("Bitcoin wallet not connected");
-  }
-  const response = (await window.btc.request("sendTransfer", {
+  const btc = getLeatherBTCProvider();
+  const response = (await btc.request("sendTransfer", {
     address: recipient,
     amount: amountInSats,
   })) as unknown as any;

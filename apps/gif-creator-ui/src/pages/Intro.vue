@@ -7,7 +7,7 @@ import { toast } from 'vue3-toastify'
 import { useQuery } from '@tanstack/vue-query';
 import { apiClient } from '../api/client';
 import { createToken } from '@repo/auth-utils';
-import SelectWallet from '../components/shared/SelectWallet.vue';
+import { SelectWallet } from '@repo/shared-ui';
 import NewHeader from '../components/shared/NewHeader.vue';
 
 const {

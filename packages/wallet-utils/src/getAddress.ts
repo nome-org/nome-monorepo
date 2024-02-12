@@ -11,6 +11,7 @@ import {
   PaymentTypes,
   RpcError,
 } from "@btckit/types";
+import { getLeatherBTCProvider } from "./util/btc-provider";
 
 type Results = {
   /** @description payment address can be native segwit or segwit or taproot (unisat) */
@@ -92,10 +93,8 @@ const extractAddressByType = (
  * @description Get addresses for leather wallet
  */
 export const getAddressesLeather: getAddresses = async () => {
-  if (!window.btc) {
-    throw new Error("Bitcoin wallet not connected");
-  }
-  const response = (await window.btc.request("getAddresses", {
+  const btc = getLeatherBTCProvider();
+  const response = (await btc.request("getAddresses", {
     types: ["p2wpkh", "p2tr"],
   })) as unknown as any;
   const error = response.error as RpcError | undefined;
