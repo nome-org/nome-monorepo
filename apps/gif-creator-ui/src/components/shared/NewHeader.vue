@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useAuthStore } from '@repo/auth-utils';
+
 import { useRoute } from 'vue-router'
+import { useAuth } from '../../util/useAuth';
 const currentRoute = useRoute().path
 const {
-  isLoggedIn
-} = useAuthStore()
+  auth
+} = useAuth()
 </script>
 <template>
   <header class="flex justify-between w-full">
@@ -25,11 +26,11 @@ const {
               <router-link to="/intro">→ verify</router-link>
             </li>
             <!-- FIXME: add cursor disabled when not logged in -->
-            <li v-if="isLoggedIn" :class="currentRoute === '/gallery' && 'text-white hover:text-white'"
+            <li v-if="auth.isLoggedIn" :class="currentRoute === '/gallery' && 'text-white hover:text-white'"
               class="mb-4 text-base-content hover:text-gray-200">
               <router-link to="/gallery">→ expo</router-link>
             </li>
-            <li v-if="isLoggedIn" :class="currentRoute === '/gif' && 'text-white hover:text-white'"
+            <li v-if="auth.isLoggedIn" :class="currentRoute === '/gif' && 'text-white hover:text-white'"
               class="mb-4 text-base-content hover:text-gray-200">
               <router-link to="/gif">→ gif</router-link>
             </li>
