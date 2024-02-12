@@ -1,77 +1,77 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+// import { ref, computed } from "vue";
 
 import Footer from "./shared/Footer.vue";
 import Header from "./shared/Header.vue";
-import {
-  useQuery,
-  //  useMutation
-} from '@tanstack/vue-query'
-import { client } from "../api/client";
+// import {
+// useQuery,
+//  useMutation
+// } from '@tanstack/vue-query'
+// import { client } from "../api/client";
 // import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
 
-import { validate as validateBTCAddress } from 'bitcoin-address-validation'
+// import { validate as validateBTCAddress } from 'bitcoin-address-validation'
 // import { useMintProgress } from "../api/queries/mint-progress";
 // import { makeTwitterPost } from "../util/makeTwitterPost";
-import {
-  // FeeRateSelector,
-  DisclaimerCheckbox,
-  // Modal,
-  // NumberInput,
-  // PriceItem,
-} from "@repo/shared-ui";
+// import {
+// FeeRateSelector,
+// DisclaimerCheckbox,
+// Modal,
+// NumberInput,
+// PriceItem,
+// } from "@repo/shared-ui";
 import SaleProgress from "./SaleProgress.vue";
 // import { useBTCPrice } from "../api/queries/coin-cap-btc-price";
 
 
 
-const unformattedAddress = ref("");
-const address = computed(() => {
-  return unformattedAddress.value.trim()
-})
-const quantity = ref("");
+// const unformattedAddress = ref("");
+// const address = computed(() => {
+//   return unformattedAddress.value.trim()
+// })
+// const quantity = ref("");
 
 
 
-const { refetch: checkWLClaim, isSuccess: isClaimChecked } = useQuery({
-  queryKey: ['wl check', address],
-  queryFn: () => client.provide('get', '/check-claim', {
-    address: address.value,
-  }),
+// const { refetch: checkWLClaim, isSuccess: isClaimChecked } = useQuery({
+//   queryKey: ['wl check', address],
+//   queryFn: () => client.provide('get', '/check-claim', {
+//     address: address.value,
+//   }),
 
-  enabled: false
-})
-const isAddressChecked = ref(false)
-const checkClaim = async () => {
-  // if (isWhiteListOpen.value) {
-  const { data } = await checkWLClaim()
-  if (data && data.status === 'success') {
-    const claimInfo = data.data
-    quantity.value = String(claimInfo.freeAmount)
-    eligibleFreeAmount.value = claimInfo.freeAmount
-    isWhiteListed.value = claimInfo.isWhitelisted
-    isAddressChecked.value = true
-  }
-  // }
+//   enabled: false
+// })
+// const isAddressChecked = ref(false)
+// const checkClaim = async () => {
+//   // if (isWhiteListOpen.value) {
+//   const { data } = await checkWLClaim()
+//   if (data && data.status === 'success') {
+//     const claimInfo = data.data
+//     quantity.value = String(claimInfo.freeAmount)
+//     eligibleFreeAmount.value = claimInfo.freeAmount
+//     isWhiteListed.value = claimInfo.isWhitelisted
+//     isAddressChecked.value = true
+//   }
+//   // }
 
-}
+// }
 
-const eligibleFreeAmount = ref(0)
+// const eligibleFreeAmount = ref(0)
 
-const {
-  data: isWhiteListOpen
-} = useQuery({
-  queryKey: ['whitelist status'],
-  queryFn: async () => {
-    const response = await client.provide('get', '/whitelist/status', {})
-    if (response.status === 'success') {
-      return response.data.open
-    }
-    return false
-  }
-})
+// const {
+//   data: isWhiteListOpen
+// } = useQuery({
+//   queryKey: ['whitelist status'],
+//   queryFn: async () => {
+//     const response = await client.provide('get', '/whitelist/status', {})
+//     if (response.status === 'success') {
+//       return response.data.open
+//     }
+//     return false
+//   }
+// })
 
-const isWhiteListed = ref(false)
+// const isWhiteListed = ref(false)
 
 // const userPaid = ref(true)
 
@@ -194,14 +194,14 @@ const isWhiteListed = ref(false)
 //   }
 // })
 
-const disclaimersCheck = ref([false, false])
-const consented = computed(() => {
-  if (isWhiteListOpen.value) {
-    return disclaimersCheck.value.every(item => item)
-  }
-  return disclaimersCheck.value[1]
-})
-const isAddressValid = computed(() => validateBTCAddress(address.value))
+// const disclaimersCheck = ref([false, false])
+// const consented = computed(() => {
+//   if (isWhiteListOpen.value) {
+//     return disclaimersCheck.value.every(item => item)
+//   }
+//   return disclaimersCheck.value[1]
+// })
+// const isAddressValid = computed(() => validateBTCAddress(address.value))
 // const isEligibleToMint = computed(() => {
 //   const wl = isClaimChecked.value && isWhiteListOpen.value && isWhiteListed.value
 //   const publicSale = isAddressChecked.value && !isWhiteListOpen.value
@@ -263,7 +263,7 @@ const isAddressValid = computed(() => validateBTCAddress(address.value))
         </div>
 
 
-        <div class="pb-12 pt-2 md:mt-8 mt-12 w-full relative">
+        <!-- <div class="pb-12 pt-2 md:mt-8 mt-12 w-full relative">
           <h3 class="my-8 text-xl">Welcome</h3>
           <div class="flex flex-col-reverse sm:flex-row items-start gap-6 mt-6 w-full">
             <button
@@ -282,9 +282,9 @@ const isAddressValid = computed(() => validateBTCAddress(address.value))
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="border-t border-solid border-opacity-20 border-white"></div>
-        <div class="py-8" v-show="isClaimChecked && eligibleFreeAmount">
+        <!-- <div class="py-8" v-show="isClaimChecked && eligibleFreeAmount">
           <p class="text-green">
             <span class="">Congratulations!</span>
 
@@ -293,15 +293,15 @@ const isAddressValid = computed(() => validateBTCAddress(address.value))
             FREE $N0ME tokens. <br />
             The next step is to pay the network fees below, feel free to add extra tokens on top.
           </p>
-          <!-- <p v-else-if="isWhiteListOpen && isWhiteListed">
+          <p v-else-if="isWhiteListOpen && isWhiteListed">
             Welcome to the Whitelist mint! You have <span class="text-green">10 minutes</span> to purchase the
             $N0ME tokens.
           </p>
           <p class="mt-4" v-else>
             Sorry, your wallet is not registered for Whitelist,
             <span class="text-green">public $N0ME mint</span> starts in 2 hours after the WL.
-          </p> -->
-        </div>
+          </p>
+        </div> -->
 
         <div v-if="true" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
