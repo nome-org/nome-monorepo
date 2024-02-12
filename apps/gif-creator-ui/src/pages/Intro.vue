@@ -83,7 +83,7 @@ const handleLogin = async (walletType: WalletType) => {
             class="bg-transparent text-white rounded-lg border border-pink transition-all hover:bg-pink pl-6 py-1 pr-4 tracking-[0.3em] disabled:opacity-50 w-32">
             VERIFY
           </button>
-          <a href="https://brc20.nome.wtf" target="_blank"
+          <a href="https://unisat.io/market/brc20?tick=N0ME" target="_blank"
             class="bg-transparent text-white rounded-lg border border-pink transition-all hover:bg-pink pl-6 py-1 pr-4 tracking-[0.3em] disabled:opacity-50 w-32 text-center">
             BUY
           </a>
