@@ -84,7 +84,7 @@ watch(customFee, (fee) => {
     <div class="mt-8 flex flex-col" v-if="selectedFee === FeeLabels.CUSTOM">
         <label class="mb-2">You can add a custom fee below</label>
         <div class="w-full bg-white text-black p-2 flex items-center gap-5 rounded-md">
-            <NumberInput v-model="customFee" className="outline-none w-full" />
+            <NumberInput v-model="customFee" className="outline-none w-full bg-transparent" />
             <span>sats/vByte</span>
         </div>
     </div>

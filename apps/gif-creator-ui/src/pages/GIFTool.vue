@@ -137,6 +137,8 @@ const createInscriptionOrderMut = useMutation({
     return response.data.payment_details
   },
 });
+const isPaymentPopupOpen = ref(false)
+
 async function waitXV() {
   isPaymentPopupOpen.value = true
   orderingState.value = OrderingState.RequestingWalletAddress;
@@ -174,19 +176,21 @@ const handleWalletSelected = async (walletType: WalletType) => {
       .then((txId) => {
         paymentTxId.value = txId;
         orderingState.value = OrderingState.None;
+        isPaymentPopupOpen.value = false
       })
       .catch(() => {
         orderingState.value = OrderingState.None;
+        isPaymentPopupOpen.value = false
       });
   } catch (err) {
     orderingState.value = OrderingState.None;
   }
 }
 
-const isPaymentPopupOpen = ref(false)
 </script>
 <template>
-  <SelectWallet @wallet-selected="handleWalletSelected($event)" :is-open="isPaymentPopupOpen" />
+  <SelectWallet @wallet-selected="handleWalletSelected($event)" :is-open="isPaymentPopupOpen"
+    @close-modal="isPaymentPopupOpen = false" />
   <div class="">
     <NewHeader />
     <div class="pt-[25px] px-[25px] pb-0">
