@@ -1,6 +1,10 @@
-import { AddressPurpose, BitcoinNetworkType, getAddress } from "sats-connect";
+import {
+  AddressPurpose,
+  BitcoinNetworkType,
+  GetAddressResponse,
+  getAddress,
+} from "sats-connect";
 
-import { getWalletAddresses } from "./getWalletAddresses";
 import {
   AddressResponseBody,
   BtcAddress,
@@ -36,6 +40,19 @@ export const getAddressesUnisat: getAddresses = async () => {
     paymentAddress: results[0],
   };
 };
+const getAddressByPurpose = (
+  response: GetAddressResponse,
+  purpose: AddressPurpose,
+) => response.addresses.find((item) => item.purpose === purpose)?.address;
+
+export function getWalletAddresses(response: GetAddressResponse) {
+  let ordinalAddress = getAddressByPurpose(response, AddressPurpose.Ordinals);
+  let paymentAddress = getAddressByPurpose(response, AddressPurpose.Payment);
+  return {
+    ordinalAddress,
+    paymentAddress,
+  };
+}
 
 /**
  * @name getAddressXverse
