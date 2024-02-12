@@ -23,6 +23,7 @@ import {
 import VideoPlayer from "../components/shared/VideoPlayer.vue";
 import NewHeader from "../components/shared/NewHeader.vue";
 import { WalletType, sendBTCLeather, sendBTCUnisat, sendBTCXverse } from "@repo/wallet-utils";
+import { DisclaimerCheckbox } from "@repo/shared-ui";
 
 
 const auth = useAuthStore()
@@ -139,7 +140,7 @@ const createInscriptionOrderMut = useMutation({
 });
 const isPaymentPopupOpen = ref(false)
 
-async function waitXV() {
+async function openWalletSelection() {
   isPaymentPopupOpen.value = true
   orderingState.value = OrderingState.RequestingWalletAddress;
 }
@@ -186,6 +187,8 @@ const handleWalletSelected = async (walletType: WalletType) => {
     orderingState.value = OrderingState.None;
   }
 }
+
+const isOpenSource = ref(false)
 
 </script>
 <template>
@@ -260,17 +263,17 @@ const handleWalletSelected = async (walletType: WalletType) => {
                   :total-fee="totalFee" :usd-price="usdPrice" />
 
                 <div class="w-full pr-4 pl-4">
-                  <div>
-                    <div class="flex flex-col items-center pt-12 w-full mt-6">
-                      <InscribeButton @inscribe="waitXV" :ordering-state="orderingState" />
-                      <div class="w-full flex flex-col items-center mt-7" v-if="paymentTxId">
-                        <div class="w-full text-left input-title">Thank you for creating art with us!</div>
-                        <a :href="'https://mempool.space/tx/' + paymentTxId"
-                          class="text-left input-title underline underline-offset-4">
-                          Mempool link
-                        </a>
-                      </div>
-
+                  <div class="flex flex-col items-center pt-12 w-full mt-6">
+                    <div class="mb-12">
+                      <DisclaimerCheckbox v-model="isOpenSource" text="Contribute to open-source library" />
+                    </div>
+                    <InscribeButton @inscribe="openWalletSelection" :ordering-state="orderingState" />
+                    <div class="w-full flex flex-col items-center mt-7" v-if="paymentTxId">
+                      <div class="w-full text-left input-title">Thank you for creating art with us!</div>
+                      <a :href="'https://mempool.space/tx/' + paymentTxId"
+                        class="text-left input-title underline underline-offset-4">
+                        Mempool link
+                      </a>
                     </div>
                   </div>
                 </div>
