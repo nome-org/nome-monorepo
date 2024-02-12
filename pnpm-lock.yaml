@@ -238,6 +238,9 @@ importers:
       needle:
         specifier: ^3.2.0
         version: 3.3.1
+      ordinalsbot:
+        specifier: ^0.1.2
+        version: 0.1.2
       tiny-secp256k1:
         specifier: ^2.2.3
         version: 2.2.3
@@ -562,6 +565,13 @@ packages:
       '@babel/helper-string-parser': 7.22.5
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+
+  /@bitcoin-js/tiny-secp256k1-asmjs@2.2.3:
+    resolution: {integrity: sha512-arFPdEZi9RIiaG76OZswTnAU0KfuiLwGw2VNfD66LKhzlbfOnX1o1WI/GI3qm9UbjG/0QOzZu/KmTNvL79x/DQ==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      uint8array-tools: 0.0.7
+    dev: false
 
   /@bitcoinerlab/secp256k1@1.0.5:
     resolution: {integrity: sha512-8gT+ukTCFN2rTxn4hD9Jq3k+UJwcprgYjfK/SQUSLgznXoIgsBnlPuARMkyyuEjycQK9VvnPiejKdszVTflh+w==}
@@ -2464,6 +2474,15 @@ packages:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
       follow-redirects: 1.15.3
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
+  /axios@0.27.2:
+    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
+    dependencies:
+      follow-redirects: 1.15.3
+      form-data: 4.0.0
     transitivePeerDependencies:
       - debug
     dev: false
@@ -4732,6 +4751,18 @@ packages:
       prelude-ls: 1.2.1
       type-check: 0.4.0
     dev: true
+
+  /ordinalsbot@0.1.2:
+    resolution: {integrity: sha512-U6GwUf76G91mbjaE5zukoOq/SvRJaGi3LRjppou0wj/UaE19OkRj0hC0UTh7/MHDLQGWdLIxWBwVzNPUje1jJQ==}
+    dependencies:
+      '@bitcoin-js/tiny-secp256k1-asmjs': 2.2.3
+      axios: 0.27.2
+      bitcoinjs-lib: 6.1.5
+      sats-connect: 1.1.2
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /p-limit@3.1.0:
     resolution: {integrity: sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==}
