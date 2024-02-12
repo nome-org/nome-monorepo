@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/vue-query";
 import { apiClient } from "../api/client";
 import { network } from "../constants/bitcoin";
 import { createToken, useAuthStore } from "@repo/auth-utils";
-import { WalletType } from "@repo/wallet-utils/src/checkWallets";
+import { WalletType } from "@repo/wallet-utils";
 import {
   AppNetworkType,
   getAddressesLeather,
