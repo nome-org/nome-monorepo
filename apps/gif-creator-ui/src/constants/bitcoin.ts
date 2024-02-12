@@ -1,6 +1,3 @@
-import { BitcoinNetworkType } from "sats-connect";
+import { AppNetworkType } from "@repo/wallet-utils";
 
-export const network =
-  import.meta.env.VITE_APP_NETWORK === "testnet"
-    ? BitcoinNetworkType.Testnet
-    : BitcoinNetworkType.Mainnet;
+export const network = import.meta.env.VITE_APP_NETWORK as AppNetworkType;

@@ -4,12 +4,13 @@ import {
   BitcoinNetworkType,
   signMessage as xverseSignMessage,
 } from "sats-connect";
+import { AppNetworkType } from "..";
 export function signBip322Xverse({
   networkType,
   tapRootAddress,
   message,
 }: {
-  networkType: BitcoinNetworkType;
+  networkType: AppNetworkType;
   tapRootAddress: string;
   message: string;
 }) {
@@ -19,7 +20,10 @@ export function signBip322Xverse({
       onFinish: resolve,
       payload: {
         network: {
-          type: networkType,
+          type:
+            networkType === "mainnet"
+              ? BitcoinNetworkType.Mainnet
+              : BitcoinNetworkType.Testnet,
         },
         address: tapRootAddress,
         message,

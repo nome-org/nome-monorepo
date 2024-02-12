@@ -10,3 +10,5 @@ export {
   signBip322Unisat,
   signBip322Xverse,
 } from "./src/signBIP322Message";
+export { sendBTCLeather, sendBTCUnisat, sendBTCXverse } from "./src/sendBTC";
+export * from "./src/util/types";

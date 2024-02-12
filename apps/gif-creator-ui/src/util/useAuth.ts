@@ -6,12 +6,12 @@ import {
   pubKeyfromPrivKey,
 } from "@stacks/transactions";
 import { useMutation } from "@tanstack/vue-query";
-import { BitcoinNetworkType } from "sats-connect";
 import { apiClient } from "../api/client";
 import { network } from "../constants/bitcoin";
 import { createToken, useAuthStore } from "@repo/auth-utils";
 import { WalletType } from "@repo/wallet-utils/src/checkWallets";
 import {
+  AppNetworkType,
   getAddressesLeather,
   getAddressesUnisat,
   getAddressesXverse,
@@ -33,7 +33,7 @@ const getAddresses = ({
   walletType,
 }: {
   walletType: WalletType;
-  networkType: BitcoinNetworkType;
+  networkType: AppNetworkType;
   message: string;
 }) => {
   const fn = getAddressesByWalletType[walletType];
@@ -56,7 +56,7 @@ const signMessage = ({
   tapRootAddress,
 }: {
   walletType: WalletType;
-  networkType: BitcoinNetworkType;
+  networkType: AppNetworkType;
   message: string;
   tapRootAddress: string;
 }) => {

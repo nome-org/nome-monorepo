@@ -1,10 +1,12 @@
 import { RpcError, SendTransferResponseBody } from "@btckit/types";
 import { BitcoinNetworkType, sendBtcTransaction } from "sats-connect";
 import { getLeatherBTCProvider } from "./util/btc-provider";
+import { AppNetworkType } from "./util/types";
 
 type Payload = {
   recipient: string;
   amountInSats: number;
+  network: AppNetworkType;
   /** required by xverse */
   senderAddress: string;
   /** optional message just for xverse as well */
@@ -44,12 +46,16 @@ export async function sendBTCXverse({
   amountInSats,
   recipient,
   senderAddress,
+  network,
 }: Payload): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     sendBtcTransaction({
       payload: {
         network: {
-          type: BitcoinNetworkType.Mainnet,
+          type:
+            network === "mainnet"
+              ? BitcoinNetworkType.Mainnet
+              : BitcoinNetworkType.Testnet,
         },
         recipients: [
           {

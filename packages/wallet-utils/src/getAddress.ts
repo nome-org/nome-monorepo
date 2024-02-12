@@ -12,6 +12,7 @@ import {
   RpcError,
 } from "@btckit/types";
 import { getLeatherBTCProvider } from "./util/btc-provider";
+import { AppNetworkType } from "..";
 
 type Results = {
   /** @description payment address can be native segwit or segwit or taproot (unisat) */
@@ -22,7 +23,7 @@ type Results = {
 
 type getAddresses = (params?: {
   message: string;
-  networkType: BitcoinNetworkType;
+  networkType: AppNetworkType;
 }) => Promise<Results>;
 
 /**
@@ -62,7 +63,7 @@ export function getWalletAddresses(response: GetAddressResponse) {
 export const getAddressesXverse: getAddresses = (
   params = {
     message: "Please select an account",
-    networkType: BitcoinNetworkType.Mainnet,
+    networkType: "mainnet",
   },
 ) => {
   return new Promise<Results>((resolve, reject) => {
@@ -74,7 +75,10 @@ export const getAddressesXverse: getAddresses = (
       payload: {
         message: params.message,
         network: {
-          type: params.networkType,
+          type:
+            params.networkType === "mainnet"
+              ? BitcoinNetworkType.Mainnet
+              : BitcoinNetworkType.Testnet,
         },
         purposes: [AddressPurpose.Ordinals, AddressPurpose.Payment],
       },

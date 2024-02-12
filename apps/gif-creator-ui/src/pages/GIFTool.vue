@@ -9,13 +9,12 @@ import Footer from "../components/shared/Footer.vue";
 import { network } from "../constants/bitcoin";
 import GetBetaAccess from "../components/GetBetaAccess.vue";
 import OrdersForAddress from "../components/OrdersForAddress.vue";
-import { FeeRateSelector } from "@repo/shared-ui"
+import { FeeRateSelector, SelectWallet } from "@repo/shared-ui"
 import GIFPreview from "../components/GIFPreview.vue";
 import { usePriceQuery } from "../api/queries/price";
 import MintInfo from "../components/MintInfo.vue";
 import { CompressAble, OrderingState } from "../constants/inscriptions";
 import InscribeButton from "../components/ui/InscribeButton.vue";
-import { sendBTC } from '../util/sendBTC'
 import FrameManager from "../components/FrameManager.vue";
 import {
   //  createToken,
@@ -23,6 +22,7 @@ import {
 } from "@repo/auth-utils";
 import VideoPlayer from "../components/shared/VideoPlayer.vue";
 import NewHeader from "../components/shared/NewHeader.vue";
+import { WalletType, sendBTCLeather, sendBTCUnisat, sendBTCXverse } from "@repo/wallet-utils";
 
 
 const auth = useAuthStore()
@@ -138,9 +138,23 @@ const createInscriptionOrderMut = useMutation({
   },
 });
 async function waitXV() {
-  try {
-    orderingState.value = OrderingState.RequestingWalletAddress;
+  isPaymentPopupOpen.value = true
+  orderingState.value = OrderingState.RequestingWalletAddress;
+}
 
+const handleContactAdded = () => {
+  window.localStorage.setItem("has-beta-access", "true");
+  showGetBetaAccess.value = false;
+};
+
+const handleWalletSelected = async (walletType: WalletType) => {
+  const sendBTCFnByWalletType = {
+    [WalletType.leather]: sendBTCLeather,
+    [WalletType.unisat]: sendBTCUnisat,
+    [WalletType.xverse]: sendBTCXverse
+  }
+  const sendFn = sendBTCFnByWalletType[walletType]
+  try {
 
     orderingState.value = OrderingState.WaitingForCreation;
 
@@ -151,11 +165,11 @@ async function waitXV() {
 
     orderingState.value = OrderingState.WaitingForPayment;
 
-    sendBTC({
-      address,
-      amount,
-      network,
-      paymentAddress,
+    sendFn({
+      recipient: address,
+      amountInSats: amount,
+      senderAddress: paymentAddress,
+      network
     })
       .then((txId) => {
         paymentTxId.value = txId;
@@ -169,12 +183,10 @@ async function waitXV() {
   }
 }
 
-const handleContactAdded = () => {
-  window.localStorage.setItem("has-beta-access", "true");
-  showGetBetaAccess.value = false;
-};
+const isPaymentPopupOpen = ref(false)
 </script>
 <template>
+  <SelectWallet @wallet-selected="handleWalletSelected($event)" :is-open="isPaymentPopupOpen" />
   <div class="">
     <NewHeader />
     <div class="pt-[25px] px-[25px] pb-0">

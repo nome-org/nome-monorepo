@@ -16,7 +16,7 @@ export enum WalletType {
 export const checkAvailableWallets: () => Promise<{
   [key in WalletType]: boolean;
 }> = async () => {
-  const isLeather = !!window.btc;
+  const isLeather = !!(window as unknown as any).LeatherProvider;
   const isUnisat = !!(window as any).unisat;
   const isXverse = await checkXverseProvider();
 
