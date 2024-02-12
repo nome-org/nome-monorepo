@@ -3,22 +3,25 @@ import { ref, computed } from "vue";
 
 import Footer from "./shared/Footer.vue";
 import Header from "./shared/Header.vue";
-import { useQuery, useMutation } from '@tanstack/vue-query'
+import {
+  useQuery,
+  //  useMutation
+} from '@tanstack/vue-query'
 import { client } from "../api/client";
-import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
+// import { sendBtcTransaction, BitcoinNetworkType, getAddress, AddressPurpose } from 'sats-connect'
 
 import { validate as validateBTCAddress } from 'bitcoin-address-validation'
-import { useMintProgress } from "../api/queries/mint-progress";
-import { makeTwitterPost } from "../util/makeTwitterPost";
+// import { useMintProgress } from "../api/queries/mint-progress";
+// import { makeTwitterPost } from "../util/makeTwitterPost";
 import {
-  FeeRateSelector,
+  // FeeRateSelector,
   DisclaimerCheckbox,
-  Modal,
-  NumberInput,
-  PriceItem,
+  // Modal,
+  // NumberInput,
+  // PriceItem,
 } from "@repo/shared-ui";
 import SaleProgress from "./SaleProgress.vue";
-import { useBTCPrice } from "../api/queries/coin-cap-btc-price";
+// import { useBTCPrice } from "../api/queries/coin-cap-btc-price";
 
 
 
@@ -70,126 +73,126 @@ const {
 
 const isWhiteListed = ref(false)
 
-const userPaid = ref(true)
+// const userPaid = ref(true)
 
 
-const isAmountValid = computed(() => {
-  let min = 5000
-  if (eligibleFreeAmount.value) {
-    min = eligibleFreeAmount.value
-  }
-  const amount = Number(quantity.value)
-  return amount > 0
-    && amount % 1000 === 0
-    && amount >= min
-    && amount <= 1_000_000
-})
+// const isAmountValid = computed(() => {
+//   let min = 5000
+//   if (eligibleFreeAmount.value) {
+//     min = eligibleFreeAmount.value
+//   }
+//   const amount = Number(quantity.value)
+//   return amount > 0
+//     && amount % 1000 === 0
+//     && amount >= min
+//     && amount <= 1_000_000
+// })
 
-const isFormValid = computed(() => {
-  return isAmountValid.value
-})
+// const isFormValid = computed(() => {
+//   return isAmountValid.value
+// })
 
-const feeRate = ref('1')
+// const feeRate = ref('1')
 
-const priceQ = useQuery({
-  queryKey: ['price', feeRate, quantity, address],
-  queryFn: () => {
-    return client.provide('get', '/price', {
-      feeRate: String(feeRate.value),
-      amount: String(quantity.value),
-      address: address.value,
-    })
-  },
-  enabled: () => {
-    return Boolean(
-      feeRate.value
-      && quantity.value
-      && address.value
-      && isFormValid.value
-      && isAddressValid.value
-    )
-  },
-})
+// const priceQ = useQuery({
+//   queryKey: ['price', feeRate, quantity, address],
+//   queryFn: () => {
+//     return client.provide('get', '/price', {
+//       feeRate: String(feeRate.value),
+//       amount: String(quantity.value),
+//       address: address.value,
+//     })
+//   },
+//   enabled: () => {
+//     return Boolean(
+//       feeRate.value
+//       && quantity.value
+//       && address.value
+//       && isFormValid.value
+//       && isAddressValid.value
+//     )
+//   },
+// })
 
-const priceData = computed(() => {
-  return priceQ.data.value?.status !== 'success' ? null : priceQ.data.value.data
-})
-
-
-const paymentTx = ref('')
-const orderDetails = ref({
-  address: '',
-  amount: 0
-})
-const createOrderM = useMutation({
-  mutationKey: ['createOrder', quantity, address, feeRate],
-  mutationFn: async ({ xverse }: { xverse: boolean }) => {
-    if (!address.value || !quantity.value || !feeRate.value) {
-      return
-    }
-    const data = await client.provide('post', '/orders', {
-      receiveAddress: address.value,
-      amount: Number(quantity.value),
-      feeRate: Number(feeRate.value),
-    })
-
-    if (data.status === 'success') {
-      await checkClaim()
-      const {
-        paymentAddress,
-        totalPrice
-      } = data.data
+// const priceData = computed(() => {
+//   return priceQ.data.value?.status !== 'success' ? null : priceQ.data.value.data
+// })
 
 
-      const networkType = import.meta.env.VITE_APP_BITCOIN_NETWORK === 'testnet'
-        ? BitcoinNetworkType.Testnet
-        : BitcoinNetworkType.Mainnet;
+// const paymentTx = ref('')
+// const orderDetails = ref({
+//   address: '',
+//   amount: 0
+// })
+// const createOrderM = useMutation({
+//   mutationKey: ['createOrder', quantity, address, feeRate],
+//   mutationFn: async ({ xverse }: { xverse: boolean }) => {
+//     if (!address.value || !quantity.value || !feeRate.value) {
+//       return
+//     }
+//     const data = await client.provide('post', '/orders', {
+//       receiveAddress: address.value,
+//       amount: Number(quantity.value),
+//       feeRate: Number(feeRate.value),
+//     })
 
-      if (xverse) {
-        getAddress({
-          payload: {
-            message: `We will need this address to pay for your order.`,
-            network: {
-              type: networkType,
-            },
-            purposes: [AddressPurpose.Payment]
-          },
-          onFinish(address) {
-            sendBtcTransaction({
-              payload: {
-                network: {
-                  type: networkType
-                },
-                recipients: [
-                  {
-                    address: paymentAddress,
-                    amountSats: BigInt(totalPrice)
-                  }
-                ],
-                senderAddress: address.addresses[0].address,
-              },
-              onCancel: () => {
-                console.log('cancelled')
-              },
-              onFinish: (tx) => {
-                userPaid.value = true
-                paymentTx.value = `${import.meta.env.VITE_APP_MEMPOOL_URL}/tx/${tx}`
-              }
-            })
-          },
-          onCancel() { }
-        })
-      } else {
-        isPreviewOpen.value = true
-        orderDetails.value = {
-          address: paymentAddress,
-          amount: totalPrice
-        }
-      }
+//     if (data.status === 'success') {
+//       await checkClaim()
+//       const {
+//         paymentAddress,
+//         totalPrice
+//       } = data.data
 
-    }
-  }
-})
+
+//       const networkType = import.meta.env.VITE_APP_BITCOIN_NETWORK === 'testnet'
+//         ? BitcoinNetworkType.Testnet
+//         : BitcoinNetworkType.Mainnet;
+
+//       if (xverse) {
+//         getAddress({
+//           payload: {
+//             message: `We will need this address to pay for your order.`,
+//             network: {
+//               type: networkType,
+//             },
+//             purposes: [AddressPurpose.Payment]
+//           },
+//           onFinish(address) {
+//             sendBtcTransaction({
+//               payload: {
+//                 network: {
+//                   type: networkType
+//                 },
+//                 recipients: [
+//                   {
+//                     address: paymentAddress,
+//                     amountSats: BigInt(totalPrice)
+//                   }
+//                 ],
+//                 senderAddress: address.addresses[0].address,
+//               },
+//               onCancel: () => {
+//                 console.log('cancelled')
+//               },
+//               onFinish: (tx) => {
+//                 userPaid.value = true
+//                 paymentTx.value = `${import.meta.env.VITE_APP_MEMPOOL_URL}/tx/${tx}`
+//               }
+//             })
+//           },
+//           onCancel() { }
+//         })
+//       } else {
+//         isPreviewOpen.value = true
+//         orderDetails.value = {
+//           address: paymentAddress,
+//           amount: totalPrice
+//         }
+//       }
+
+//     }
+//   }
+// })
 
 const disclaimersCheck = ref([false, false])
 const consented = computed(() => {
@@ -199,36 +202,36 @@ const consented = computed(() => {
   return disclaimersCheck.value[1]
 })
 const isAddressValid = computed(() => validateBTCAddress(address.value))
-const isEligibleToMint = computed(() => {
-  const wl = isClaimChecked.value && isWhiteListOpen.value && isWhiteListed.value
-  const publicSale = isAddressChecked.value && !isWhiteListOpen.value
-  const shouldMint = wl || publicSale
-  // return import.meta.env.DEV;
-  return shouldMint
-})
+// const isEligibleToMint = computed(() => {
+//   const wl = isClaimChecked.value && isWhiteListOpen.value && isWhiteListed.value
+//   const publicSale = isAddressChecked.value && !isWhiteListOpen.value
+//   const shouldMint = wl || publicSale
+//   // return import.meta.env.DEV;
+//   return shouldMint
+// })
 
-const { data: usdPrice } = useBTCPrice();
+// const { data: usdPrice } = useBTCPrice();
 
-const progress = useMintProgress()
+// const progress = useMintProgress()
 
-const isPreviewOpen = ref(false);
-const changePreviewStatus = (status: boolean) => {
-  isPreviewOpen.value = status;
-};
+// const isPreviewOpen = ref(false);
+// const changePreviewStatus = (status: boolean) => {
+//   isPreviewOpen.value = status;
+// };
 
-const saleWording = computed(() => {
-  return eligibleFreeAmount.value ? "Claim" : "Buy"
-})
+// const saleWording = computed(() => {
+//   return eligibleFreeAmount.value ? "Claim" : "Buy"
+// })
 
 </script>
 <template>
-  <Modal :is-open="isPreviewOpen" @on-visibility-change="changePreviewStatus">
+  <!-- <Modal :is-open="isPreviewOpen" @on-visibility-change="changePreviewStatus">
     <div class="p-4 bg-[#252525] w-full rounded-lg text-base flex flex-col gap-y-4  sm:max-w-2xl">
       <p>To complete the order</p>
       <p>Please send: {{ (orderDetails.amount / 1e8).toFixed(8) }} BTC</p>
       <p>To {{ orderDetails.address }}</p>
     </div>
-  </Modal>
+  </Modal> -->
   <div class="">
     <div class="pt-[25px] px-[25px] pb-0">
       <Header />
@@ -300,7 +303,7 @@ const saleWording = computed(() => {
           </p> -->
         </div>
 
-        <div v-if="isEligibleToMint" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
+        <div v-if="true" class="pt-2 md:mt-8 mt-12 mb-12 w-full relative">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 my-6 w-full lg:w-[80%]">
             <!-- <div class="mt-10"> -->
             <!-- <div :class="eligibleFreeAmount > 0 ? 'visible' : 'invisible'">
@@ -312,11 +315,17 @@ const saleWording = computed(() => {
             <!-- </div> -->
 
             <div class="w-full sm:ml-12">
-              <div class="flex items-center justify-center">
+              <div class=" items-center justify-center">
+                <div class="flex flex-col gap-y-8 my-16 w-full items-center">
+                  <strong class="uppercase text-2xl text-green">pre-sale is sold out</strong>
+                  <a href="https://unisat.io/market/brc20?tick=N0ME&tab=1" target="_blank">
+                    Buy on secondary on UniSat
+                  </a>
+                </div>
                 <!-- <img src="/stats.png" class="" alt="Stats" /> -->
                 <SaleProgress />
               </div>
-              <div class="my-16 flex flex-col">
+              <!-- <div class="my-16 flex flex-col">
                 <label>
                   <div class="mb-4 text-xl">
                     Total quantity
@@ -360,7 +369,7 @@ const saleWording = computed(() => {
               <button v-if="userPaid" class="text-black bg-white w-full rounded-lg p-1 text-xl mt-16"
                 @click="makeTwitterPost()">
                 Post on Twitter
-              </button>
+              </button> -->
             </div>
           </div>
         </div>

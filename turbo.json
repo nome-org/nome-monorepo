@@ -4,7 +4,8 @@
   "pipeline": {
     "dev": {
       "dependsOn": ["^db:generate"],
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "build": {
       "dependsOn": ["^db:generate"],
