@@ -160,9 +160,9 @@ type GetSessionInput = {} & {}
 type GetSessionResponse = {
     status: "success";
     data: {
-        isExpired: boolean;
-        ordinalAddress: string;
-        publicKey: string;
+        is_expired: boolean;
+        ordinal_address: string;
+        public_key: string;
     };
 } | {
     status: "error";

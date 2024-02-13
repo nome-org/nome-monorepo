@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/vue-query";
 
 import { apiClient } from "../api/client";
 import { useAuth } from "./useAuth";
+import { computed } from "vue";
 
 export function useIsSessionValid() {
   const { auth } = useAuth();
@@ -28,11 +29,11 @@ export function useIsSessionValid() {
         return false;
       }
 
-      const isSessionValid = !data.data.isExpired;
+      const isSessionValid = !data.data.is_expired;
       return isSessionValid;
     },
     enabled: () => !!auth.privateKey,
   });
 
-  return !!isSessionValid;
+  return computed(() => !!isSessionValid.value);
 }

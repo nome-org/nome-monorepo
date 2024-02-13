@@ -8,9 +8,9 @@ export const getSessionDetailsEndpoint = defaultEndpointsFactory
         method: "get",
         input: z.object({}),
         output: z.object({
-            isExpired: z.boolean(),
-            ordinalAddress: z.string(),
-            publicKey: z.string(),
+            is_expired: z.boolean(),
+            ordinal_address: z.string(),
+            public_key: z.string(),
         }),
         handler: async ({ options: { session } }) => session,
     });
