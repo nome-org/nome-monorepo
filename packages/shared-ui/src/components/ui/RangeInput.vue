@@ -23,7 +23,7 @@ const handleChange = (e: Event) => {
 </template>
 <style>
 input[type="range"] {
-    @apply appearance-none flex items-center h-px w-full m-0 p-0 border-0;
+    @apply appearance-none flex items-center h-[1px] w-full m-0 p-0 border-0 bg-white;
 }
 
 input[type="range"]::-webkit-slider-thumb {

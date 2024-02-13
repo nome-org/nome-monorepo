@@ -119,35 +119,27 @@ const isFrameLibOpen = ref(false)
   </div>
 
   <div>
-    <!--        <button class="upload-button button" type="button" @click="upload">Add Picture</button>-->
-    <!-- <image-compressor :scale="scale" class="compressor" :done="getFiles"  :quality="quality" ref="compressor"></image-compressor> -->
 
     <div class="w-full flex flex-wrap gap-4 mt-12 mb-12" ref="framesContainerRef">
-      <!-- <div class="w-full sm:w-1/2 pr-4 pl-4 md:w-1/3 pr-4 pl-4 lg:w-1/4 pr-4 pl-4 "> -->
       <Frame v-for="(item, index) in files" :key="'frame/' + item.original.name + index" :index="index"
         :original="item.original" v-model:duration="item.duration" @on-plus-click="duplicateFile(item)"
         @on-x-click="removeFile(item)" @on-compressed="handleFileCompressed(index, $event)"
         @on-compressing="frameCompressionState[index] = $event" :compression-rate="quality" />
-      <!-- </div> -->
       <Frame v-if="files.length == 0" :index="0" :duration="0.5" />
     </div>
   </div>
-  <div class="w-full flex sm:flex-row flex-col-reverse sm:flex-wrap gap-16 sm:gap-0">
-    <div class="w-full p-0 basis-full sm:basis-1/2">
-      <button type="button" @click="generateGIF" :disabled="isCompilingGIF || isCompressing"
-        class="mx-0 mb-16 sm:mb-24 min-w-[13.3rem] py-2 px-0 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black p-1 cursor-pointer z-10 rounded-xl disabled:opacity-50 disabled:cursor-wait disabled:hover:scale-100">
-        <span v-if="isCompilingGIF"> Generating GIF... </span>
-        <span v-else-if="isCompressing"> Compressing... </span>
-        <span v-else> GENERATE GIF </span>
-      </button>
+  <div class="w-full flex sm:flex-row flex-col-reverse sm:flex-wrap gap-16 sm:gap-x-20 mb-16 sm:mb-12 sm:mt-24 relative">
+    <div class="flex px-0 sm:pl-4 flex-col justify-center sm:w-[18rem]">
+      <RangeInput v-model="quality" :min="1" :max="100" :step="1" />
+      <label class="mt-[1.2rem] text-center w-full text-2xl sm:text-base">
+        .webp file quality – {{ quality }}%
+      </label>
     </div>
-    <div class="flex-1 px-0 basis-full sm:basis-1/2 mt-4">
-      <div class="flex px-0 sm:pl-4 flex-col justify-center sm:justify-start sm:w-[40%] sm:min-w-[16rem]">
-        <RangeInput v-model="quality" :min="1" :max="100" :step="1" />
-        <label class="mt-[1.2rem] text-center w-full text-2xl sm:text-base">
-          .webp file quality – {{ quality }}%
-        </label>
-      </div>
-    </div>
+    <button type="button" @click="generateGIF" :disabled="isCompilingGIF || isCompressing"
+      class="relative sm:-top-4 mx-0 min-w-[13.3rem] py-2 px-0 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black p-1 cursor-pointer z-10 rounded-xl disabled:opacity-50 disabled:cursor-wait disabled:hover:scale-100">
+      <span v-if="isCompilingGIF"> Generating GIF... </span>
+      <span v-else-if="isCompressing"> Compressing... </span>
+      <span v-else> GENERATE GIF </span>
+    </button>
   </div>
 </template>

@@ -29,9 +29,9 @@ const hasNoOrders = computed(() => {
 });
 </script>
 <template>
-  <div class="flex flex-col md:flex-row w-full gap-x-12 mt-32 sm:mt-8 max-w-md">
+  <div class="flex flex-col md:flex-row w-full gap-x-12 max-w-2xl">
     <div class="basis-full flex flex-col gap-5">
-      <div class="text-lg sm:text-base">Check the order</div>
+      <div class="text-lg sm:text-xl">Check the order</div>
       <input type="text" v-model="walletAddress" placeholder="Wallet address"
         class="border border-solid bg-transparent h-10 rounded-xl p-3 text-white w-full outline-none" :class="!walletAddress
           ? 'border-white'

@@ -1,11 +1,9 @@
 <script setup lang="ts">
-
 import { useRoute } from 'vue-router'
-import { useAuth } from '../../util/useAuth';
+import { useIsSessionValid } from '../../util/useIsSessionValid';
+import Socials from './Socials.vue';
 const currentRoute = useRoute().path
-const {
-  auth
-} = useAuth()
+const isSessionValid = useIsSessionValid()
 </script>
 <template>
   <header class="flex justify-between w-full">
@@ -18,19 +16,19 @@ const {
             <span v-for="item in 'Menu'.split('')">{{ item }}</span>
           </label>
         </div>
-        <div class="drawer-side">
-          <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay "></label>
+        <div class="drawer-side z-10">
+          <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
           <ul class="pt-24 w-80 min-h-full pl-10">
             <li :class="currentRoute === '/intro' && 'text-white hover:text-white'"
               class="mb-4 text-base-content hover:text-gray-200">
               <router-link to="/intro">→ verify</router-link>
             </li>
             <!-- FIXME: add cursor disabled when not logged in -->
-            <li v-if="auth.isLoggedIn" :class="currentRoute === '/gallery' && 'text-white hover:text-white'"
+            <li v-if="isSessionValid" :class="currentRoute === '/gallery' && 'text-white hover:text-white'"
               class="mb-4 text-base-content hover:text-gray-200">
               <router-link to="/gallery">→ expo</router-link>
             </li>
-            <li v-if="auth.isLoggedIn" :class="currentRoute === '/gif' && 'text-white hover:text-white'"
+            <li v-if="isSessionValid" :class="currentRoute === '/gif' && 'text-white hover:text-white'"
               class="mb-4 text-base-content hover:text-gray-200">
               <router-link to="/gif">→ gif</router-link>
             </li>
@@ -46,18 +44,8 @@ const {
       <img src="../../assets/images/logo-white.png" alt="NoMe logo" class="w-3/4 max-w-[18rem] sm:w-full mx-auto mt-8" />
     </div>
     <div class="pt-8 pr-12 flex gap-x-8 flex-1 justify-end">
-      <a href="https://twitter.com/nome_nft" target="_blank">
-        <img src="../../assets/images/twitter-icon.png" alt=""
-          class="hover:opacity-80 transition-all opacity-50 w-[1.6rem] h-[1.6rem] invert">
-      </a>
-      <a href="https://discord.gg/nome" target="_blank">
-        <img src="../../assets/images/discord-icon.png" alt=""
-          class="hover:opacity-80 transition-all opacity-50 w-[1.6rem] h-[1.6rem] invert">
-      </a>
-      <a href="https://youtube.com/@nome_nft" target="_blank">
-        <img src="../../assets/images/youtube-icon.png" alt=""
-          class="hover:opacity-80 transition-all opacity-50 w-[1.6rem] h-[1.6rem] invert">
-      </a>
+
+      <Socials />
     </div>
   </header>
 </template>

@@ -23,7 +23,9 @@ import {
 import VideoPlayer from "../components/shared/VideoPlayer.vue";
 import NewHeader from "../components/shared/NewHeader.vue";
 import { WalletType, sendBTCLeather, sendBTCUnisat, sendBTCXverse } from "@repo/wallet-utils";
-import { DisclaimerCheckbox } from "@repo/shared-ui";
+import { GreenCheckBox } from "@repo/shared-ui";
+import introPoster from "../assets/images/gif-intro-preview.png"
+
 
 
 const auth = useAuthStore()
@@ -196,7 +198,7 @@ const isOpenSource = ref(false)
     @close-modal="isPaymentPopupOpen = false" />
   <div class="">
     <NewHeader />
-    <div class="pt-[25px] px-[25px] pb-0">
+    <div class="pt-[28px] px-[25px] pb-0">
       <main>
         <div class="mt-20">
           <h1 class="text-2xl pb-2">• Stop motion tool •</h1>
@@ -221,14 +223,14 @@ const isOpenSource = ref(false)
           </span>
 
           <br /><br />
-          <VideoPlayer
+          <VideoPlayer :poster="introPoster"
             source="https://link.storjshare.io/s/jx5dbptn3eokr6l5jlns6dokh7uq/nome%2FGIF%20tutorial.mp4?view=1" />
-          <div class="mt-12  h-[50vh]" v-if="showGetBetaAccess">
+          <div class="mt-12 h-[50vh]" v-if="showGetBetaAccess">
             <GetBetaAccess @addContact="handleContactAdded" />
           </div>
         </div>
         <section v-if="!showGetBetaAccess">
-          <div class="w-full lg:w-[90%] xl:w-[80%] 2xl:w-[57%] text-base mb-12">
+          <div class="w-full lg:w-[90%] xl:w-[80%] 2xl:w-[57%] text-base mb-12 mt-28">
             1. Upload PNG or JPEG frames (10 Max);
             <br />
             2. Set order, timing, and .webp file size;
@@ -262,10 +264,13 @@ const isOpenSource = ref(false)
                 <MintInfo v-if="gifSrc && files.length > 0" :frames-count="files.length" :mint-quantity="quantity"
                   :total-fee="totalFee" :usd-price="usdPrice" />
 
-                <div class="w-full pr-4 pl-4">
-                  <div class="flex flex-col items-center pt-12 w-full mt-6">
-                    <div class="mb-12">
-                      <DisclaimerCheckbox v-model="isOpenSource" text="Contribute to open-source library" />
+                <div class="w-full">
+                  <div class="flex flex-col items-center pt-12 w-full">
+                    <div class="mb-6 self-start">
+                      <label class="flex gap-x-6 items-center text-[0.92rem]">
+                        <GreenCheckBox v-model="isOpenSource" />
+                        Contribute to the open-source library to let other artists use your inscriptions as GIF frames
+                      </label>
                     </div>
                     <InscribeButton @inscribe="openWalletSelection" :ordering-state="orderingState" />
                     <div class="w-full flex flex-col items-center mt-7" v-if="paymentTxId">
@@ -279,8 +284,10 @@ const isOpenSource = ref(false)
                 </div>
               </div>
             </div>
+            <div class="mt-32 sm:mt-24">
 
-            <OrdersForAddress />
+              <OrdersForAddress />
+            </div>
 
           </div>
         </section>

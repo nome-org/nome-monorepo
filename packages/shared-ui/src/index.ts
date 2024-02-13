@@ -7,6 +7,7 @@ import DisclaimerCheckbox from "./components/ui/DisclaimerCheckbox.vue";
 import { formatNumber } from "./util/formatNumber";
 import RangeInput from "./components/ui/RangeInput.vue";
 import SelectWallet from "./components/SelectWallet.vue";
+import GreenCheckBox from "./components/ui/GreenCheckBox.vue";
 
 export {
   FeeRateSelector,
@@ -18,4 +19,5 @@ export {
   formatNumber,
   RangeInput,
   SelectWallet,
+  GreenCheckBox,
 };

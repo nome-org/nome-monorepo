@@ -4,40 +4,17 @@ import Button from '../components/ui/Button.vue';
 import { useAuth } from '../util/useAuth';
 import { WalletType } from '@repo/wallet-utils';
 import { toast } from 'vue3-toastify'
-import { useQuery } from '@tanstack/vue-query';
-import { apiClient } from '../api/client';
-import { createToken } from '@repo/auth-utils';
 import { SelectWallet } from '@repo/shared-ui';
 import NewHeader from '../components/shared/NewHeader.vue';
+import { useIsSessionValid } from '../util/useIsSessionValid';
 
 const {
-  auth,
   login
 } = useAuth()
 
 const isWalletSelectionOpen = ref(false)
+const isSessionValid = useIsSessionValid()
 
-const { data: isSessionValid } = useQuery({
-  queryKey: ['session', auth.privateKey],
-  queryFn: async () => {
-    const token = createToken({
-      privateKey: auth.privateKey,
-      prefix: import.meta.env.VITE_APP_CHALLENGE_TEXT,
-    })
-
-    const data = await apiClient.provide('get', '/session', {}, {
-      Authorization: `Bearer ${token}`
-    })
-
-    if (data.status === 'error') {
-      return false
-    }
-
-    const isSessionValid = !data.data.isExpired
-    return isSessionValid
-  },
-  enabled: () => !!auth.privateKey
-})
 
 const openWalletSelection = () => {
   isWalletSelectionOpen.value = true
@@ -46,7 +23,6 @@ const openWalletSelection = () => {
 
 const handleLogin = async (walletType: WalletType) => {
   try {
-
     await login({ walletType })
     isWalletSelectionOpen.value = false
   } catch (error: unknown) {
