@@ -37,9 +37,7 @@ model Order {
   id                    Int         @id @default(autoincrement())
   created_at            DateTime    @default(now())
   updated_at            DateTime    @updatedAt
-  // order id from ordinalsbot
   ordinals_bot_order_id String?     @unique @db.VarChar(255)
-  // taproot address receiving the ordinal
   total_fee             Int
   fee_rate              Int
   rarity                String      @db.VarChar(255)
@@ -69,6 +67,8 @@ model Ordinal {
   image_files_order     Order?            @relation(name: "image_files", fields: [image_files_order_id], references: [id])
   html_files_order_id   Int?
   html_files_order      Order?            @relation(name: "html_files", fields: [html_files_order_id], references: [id])
+  receiver_address      String?           @db.VarChar(255)
+  is_open_source        Boolean           @default(false)
 }
 
 model UserSession {
@@ -79,6 +79,7 @@ model UserSession {
   public_key      String   @unique @db.VarChar(255)
   last_checked_at DateTime @default(now())
   is_expired      Boolean  @default(false)
+  user            User     @relation(fields: [ordinal_address], references: [ordinal_address])
 }
 
 model DelegateOrdinal {
@@ -93,4 +94,13 @@ model DelegateOrdinal {
   payment_tx_id    String?               @db.VarChar(255)
   tx_id            String?               @unique @db.VarChar(255)
   ordinal_index    Int?
+}
+
+model User {
+  id              Int           @id @default(autoincrement())
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  ordinal_address String        @unique @db.VarChar(255)
+  email           String?       @db.VarChar(255)
+  sessions        UserSession[]
 }
