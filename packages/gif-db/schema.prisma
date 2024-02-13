@@ -72,13 +72,13 @@ model Ordinal {
 }
 
 model UserSession {
-  id             Int      @id @default(autoincrement())
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
-  ordinalAddress String   @db.VarChar(255)
-  publicKey      String   @unique @db.VarChar(255)
-  lastCheckedAt  DateTime @default(now())
-  isExpired      Boolean  @default(false)
+  id              Int      @id @default(autoincrement())
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  ordinal_address String   @db.VarChar(255)
+  public_key      String   @unique @db.VarChar(255)
+  last_checked_at DateTime @default(now())
+  is_expired      Boolean  @default(false)
 }
 
 model DelegateOrdinal {

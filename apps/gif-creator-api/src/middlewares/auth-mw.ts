@@ -35,8 +35,8 @@ export const authMiddleware = createMiddleware({
 
             let session = await prisma.userSession.findUnique({
                 where: {
-                    publicKey,
-                    isExpired: false,
+                    public_key: publicKey,
+                    is_expired: false,
                 },
             });
 
@@ -44,25 +44,25 @@ export const authMiddleware = createMiddleware({
                 throw createHttpError(401, "No session, log in first!");
             }
             const sevenDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7);
-            if (session.lastCheckedAt < sevenDaysAgo) {
-                const isExpired = !(await isUserEligible({
-                    address: session.ordinalAddress,
+            if (session.last_checked_at < sevenDaysAgo) {
+                const is_expired = !(await isUserEligible({
+                    address: session.ordinal_address,
                 }));
                 // just to avoid a noop update
-                if (isExpired) {
+                if (is_expired) {
                     session = await prisma.userSession.update({
                         where: {
                             id: session.id,
                         },
                         data: {
-                            lastCheckedAt: new Date(),
-                            isExpired,
+                            last_checked_at: new Date(),
+                            is_expired,
                         },
                     });
                 }
             }
 
-            if (session.isExpired) {
+            if (session.is_expired) {
                 throw createHttpError(401, "Session Expired");
             }
 

@@ -34,8 +34,8 @@ export const createSessionEndpoint = defaultEndpointsFactory.build({
 
         const existingSession = await prisma.userSession.findFirst({
             where: {
-                ordinalAddress,
-                publicKey: message.replace(prefix, ""),
+                ordinal_address: ordinalAddress,
+                public_key: message.replace(prefix, ""),
             },
         });
 
@@ -53,8 +53,8 @@ export const createSessionEndpoint = defaultEndpointsFactory.build({
         try {
             const session = await prisma.userSession.create({
                 data: {
-                    ordinalAddress,
-                    publicKey,
+                    ordinal_address: ordinalAddress,
+                    public_key: publicKey,
                 },
             });
 
