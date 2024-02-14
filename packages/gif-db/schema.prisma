@@ -67,8 +67,9 @@ model Ordinal {
   image_files_order     Order?            @relation(name: "image_files", fields: [image_files_order_id], references: [id])
   html_files_order_id   Int?
   html_files_order      Order?            @relation(name: "html_files", fields: [html_files_order_id], references: [id])
-  receiver_address      String?           @db.VarChar(255)
+  receiver_address      String            @db.VarChar(255)
   is_open_source        Boolean           @default(false)
+  user                  User?             @relation(fields: [receiver_address], references: [ordinal_address])
 }
 
 model UserSession {
@@ -103,4 +104,5 @@ model User {
   ordinal_address String        @unique @db.VarChar(255)
   email           String?       @db.VarChar(255)
   sessions        UserSession[]
+  ordinals        Ordinal[]
 }

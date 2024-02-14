@@ -94,6 +94,7 @@ export const createOrderEndpoint = defaultEndpointsFactory
                         duration: file.duration,
                         type: file.type,
                         ordinals_bot_order_id: orderResponseData.id,
+                        receiver_address: receiverAddress,
                     },
                 });
             }

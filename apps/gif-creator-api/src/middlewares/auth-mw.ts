@@ -7,7 +7,6 @@ import { verifyToken } from "@repo/auth-utils";
 import { isUserEligible } from "../lib/brc/isUserEligible";
 
 const prefix = process.env.CHALLENGE_TEXT!;
-// TODO: Check session valid through brc20 token amount
 
 export const authMiddleware = createMiddleware({
     security: {
@@ -38,6 +37,9 @@ export const authMiddleware = createMiddleware({
                     public_key: publicKey,
                     is_expired: false,
                 },
+                include: {
+                    user: true,
+                },
             });
 
             if (!session) {
@@ -50,15 +52,18 @@ export const authMiddleware = createMiddleware({
                 }));
                 // just to avoid a noop update
                 if (is_expired) {
-                    session = await prisma.userSession.update({
-                        where: {
-                            id: session.id,
-                        },
-                        data: {
-                            last_checked_at: new Date(),
-                            is_expired,
-                        },
-                    });
+                    session = {
+                        ...(await prisma.userSession.update({
+                            where: {
+                                id: session.id,
+                            },
+                            data: {
+                                last_checked_at: new Date(),
+                                is_expired,
+                            },
+                        })),
+                        user: session.user,
+                    };
                 }
             }
 

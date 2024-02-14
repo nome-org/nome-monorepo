@@ -9,7 +9,7 @@ export function useIsSessionValid() {
   const { auth } = useAuth();
 
   const { data: isSessionValid } = useQuery({
-    queryKey: ["session", auth.privateKey],
+    queryKey: ["session", auth],
     queryFn: async () => {
       const token = createToken({
         privateKey: auth.privateKey,
