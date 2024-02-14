@@ -10,13 +10,13 @@ const isSessionValid = useIsSessionValid()
     <div class="flex-1 p-8 pl-12">
       <div class="drawer">
         <input id="my-drawer" type="checkbox" class="drawer-toggle peer" />
-        <div class="drawer-content peer-checked:italic">
+        <div class="drawer-content peer-checked:italic peer-checked:fixed z-30">
           <label for="my-drawer"
-            class="uppercase border-b-2 gap-x-1 flex text-lg drawer-button w-max cursor-pointer relative z-20 active:italic">
+            class="uppercase border-b-2 gap-x-1 flex text-lg drawer-button w-max cursor-pointer active:italic">
             <span v-for="item in 'Menu'.split('')">{{ item }}</span>
           </label>
         </div>
-        <div class="drawer-side z-10">
+        <div class="drawer-side z-20">
           <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
           <ul class="pt-24 w-80 min-h-full pl-10">
             <li :class="currentRoute === '/intro' && 'text-white hover:text-white'"
@@ -24,10 +24,10 @@ const isSessionValid = useIsSessionValid()
               <router-link to="/intro">→ verify</router-link>
             </li>
             <!-- FIXME: add cursor disabled when not logged in -->
-            <li v-if="isSessionValid" :class="currentRoute === '/gallery' && 'text-white hover:text-white'"
+            <!-- <li v-if="isSessionValid" :class="currentRoute === '/gallery' && 'text-white hover:text-white'"
               class="mb-4 text-base-content hover:text-gray-200">
               <router-link to="/gallery">→ expo</router-link>
-            </li>
+            </li> -->
             <li v-if="isSessionValid" :class="currentRoute === '/gif' && 'text-white hover:text-white'"
               class="mb-4 text-base-content hover:text-gray-200">
               <router-link to="/gif">→ gif</router-link>
@@ -49,3 +49,8 @@ const isSessionValid = useIsSessionValid()
     </div>
   </header>
 </template>
+<style scoped>
+.drawer-toggle:checked~.drawer-side>.drawer-overlay {
+  @apply bg-black opacity-60 transition-all
+}
+</style>

@@ -201,7 +201,7 @@ const isOpenSource = ref(false)
     <div class="pt-[28px] px-[25px] pb-0">
       <main>
         <div class="mt-20">
-          <h1 class="text-2xl pb-2">• Stop motion tool •</h1>
+          <h1 class="text-2xl pb-2">• GIF animation tool •</h1>
           <div
             class="border-b border-solid border-opacity-20 border-white md:mt-0 mb-44 sm:mb-16 xl:mb-12 w-full relative">
             <div
