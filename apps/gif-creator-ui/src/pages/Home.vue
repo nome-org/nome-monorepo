@@ -9,7 +9,7 @@
       <div class="relative flex flex-col items-center w-full">
         <h1
           class="uppercase text-white text-4xl text-center flex justify-between w-3/4 max-w-[24rem] sm:w-full mx-auto mb-6">
-          <span v-for="item in 'Gallery'.split('')">{{ item }}</span>
+          <span v-for="item in 'Gallery'">{{ item }}</span>
         </h1>
         <!-- TODO: original show image, on hover show the button -->
         <!-- DONE: remove enter button for now so we can test on /intro -->

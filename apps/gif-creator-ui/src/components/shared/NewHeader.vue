@@ -13,7 +13,7 @@ const isSessionValid = useIsSessionValid()
         <div class="drawer-content peer-checked:italic peer-checked:fixed z-30">
           <label for="my-drawer"
             class="uppercase border-b-2 gap-x-1 flex text-lg drawer-button w-max cursor-pointer active:italic">
-            <span v-for="item in 'Menu'.split('')">{{ item }}</span>
+            <span v-for="item in 'Menu'">{{ item }}</span>
           </label>
         </div>
         <div class="drawer-side z-20">
@@ -39,12 +39,11 @@ const isSessionValid = useIsSessionValid()
     <div class="relative flex flex-col items-center flex-1">
       <h1
         class="uppercase text-white text-2xl text-center flex justify-between w-3/4 max-w-[18rem] sm:w-full mx-auto mt-8">
-        <span v-for="item in 'Gallery'.split('')">{{ item }}</span>
+        <span v-for="item in 'Gallery'">{{ item }}</span>
       </h1>
       <img src="../../assets/images/logo-white.png" alt="NoMe logo" class="w-3/4 max-w-[18rem] sm:w-full mx-auto mt-8" />
     </div>
     <div class="pt-8 pr-12 flex gap-x-8 flex-1 justify-end">
-
       <Socials />
     </div>
   </header>

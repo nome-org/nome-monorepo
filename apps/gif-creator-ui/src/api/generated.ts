@@ -163,6 +163,7 @@ type GetSessionResponse = {
         is_expired: boolean;
         ordinal_address: string;
         public_key: string;
+        hasEmail: boolean;
     };
 } | {
     status: "error";

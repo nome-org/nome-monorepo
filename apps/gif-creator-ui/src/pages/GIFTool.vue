@@ -198,7 +198,7 @@ const isOpenSource = ref(false)
     @close-modal="isPaymentPopupOpen = false" />
   <div class="">
     <NewHeader />
-    <div class="pt-[28px] px-[25px] pb-0">
+    <div class="pt-[28px] px-12 pb-0">
       <main>
         <div class="mt-20">
           <h1 class="text-2xl pb-2">• GIF animation tool •</h1>
