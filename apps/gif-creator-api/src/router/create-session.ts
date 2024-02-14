@@ -51,6 +51,18 @@ export const createSessionEndpoint = defaultEndpointsFactory.build({
 
         const publicKey = message.replace(prefix, "");
         try {
+            const existingUser = await prisma.user.findFirst({
+                where: {
+                    ordinal_address: ordinalAddress,
+                },
+            });
+            if (!existingUser) {
+                await prisma.user.create({
+                    data: {
+                        ordinal_address: ordinalAddress,
+                    },
+                });
+            }
             const session = await prisma.userSession.create({
                 data: {
                     ordinal_address: ordinalAddress,
@@ -58,7 +70,9 @@ export const createSessionEndpoint = defaultEndpointsFactory.build({
                 },
             });
 
-            return session;
+            return {
+                id: session.id,
+            };
         } catch (e) {
             throw createHttpError(400, "Invalid message");
         }
