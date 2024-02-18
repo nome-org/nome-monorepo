@@ -8,8 +8,9 @@ import { computed } from "vue";
 export function useIsSessionValid() {
   const { auth } = useAuth();
 
+  const privateKey = computed(() => auth.privateKey);
   const { data: isSessionValid } = useQuery({
-    queryKey: ["session", auth],
+    queryKey: ["session", privateKey],
     queryFn: async () => {
       const token = createToken({
         privateKey: auth.privateKey,
