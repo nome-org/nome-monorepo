@@ -14,9 +14,13 @@ import Socials from './Socials.vue';
       </div>
     </div>
     <div class="w-full flex justify-between pt-12 gap-0 relative">
-      <div class=" pb-[48px] flex flex-col sm:flex-row gap-x-6 items-center gap-y-4 opacity-50">
-        <img src="../../assets/images/ordinalsbot_logo.png" class="max-h-[1.8rem] sm:max-h-[1.7rem]" alt="">
-        <img src="../../assets/images/xverse_logo_white.png" class="max-h-[1.1rem]" alt="">
+      <div class=" pb-[48px] flex flex-col sm:flex-row gap-x-6 items-center gap-y-4 ">
+        <a href="https://ordinalsbot.com/" target="_blank" rel="noopener noreferrer" class="opacity-50 hover:opacity-80">
+          <img src="../../assets/images/ordinalsbot_logo.png" class="max-h-[1.8rem] sm:max-h-[1.7rem]" alt="">
+        </a>
+        <a href="https://www.xverse.app/" target="_blank" rel="noopener noreferrer" class="opacity-50 hover:opacity-80">
+          <img src="../../assets/images/xverse_logo_white.png" class="max-h-[1.1rem]" alt="">
+        </a>
       </div>
       <div class="flex gap-x-8 flex-1 justify-end pr-12">
         <Socials />
