@@ -21,9 +21,13 @@ import { usePriceQuery } from "../api/queries/price";
 import MintInfo from "./MintInfo.vue";
 import { CompressAble, OrderingState } from "../constants/inscriptions";
 import InscribeButton from "./ui/InscribeButton.vue";
+import InscribeUnisatButton from "./ui/InscribeUnisatButton.vue";
+import InscribeLeatherButton from "./ui/InscribeLeatherButton.vue";
 import { sendBTC } from '../util/sendBTC'
 import FrameManager from "./FrameManager.vue";
 import { getWalletAddresses } from "../util/getWalletAddresses";
+
+import { Modal } from "@repo/shared-ui";
 
 
 const files = ref<Array<CompressAble>>([]);
@@ -36,6 +40,11 @@ const gifSrc = ref("");
 const gifCompilationProgress = ref(0);
 const isCompilingGIF = ref(false);
 const showGetBetaAccess = ref(true);
+
+const isPreviewOpen = ref(false);
+const changePreviewStatus = (status: boolean) => {
+  isPreviewOpen.value = status;
+};
 
 onMounted(() => {
   if (window.localStorage.getItem("has-beta-access")) {
@@ -74,6 +83,11 @@ const { data: totalFee, dataUpdatedAt } = usePriceQuery({
   mintQuantity: quantity,
   selectedRarity
 })
+
+const openPreview = () => {
+  changePreviewStatus(true);
+};
+
 const { data: usdPrice } = useQuery({
   queryKey: ["coinCap"],
   enabled: () => Boolean(totalFee.value && dataUpdatedAt.value),
@@ -137,6 +151,26 @@ const createInscriptionOrderMut = useMutation({
     };
   },
 });
+
+const LeatherWalletGetter = (userAddresses: any) => {
+  let ordinalAddress = '';
+  let paymentAddress = '';
+
+  userAddresses.result.addresses
+    .map((address: any) => {
+      if (address.type === 'p2wpkh') {
+        paymentAddress = address.address;
+      } else if (address.type === 'p2tr') {
+        ordinalAddress = address.address;
+      }
+    });
+
+  return {
+    ordinalAddress,
+    paymentAddress
+  }
+}
+
 async function waitXV() {
   try {
     orderingState.value = OrderingState.RequestingWalletAddress;
@@ -158,6 +192,9 @@ async function waitXV() {
           paymentAddress
         });
 
+        console.log('address ==> ', address);
+        console.log('amount ==>', amount)
+
         orderingState.value = OrderingState.WaitingForPayment;
 
         sendBTC({
@@ -178,6 +215,66 @@ async function waitXV() {
         orderingState.value = OrderingState.None;
       },
     });
+  } catch (err) {
+    orderingState.value = OrderingState.None;
+  }
+}
+
+async function waitUni() {
+  try {
+    orderingState.value = OrderingState.RequestingWalletAddress;
+    let accounts = await (window as any).unisat.requestAccounts();
+    console.log(accounts);
+
+    const ordinalAddress = accounts[0];
+    const paymentAddress = accounts[0];
+
+    console.log('ordinalAddress ==> ', ordinalAddress);
+    console.log('paymentAddress ==> ', paymentAddress);
+
+    const { address, amount } = await createInscriptionOrderMut.mutateAsync({
+      ordinalAddress,
+      paymentAddress
+    });
+
+    console.log('address ==> ', address);
+    console.log('amount ==> ', amount);
+
+    const txId = await (window as any).unisat.sendBitcoin(address, amount);
+
+    paymentTxId.value = txId;
+    orderingState.value = OrderingState.None;
+
+  } catch (err) {
+    console.log('unisat error ==> ', err);
+    orderingState.value = OrderingState.None;
+  }
+}
+
+async function waitLea() {
+  try {
+    orderingState.value = OrderingState.RequestingWalletAddress;
+    const userAddresses = await (window as any).btc?.request('getAddresses');
+
+    const { ordinalAddress, paymentAddress } = LeatherWalletGetter(userAddresses);
+
+    const { address, amount } = await createInscriptionOrderMut.mutateAsync({
+      ordinalAddress,
+      paymentAddress
+    });
+
+    orderingState.value = OrderingState.WaitingForPayment;
+
+    const resp = await (window as any).btc?.request('sendTransfer', {
+      address,
+      amount
+    });
+
+    console.log(resp.result.txid)
+
+    paymentTxId.value = resp.result.txid;
+    orderingState.value = OrderingState.None;
+
   } catch (err) {
     orderingState.value = OrderingState.None;
   }
@@ -258,7 +355,20 @@ const handleContactAdded = () => {
                 <div class="w-full pr-4 pl-4">
                   <div>
                     <div class="flex flex-col items-center pt-12 w-full mt-6">
-                      <InscribeButton @inscribe="waitXV" :ordering-state="orderingState" />
+                      <Modal :is-open="isPreviewOpen" @on-visibility-change="changePreviewStatus">
+                        <div
+                          class="py-10 px-20 bg-white text-black text-[24px] rounded-lg text-base flex flex-col gap-y-4">
+                          <p class="text-center pb-5">
+                            Select a Wallet
+                          </p>
+                          <InscribeButton @inscribe="waitXV" :ordering-state="orderingState" />
+                          <InscribeUnisatButton @inscribe="waitUni" :ordering-state="orderingState" />
+                          <InscribeLeatherButton @inscribe="waitLea" :ordering-state="orderingState" />
+                        </div>
+                      </Modal>
+                      <div @click="openPreview" class="bg-white py-2 px-10 rounded-lg text-black cursor-pointer">
+                        Inscribe
+                      </div>
                       <div class="w-full flex flex-col items-center mt-7" v-if="paymentTxId">
                         <div class="w-full text-left input-title">Thank you for creating art with us!</div>
                         <a :href="'https://mempool.space/tx/' + paymentTxId"
@@ -266,7 +376,6 @@ const handleContactAdded = () => {
                           Mempool link
                         </a>
                       </div>
-
                     </div>
                   </div>
                 </div>

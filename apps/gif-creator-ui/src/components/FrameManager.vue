@@ -110,14 +110,11 @@ watch([files, quality], () => {
     <label
       class="min-w-[13.3rem] py-2 px-0 text-lg text-center transition-transform duration-200 hover:scale-110 bg-white text-black p-1 cursor-pointer z-10 rounded-xl mb-3">
       UPLOAD FRAMES
-      <input type="file" accept="image/png, image/jpeg, image/webp" multiple hidden v-on:change="getFiles" />
+      <input type="file" accept="image/webp" multiple hidden v-on:change="getFiles" />
     </label>
   </div>
 
   <div>
-    <!--        <button class="upload-button button" type="button" @click="upload">Add Picture</button>-->
-    <!-- <image-compressor :scale="scale" class="compressor" :done="getFiles"  :quality="quality" ref="compressor"></image-compressor> -->
-
     <div class="w-full flex flex-wrap gap-4 mt-12 mb-12" ref="framesContainerRef">
       <!-- <div class="w-full sm:w-1/2 pr-4 pl-4 md:w-1/3 pr-4 pl-4 lg:w-1/4 pr-4 pl-4 "> -->
       <Frame v-for="(item, index) in files" :key="'frame/' + item.original.name + index" :index="index"

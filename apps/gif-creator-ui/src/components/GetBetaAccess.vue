@@ -4,8 +4,10 @@ import { computed, ref } from 'vue';
 
 const emit = defineEmits(['addContact'])
 
-const supabaseUrl = import.meta.env.VITE_APP_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_APP_SUPABASE_KEY
+// const supabaseUrl = import.meta.env.VITE_APP_SUPABASE_URL
+// const supabaseKey = import.meta.env.VITE_APP_SUPABASE_KEY
+const supabaseUrl = "https://cexjotyxqjbfepuuuouo.supabase.co"
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNleGpvdHl4cWpiZmVwdXV1b3VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAyODU4ODcsImV4cCI6MjAxNTg2MTg4N30.XFxYCkBHVDkWP-HgCgCQYg7xA6sg84yibrsWi0P10Uo"
 const supabase = createClient(supabaseUrl, supabaseKey)
 const twitterHandle = ref('')
 const email = ref('')

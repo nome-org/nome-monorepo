@@ -1,7 +1,7 @@
 lockfileVersion: '6.0'
 
 settings:
-  autoInstallPeers: true
+  autoInstallPeers: false
   excludeLinksFromLockfile: false
 
 importers:
@@ -156,7 +156,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^5.0.8
-        version: 5.0.8(@types/node@20.10.5)
+        version: 5.0.8
       vue-tsc:
         specifier: ^1.8.25
         version: 1.8.25(typescript@5.2.2)
@@ -400,13 +400,6 @@ importers:
         version: 5.8.0
 
   packages/shared-ui:
-    dependencies:
-      '@tanstack/vue-query':
-        specifier: ^5.17.0
-        version: 5.17.0(vue@3.4.3)
-      vue:
-        specifier: ^3.4.3
-        version: 3.4.3(typescript@5.2.2)
     devDependencies:
       typescript:
         specifier: ^5.2.2
@@ -1934,7 +1927,7 @@ packages:
       vite: ^4.0.0 || ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.8(@types/node@20.10.5)
+      vite: 5.0.8
       vue: 3.3.11(typescript@5.2.2)
     dev: true
 
@@ -5570,6 +5563,41 @@ packages:
       esbuild: 0.18.20
       postcss: 8.4.32
       rollup: 3.29.4
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
+
+  /vite@5.0.8:
+    resolution: {integrity: sha512-jYMALd8aeqR3yS9xlHd0OzQJndS9fH5ylVgWdB+pxTwxLKdO1pgC5Dlb398BUxpfaBxa4M9oT7j1g503Gaj5IQ==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.19.9
+      postcss: 8.4.32
+      rollup: 4.9.0
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
